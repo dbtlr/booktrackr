@@ -17,25 +17,38 @@ export default class Header extends Component {
     const inlineForceShow = { display: 'block !important' };
 
     return (
-      <div className={styles.topNav}>
-        <Navbar brand='Booktrackr' fixedTop={true}>
-          <Nav>
-            <NavItem eventKey={1}><Link to="/" style={inlineForceShow}>Books</Link></NavItem>
-          </Nav>
-
-          { 
-            user ?
-              <Nav>
-                <NavItem eventKey={2}><Link style={inlineForceShow}>Logged in as <strong>{user.name}</strong>.</Link></NavItem>
-                <NavItem eventKey={3}><Link style={inlineForceShow} onClick={::this.handleLogout} to="/logout">Logout</Link></NavItem>
-              </Nav>
-            :
-              <Nav>
-                <NavItem eventKey={4}><Link to="/login" style={inlineForceShow}>Login</Link></NavItem>
-              </Nav>
-          }
-        </Navbar>
-      </div>
+      <header className="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+        <div className="container">
+          <div className="navbar-header">
+            <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+              <span className="sr-only">Toggle navigation</span>
+              <span className="icon-bar"></span>
+              <span className="icon-bar"></span>
+              <span className="icon-bar"></span>
+            </button>
+            <Link to="/" className="navbar-brand">BookTrackr</Link>
+          </div>
+          <nav id="bs-navbar" className="collapse navbar-collapse">
+            <ul className="nav navbar-nav">
+              <li>
+                <Link to="/">Books</Link>
+              </li>
+            </ul>
+            { 
+              user ?
+                <ul className="nav navbar-nav">
+                  <li><p className="navbar-text">Logged in as <strong>{user.name}</strong>.</p></li>
+                  <li><a href="/add-book">Add Book</a></li>
+                  <li><a onClick={::this.handleLogout} href="javascript:;">Logout</a></li>
+                </ul>
+              :
+                <ul className="nav navbar-nav">
+                  <li><Link to="/login">Login</Link></li>
+                </ul>
+            }
+          </nav>
+        </div>
+      </header>
     );
   }
 
