@@ -71,7 +71,6 @@ export default class Login extends Component {
     const input = this.refs.username;
 
     this.props.login(input.getValue());
-    input.setValue('');
   }
 
   static fetchData(store) {
