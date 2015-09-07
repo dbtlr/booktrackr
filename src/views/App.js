@@ -3,7 +3,6 @@ import {Link} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
-import {isLoaded as isInfoLoaded, load as loadInfo} from '../ducks/info';
 import {isLoaded as isAuthLoaded, load as loadAuth, logout} from '../ducks/auth';
 import {createTransitionHook} from '../universalRouter';
 import Header from '../components/Header';
@@ -36,8 +35,10 @@ const meta = {
 };
 
 @connect(
-    state => ({user: state.auth.user}),
-    dispatch => bindActionCreators({logout}, dispatch))
+  state => ({user: state.auth.user}),
+  dispatch => bindActionCreators({logout}, dispatch)
+)
+
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -87,9 +88,7 @@ export default class App extends Component {
 
   static fetchData(store) {
     const promises = [];
-    if (!isInfoLoaded(store.getState())) {
-      promises.push(store.dispatch(loadInfo()));
-    }
+
     if (!isAuthLoaded(store.getState())) {
       promises.push(store.dispatch(loadAuth()));
     }

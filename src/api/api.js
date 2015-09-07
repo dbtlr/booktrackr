@@ -2,40 +2,35 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import config from '../config';
-import * as actions from './routes/index';
-import PrettyError from 'pretty-error';
+import * as book from './actions/books';
+import * as auth from './actions/auth';
 
-const pretty = new PrettyError();
 const app = express();
+
 app.use(session({
-  secret: 'react and redux rule!!!!',
+  secret: 'is it secret? is it safe?',
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 60000 }
 }));
+
 app.use(bodyParser.json());
 
 export default function api() {
   return new Promise((resolve) => {
-    app.use((req, res) => {
-      const matcher = req.url.split('?')[0].split('/');
-      const action = matcher && actions[matcher[1]];
-      if (action) {
-        action(req, matcher.slice(2))
-          .then((result) => {
-            res.json(result);
-          }, (reason) => {
-            if (reason && reason.redirect) {
-              res.redirect(reason.redirect);
-            } else {
-              console.error('API ERROR:', pretty.render(reason));
-              res.status(reason.status || 500).json(reason);
-            }
-          });
-      } else {
-        res.status(404).end('NOT FOUND');
-      }
+    app.get('/book', book.getBooks);
+    app.post('/book', book.addBook);
+    app.put('/book/:id', book.updateBook);
+
+    app.get('/login', auth.checkLogin);
+    app.del('/login', auth.logout);
+    app.post('/login', auth.login);
+
+    app.get('*', function(req, res) {
+      console.log(req);
+      res.status(404).json({message: 'Not Found'});
     });
+
     app.listen(config.apiPort);
     resolve();
   });
