@@ -79,14 +79,13 @@ export function save(book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.put('/updateBook', book)
+    promise: (client) => client.put('/book/' + book.id, { data: book })
   };
 }
 
 export function add(book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    id: book.id,
-    promise: (client) => client.post('/addBook', book)
+    promise: (client) => client.post('/book', { data: book })
   };
 }

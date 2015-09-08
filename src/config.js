@@ -5,7 +5,10 @@ module.exports = {
     apiPort: 3030,
     wpApiKey: 'DT9fPvRUpnFq',
     wpApiSecret: 'wdiZTkQONuyKymZtjHE4cKiDMzwmU3HuJcrUMLAUcHxx0cmc',
-    wpApiEndPoint: 'http://127.0.0.1:8080/index.php/wp-json',
+    wpApiHost: '127.0.0.1',
+    wpApiProtocol: 'http',
+    wpApiPort: ':8080',
+    wpApiPrefix: '/index.php',
     app: {
       name: 'Booktrackr Development'
     }
@@ -16,7 +19,10 @@ module.exports = {
     apiPort: 3030,
     wpApiKey: 'DT9fPvRUpnFq',
     wpApiSecret: 'wdiZTkQONuyKymZtjHE4cKiDMzwmU3HuJcrUMLAUcHxx0cmc',
-    wpApiEndPoint: 'http://127.0.0.1:8080/index.php/wp-json',
+    wpApiHost: '127.0.0.1',
+    wpApiProtocol: 'http',
+    wpApiPort: ':8080',
+    wpApiPrefix: '/index.php',
     app: {
       name: 'Booktrackr Production'
     }

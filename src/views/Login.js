@@ -26,7 +26,7 @@ export default class Login extends Component {
       <Grid>
         <Row>
           <Col xs={4} xsOffset={4}>
-            <DocumentMeta title="React Redux Example: Login"/>
+            <DocumentMeta title="Login | BookTrackr"/>
             <header>
               <h1>Login</h1>
             </header>
@@ -36,7 +36,6 @@ export default class Login extends Component {
                 <Input
                   type='text'
                   placeholder='Enter your username ...'
-                  bsStyle={this.validationState()}
                   bsSize='small'
                   hasFeedback
                   ref='username' />
@@ -59,18 +58,10 @@ export default class Login extends Component {
     );
   }
 
-  validationState() {
-    let length = this.refs.username ? this.refs.username.length : 0; 
-    if (length > 10) return 'success';
-    else if (length > 5) return 'warning';
-    else if (length > 0) return 'error';
-  }
-
   handleSubmit(event) {
     event.preventDefault();
-    const input = this.refs.username;
 
-    this.props.login(input.getValue());
+    this.props.login(this.refs.username.getValue());
   }
 
   static fetchData(store) {

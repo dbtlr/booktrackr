@@ -13,9 +13,6 @@ export default class Header extends Component {
   render() {
     let user = this.props.user;
 
-    const styles = require('./scss/Header.scss');
-    const inlineForceShow = { display: 'block !important' };
-
     return (
       <header className="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
         <div className="container">
