@@ -49,6 +49,10 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
+
+  // Todo: Add a way to include the needed wp-config variables for the 
+  // client public and the server location, so that the react app has 
+  // access to it.
   const client = new ApiClient(req);
   const store = createStore(client);
   const location = new Location(req.path, req.query);
