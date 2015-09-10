@@ -1,12 +1,5 @@
 import * as wpapi from '../wpapi';
 
-
-export function logout(req, res) {
-  req.session.user = null;
-
-  res.json({ msg: 'Logged Out' });
-}
-
 export function checkLogin(req, res) {
   let loggedIn = req.session.user ? true : false;
   res.status(loggedIn ? 200 : 401).json({ loggedIn: loggedIn, user: req.session.user });
@@ -21,7 +14,7 @@ export function verifyAccess(req, res) {
     requestToken = req.session.oauth.request.public;
   }
 
-  wpapi.getAccessToken(requestToken, req.params.token, function(body, error, result) {
+  wpapi.getAccessToken(requestToken, req.body.oauth_verifier, function(body, error, result) {
     if (body.oauth_token && body.oauth_token_secret) {
       if (!req.session.oauth) {
         req.session.oauth = {};
@@ -32,7 +25,8 @@ export function verifyAccess(req, res) {
         secret: body.oauth_token_secret
       };
 
-      res.redirect(303, '/login/complete');
+      //res.redirect(303, '/login/complete');
+      res.status(201).json({ token: body.oauth_token });
 
     } else {
       res.status(401).json({ msg: 'Not Logged In'});

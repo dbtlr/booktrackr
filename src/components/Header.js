@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
-import {logout} from '../ducks/auth';
 
 export default class Header extends Component {
   static propTypes = {

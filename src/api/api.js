@@ -22,13 +22,9 @@ export default function api() {
     app.post('/book', book.addBook);
     app.put('/book/:id', book.updateBook);
 
-    app.get('/login', auth.checkLogin);
-    app.del('/login', auth.logout);
-    app.post('/login', auth.login);
-
+    app.get('/auth', auth.checkLogin);
     app.get('/auth/authorize', auth.authorize);
-
-    app.get('/auth/access/:token', auth.verifyAccess);
+    app.post('/auth/access', auth.verifyAccess);
 
     app.get('*', function(req, res) {
       res.status(404).json({message: 'Not Found'});

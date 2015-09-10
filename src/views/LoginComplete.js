@@ -2,10 +2,10 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
-import {Grid, Row, Col} from 'react-bootstrap';
+import {Input, Button, Grid, Row, Col} from 'react-bootstrap';
 import {Link} from 'react-router';
 
-export default class Login extends Component {
+export default class LoginComplete extends Component {
   render() {
     const styles = require('./scss/Login.scss');
 
@@ -19,9 +19,9 @@ export default class Login extends Component {
             </header>
 
             <div>
-              <h2>Step 1</h2>
-              <p>First head over to the WordPress blog, login and authorize the connection. Once you have done that, copy the verificatiion token and come back here.
-              <Link className="btn btn-primary" to="/login/authorize" onClick={this.launchAuthorize}>Get Authorization Token</Link></p>
+              <h2>Completed</h2>
+              <p>You're all set!</p>
+              
             </div>
           </Col>
         </Row>
@@ -29,7 +29,7 @@ export default class Login extends Component {
     );
   }
 
-  launchAuthorize() {
-    window.open('/api/auth/authorize');
+  handleSubmit(event) {
+    event.preventDefault();
   }
 }

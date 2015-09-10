@@ -57,16 +57,6 @@ export default class App extends Component {
     router.addTransitionHook(this.transitionHook);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.user && nextProps.user) {
-      // login
-      this.context.router.transitionTo('/');
-    } else if (this.props.user && !nextProps.user) {
-      // logout
-      this.context.router.transitionTo('/');
-    }
-  }
-
   componentWillUnmount() {
     const {router} = this.context;
     router.removeTransitionHook(this.transitionHook);
