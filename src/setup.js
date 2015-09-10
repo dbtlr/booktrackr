@@ -1,9 +1,9 @@
 import cli from 'cli';
 import prompt from 'prompt';
-import * as config from './utils/config';
+import * as wpConfig from './utils/wp-config';
 import * as wpapi from './api/wpapi';
 
-let data = config.read();
+let data = wpConfig.read();
 
 prompt.start();
 
@@ -43,7 +43,7 @@ cli.main(function(args, options) {
   prompt.get(schema, function (err, result) {
     if (err) return console.error(err);
 
-    config.set(result);
-    config.write();
+    wpConfig.set(result);
+    wpConfig.write();
   });
 });

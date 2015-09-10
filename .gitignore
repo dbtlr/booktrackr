@@ -5,4 +5,4 @@ dist/
 webpack-stats.json
 npm-debug.log
 
-/config.js
+/wp-config.json
