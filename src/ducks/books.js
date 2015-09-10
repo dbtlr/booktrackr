@@ -83,6 +83,12 @@ export function save(book) {
   };
 }
 
+export function getOne(bookSlug) {
+  return {
+
+  };
+}
+
 export function add(book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
