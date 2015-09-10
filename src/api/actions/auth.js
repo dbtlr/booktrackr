@@ -1,4 +1,4 @@
-import * as wpapi from '../wpapi';
+import * as wpApi from '../../utils/wp-api';
 
 export function checkLogin(req, res) {
   let loggedIn = req.session.user ? true : false;
@@ -14,7 +14,7 @@ export function verifyAccess(req, res) {
     requestToken = req.session.oauth.request.public;
   }
 
-  wpapi.getAccessToken(requestToken, req.body.oauth_verifier, function(body, error, result) {
+  wpApi.getAccessToken(requestToken, req.body.oauth_verifier, function(body, error, result) {
     if (body.oauth_token && body.oauth_token_secret) {
       if (!req.session.oauth) {
         req.session.oauth = {};
@@ -35,7 +35,7 @@ export function verifyAccess(req, res) {
 }
 
 export function authorize(req, res) {
-  wpapi.getToken(function(body, error, result) {
+  wpApi.getToken(function(body, error, result) {
     if (body.oauth_token && body.oauth_token_secret) {
       if (!req.session.oauth) {
         req.session.oauth = {};

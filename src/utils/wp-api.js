@@ -1,9 +1,9 @@
-import * as config from '../utils/config';
+import * as wpConfig from 'wp-config';
 import request from 'request';
 import OAuth from 'oauth-1.0a';
 
 function buildApiUrl(path) {
-  const data = config.read();
+  const data = wpConfig.read();
 
   let url = data.wp_api_protocol + '://' + data.wp_api_host;
 
@@ -15,7 +15,7 @@ function buildApiUrl(path) {
 }
 
 function buildOAuth() {
-  const data = config.read();
+  const data = wpConfig.read();
 
   return OAuth({
     consumer: {

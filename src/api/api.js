@@ -2,13 +2,12 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import config from '../config';
-import * as book from './actions/books';
 import * as auth from './actions/auth';
 
 const app = express();
 
 app.use(session({
-  secret: 'is it secret? is it safe?',
+  secret: '[This should never be committed to a public repository]',
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 60000 }

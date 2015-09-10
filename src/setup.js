@@ -1,7 +1,6 @@
 import cli from 'cli';
 import prompt from 'prompt';
 import * as wpConfig from './utils/wp-config';
-import * as wpapi from './api/wpapi';
 
 let data = wpConfig.read();
 
