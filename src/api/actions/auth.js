@@ -1,6 +1,4 @@
-import config from '../../config';
-import request from 'request';
-import OAuth from 'oauth-1.0a';
+import * as wpapi from '../wpapi';
 
 
 export function logout(req, res) {
@@ -10,49 +8,54 @@ export function logout(req, res) {
 }
 
 export function checkLogin(req, res) {
-  res.json({ loggedIn: req.session.user ? true : false });
+  let loggedIn = req.session.user ? true : false;
+  res.status(loggedIn ? 200 : 401).json({ loggedIn: loggedIn, user: req.session.user });
 }
 
-export function login(req, res) {
-  const requestData = {
-    url: config.wpApiProtocol + '://' + config.wpApiHost + config.wpApiPort + config.wpApiPrefix + '/oauth1/request',
-    method: 'POST',
-    data: {
-        oauth_callback: ''
-    }
-  };
+export function verifyAccess(req, res) {
+  let requestToken = null;
+  if (!req.session.oauth || !req.session.oauth.request || !req.session.oauth.request.public) {
+    res.status(403).json({ msg: 'Cannot verify access, no request token.' });
+    return;
+  } else {
+    requestToken = req.session.oauth.request.public;
+  }
 
-  let oauth = OAuth({
-    consumer: {
-      public: config.wpApiKey,
-      secret: config.wpApiSecret
-    },
-    signature_method: 'HMAC-SHA1'
-  });
-
-  request({
-    url: requestData.url,
-    method: requestData.method,
-    form: oauth.authorize(requestData)
-
-  }, function(err, res2, body) {
-    body = oauth.deParam(body);
-
+  wpapi.getAccessToken(requestToken, req.params.token, function(body, error, result) {
     if (body.oauth_token && body.oauth_token_secret) {
-      const user = {
-        name: 'Admin',
-        token: {
-          public: body.oauth_token,
-          secret: body.oauth_token_secret
-        }
+      if (!req.session.oauth) {
+        req.session.oauth = {};
+      }
+
+      req.session.oauth.access = {
+        public: body.oauth_token,
+        secret: body.oauth_token_secret
       };
 
-      req.session.user = user;
-
-      res.json({ msg: 'Logged In'});
+      res.redirect(303, '/login/complete');
 
     } else {
-      res.json({ msg: 'Not Logged In'});
+      res.status(401).json({ msg: 'Not Logged In'});
+    }
+  });
+}
+
+export function authorize(req, res) {
+  wpapi.getToken(function(body, error, result) {
+    if (body.oauth_token && body.oauth_token_secret) {
+      if (!req.session.oauth) {
+        req.session.oauth = {};
+      }
+
+      req.session.oauth.request = {
+        public: body.oauth_token,
+        secret: body.oauth_token_secret
+      };
+
+      res.redirect(303, wpapi.getAuthorizeUrl(body.oauth_token));
+
+    } else {
+      res.status(401).json({ msg: 'Not Logged In'});
     }
   });
 }

@@ -26,8 +26,11 @@ export default function api() {
     app.del('/login', auth.logout);
     app.post('/login', auth.login);
 
+    app.get('/auth/authorize', auth.authorize);
+
+    app.get('/auth/access/:token', auth.verifyAccess);
+
     app.get('*', function(req, res) {
-      console.log(req);
       res.status(404).json({message: 'Not Found'});
     });
 

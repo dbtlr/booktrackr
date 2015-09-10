@@ -4,3 +4,5 @@ dist/
 *.iml
 webpack-stats.json
 npm-debug.log
+
+/config.js

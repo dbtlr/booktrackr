@@ -1,6 +1,4 @@
-import config from '../../config';
-import request from 'request';
-import oauth from 'oauth-1.0a';
+import * as wpapi from '../wpapi';
 
 export function getBooks(req, res) {
   res.json([]);
@@ -16,20 +14,30 @@ export function addBook(req, res) {
   let finishedReadingDate = req.body.finishedReadingDate;
   let visibility = req.body.visibility;
 
-  let oauth = OAuth({
-    consumer: {
-      public: config.wpApiKey,
-      secret: config.wpApiSecret
-    },
+  //let token = req.session.user && req.session.user.token ? req.session.user.token : null;
 
-    signature_method: 'HMAC-SHA1'
+  // Short circuit for dev.
+  let token = {
+    public: '2fUvF30KLtHZQQjjGzquk6Np',
+    secret: 'OpMIDD7gK4yh71syO7puP4sQeRwOEbdyLB7Uo4kPK1MAs1af'
+  }
+
+  if (!token) {
+    res.status(401).json({ msg: 'Not authenticated' });
+    return;
+  }
+
+  let data = {
+    title: title
+  };
+
+  wpapi.makeRequest('books', 'POST', data, token, function(body, error, response) {  
+    res.json({
+      error: error,
+      response: response,
+      body: body
+    });
   });
-
-      // endpoint: config.wpApiEndPoint,
-      // key: config.wpApiKey,
-      // secret: config.wpApiSecret
-
-  res.json([]);
 }
 
 export function updateBook(req, res) {
@@ -37,31 +45,3 @@ export function updateBook(req, res) {
 }
 
 
-function callWpApi(endpoint, method, data, next) {
-  let jsonObject = JSON.stringify(data);
-
-  let postHeaders = {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(jsonObject, 'utf8')
-  };  
-
-  let options = {
-    host: config.wpApiHost,
-    port: config.wpApiPort,
-    path: config.wpApiPrefix + endpoint,
-    method: method,
-    headers: postHeaders
-  };
-
-  let reqPost = http.request(options, function(res) {
-    res.setEncoding('utf8');
-    res.on('data', next);
-  });
-
-  reqPost.write(jsonObject);
-  reqPost.end();
-
-  reqPost.on('error', function(e) {
-    console.error(e);
-  });
-}
