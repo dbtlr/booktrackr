@@ -15,12 +15,13 @@ import Highlights from '../components/Highlights';
 )
 
 export default class BookPage extends Component {
-  static propTypes = {
-    book: PropTypes.object.isRequired
-  }
+  const contextTypes: {
+    router: PropTypes.func
+  },
 
   render() {
     const styles = require('./scss/Books.scss');
+
 
     return (
       <div className={'container'}>
@@ -48,13 +49,10 @@ export default class BookPage extends Component {
   static fetchData(store) {
     const promises = [];
 
+    let bookSlug = this.context.router.getCurrentParams().bookSlug;
     // Load this book
 
-    // Load page comments
-
-    // Load highlights
-
-    // Load reviews
+    // Add some way to cause a 404 with unknown slugs.
 
     return Promise.all(promises);
   }
