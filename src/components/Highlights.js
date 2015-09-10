@@ -10,11 +10,5 @@ export default class Highlights extends Component {
         </li>
       </ul>
     );
-
-  }
-
-  submitForm(event) {
-    event.preventDefault();
-
   }
 }

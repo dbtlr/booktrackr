@@ -25,10 +25,5 @@ export default class CommentItem extends Component {
         </Row>
       </Grid>
     );
-
-  }
-
-  submitForm(event) {
-    event.preventDefault();
   }
 }

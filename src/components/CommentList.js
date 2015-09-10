@@ -13,9 +13,4 @@ export default class CommentList extends Component {
     );
 
   }
-
-  submitForm(event) {
-    event.preventDefault();
-
-  }
 }

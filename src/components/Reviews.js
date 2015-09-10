@@ -10,11 +10,5 @@ export default class Reviews extends Component {
         </li>
       </ul>
     );
-
-  }
-
-  submitForm(event) {
-    event.preventDefault();
-
   }
 }
