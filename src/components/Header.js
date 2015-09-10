@@ -8,7 +8,6 @@ export default class Header extends Component {
     user: PropTypes.object
   };
 
-
   render() {
     let user = this.props.user;
 
