@@ -18,10 +18,6 @@ app.use(bodyParser.json());
 
 export default function api() {
   return new Promise((resolve) => {
-    app.get('/book', book.getBooks);
-    app.post('/book', book.addBook);
-    app.put('/book/:id', book.updateBook);
-
     app.get('/auth', auth.checkLogin);
     app.get('/auth/authorize', auth.authorize);
     app.post('/auth/access', auth.verifyAccess);
