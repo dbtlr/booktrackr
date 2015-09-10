@@ -29,6 +29,6 @@ npm run start
 This will configure either your local environment or the server it is on with how to connect to the base WordPress backend.
 
 ```
-node bin/setup.js
+npm run setup
 ```
 

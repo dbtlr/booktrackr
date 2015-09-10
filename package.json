@@ -31,7 +31,7 @@
     "watch-client": "node ./node_modules/better-npm-run watch-client",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
     "test": "karma start",
-    "setup": "node ./node_modules/better-npm-run setup"
+    "setup": "node ./bin/setup.js"
   },
   "betterScripts": {
     "start": {
@@ -53,12 +53,6 @@
       "command": "node webpack/webpack-dev-server.js",
       "env": {
         "UV_THREADPOOL_SIZE": 100,
-        "NODE_PATH": "./src"
-      }
-    },
-    "setup": {
-      "command": "node ./bin/setup.js",
-      "env": {
         "NODE_PATH": "./src"
       }
     }
