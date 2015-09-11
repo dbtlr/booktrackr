@@ -71,7 +71,8 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books', { wp: true })
+     // We use the edit context so we will get back the raw content.
+    promise: (client) => client.get('/books', { params: { context: 'edit' }, wp: true })
   };
 }
 
