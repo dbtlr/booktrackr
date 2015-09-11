@@ -92,9 +92,9 @@ export function getOne(bookSlug) {
 export function add(book) {
   const data = {
     title: book.title,
-    status: 'publish'
+    status: 'publish',
+    content: JSON.stringify(book)
   }
-
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
