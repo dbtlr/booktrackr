@@ -15,13 +15,14 @@ import Highlights from '../components/Highlights';
 )
 
 export default class BookPage extends Component {
-  const contextTypes: {
+  static contextTypes = {
     router: PropTypes.func
-  },
+  }
 
   render() {
     const styles = require('./scss/Books.scss');
 
+    let comments = {};
 
     return (
       <div className={'container'}>
@@ -41,7 +42,7 @@ export default class BookPage extends Component {
         <Highlights />
 
         <CommentForm />
-        <CommentList comments={} />
+        <CommentList comments={comments} />
       </div>
     );
   }

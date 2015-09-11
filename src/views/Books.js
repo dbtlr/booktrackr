@@ -16,12 +16,14 @@ export default class Books extends Component {
   render() {
     const styles = require('./scss/Books.scss');
 
+    let book = {};
+
     return (
       <div className={'container'}>
         <Grid>
           // Loop over books
           <Row>
-            <BookItem book={} />
+            <BookItem book={book} />
           </Row>
         </Grid>
         <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>

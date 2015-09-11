@@ -1,4 +1,4 @@
-import * as wpConfig from 'wp-config';
+import * as wpConfig from './wp-config';
 import request from 'request';
 import OAuth from 'oauth-1.0a';
 
