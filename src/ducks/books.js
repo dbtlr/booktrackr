@@ -71,15 +71,21 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/book')
+    promise: (client) => client.get('/books', { wp: true })
   };
 }
 
 export function save(book) {
+  const data = {
+    title: book.title,
+    status: 'publish',
+    content: JSON.stringify(book)
+  }
+
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.put('/book/' + book.id, { data: book })
+    promise: (client) => client.put('/books' + book.id, { data: data, wp: true })
   };
 }
 
@@ -98,6 +104,6 @@ export function add(book) {
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    promise: (client) => client.post('books', { data: data, wp: true }).then((result) => {console.log(result); return result;})
+    promise: (client) => client.post('books', { data: data, wp: true })
   };
 }
