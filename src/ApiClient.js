@@ -49,14 +49,10 @@ class ApiClient_ {
               const oauth = this.buildOAuth();
               const token = this.store.getState().auth.user.access;
 
-              console.log(token);
-
               const headers = oauth.toHeader(oauth.authorize(requestData, token));
 
               request.set(headers); 
             }
-
-            console.log(request);
 
             if (data) {
               request.send(data);
@@ -91,7 +87,6 @@ class ApiClient_ {
     const adjustedPath = path[0] !== '/' ? '/' + path : path;
 
     if (wp) {
-      console.log(this.store.getState().api.url + '/wp-json/wp/v2' + adjustedPath);
       return this.store.getState().api.url + '/wp-json/wp/v2' + adjustedPath;
     }
 
