@@ -6,13 +6,14 @@ import {Button, Input, Grid, Row, Col} from 'react-bootstrap';
 import * as bookActions from '../ducks/books';
 
 @connect(
-  state => ({books: state.books}),
+  state => ({api: state.api}),
   dispatch => bindActionCreators(bookActions, dispatch)
 )
 
 export default class AddBook extends Component {
   static propTypes = {
-    add: PropTypes.func
+    add: PropTypes.func,
+    api: PropTypes.object
   }
 
   render() {
@@ -99,7 +100,7 @@ export default class AddBook extends Component {
       'visibility': this.refs.visibility.getValue()
     }
 
-    this.props.add(data);
+    this.props.add(data, this.props.api);
 
     // TODO: Add redirect to book detail page. 
   }

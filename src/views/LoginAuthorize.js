@@ -17,7 +17,7 @@ export default class LoginAuthorize extends Component {
   }
 
   static contextTypes = {
-    router: PropTypes.func
+    router: PropTypes.object
   }
 
   render() {

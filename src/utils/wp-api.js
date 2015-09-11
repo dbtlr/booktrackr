@@ -2,7 +2,7 @@ import * as wpConfig from './wp-config';
 import request from 'request';
 import OAuth from 'oauth-1.0a';
 
-function buildApiUrl(path) {
+export function buildApiUrl(path) {
   const data = wpConfig.read();
 
   let url = data.wp_api_protocol + '://' + data.wp_api_host;

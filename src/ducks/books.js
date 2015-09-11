@@ -90,8 +90,14 @@ export function getOne(bookSlug) {
 }
 
 export function add(book) {
+  const data = {
+    title: book.title,
+    status: 'publish'
+  }
+
+
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    promise: (client) => client.post('/book', { data: book })
+    promise: (client) => client.post('books', { data: data, wp: true }).then((result) => {console.log(result); return result;})
   };
 }

@@ -1,4 +1,5 @@
 import * as wpApi from '../../utils/wp-api';
+import * as wpConfig from '../../utils/wp-config';
 
 export function checkLogin(req, res) {
   let loggedIn = req.session.user ? true : false;
@@ -25,8 +26,10 @@ export function verifyAccess(req, res) {
         secret: body.oauth_token_secret
       };
 
+      let data = wpConfig.read();
+
       //res.redirect(303, '/login/complete');
-      res.status(201).json({ token: body.oauth_token });
+      res.status(201).json({ consumer: { public: data.oauth_token, secret: data.oauth_token_secret}, access: req.session.oauth.access });
 
     } else {
       res.status(401).json({ msg: 'Not Logged In'});

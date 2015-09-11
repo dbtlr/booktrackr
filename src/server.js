@@ -13,6 +13,7 @@ import universalRouter from './universalRouter';
 import Html from './Html';
 import PrettyError from 'pretty-error';
 import * as wpConfig from './utils/wp-config';
+import * as wpApi from './utils/wp-api';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -44,8 +45,6 @@ proxy.on('error', (error, req, res) => {
   res.end(JSON.stringify(json));
 });
 
-let wpConfigData = wpConfig.read();
-
 app.use((req, res) => {
   if (__DEVELOPMENT__) {
     // Do not cache webpack stats: the script file would change since
@@ -57,8 +56,8 @@ app.use((req, res) => {
   const store = createStore(client);
 
   // Attach the oauth token to the page as a default variable state.
-  store.getState().api.key = wpConfigData.oauth_token;
-  store.getState().api.url = wpConfigData.buildApiUrl('');
+  store.getState().api.key = wpConfig.read().oauth_token;
+  store.getState().api.url = wpApi.buildApiUrl('');
 
   const location = new Location(req.path, req.query);
   if (__DISABLE_SSR__) {

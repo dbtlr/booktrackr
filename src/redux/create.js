@@ -26,5 +26,7 @@ export default function createApiClientStore(client, data) {
     });
   }
 
+  client.addStore(store);
+
   return store;
 }
