@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
-import {isLoaded as isAuthLoaded, load as loadAuth, logout} from '../ducks/auth';
+import {isLoaded as isAuthLoaded, logout} from '../ducks/auth';
 import {createTransitionHook} from '../universalRouter';
 import Header from '../components/Header';
 
@@ -74,15 +74,6 @@ export default class App extends Component {
         </div>
       </div>
     );
-  }
-
-  static fetchData(store) {
-    const promises = [];
-
-    if (!isAuthLoaded(store.getState())) {
-      promises.push(store.dispatch(loadAuth()));
-    }
-    return Promise.all(promises);
   }
 }
 

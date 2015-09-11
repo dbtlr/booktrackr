@@ -28,8 +28,4 @@ export default class LoginComplete extends Component {
       </Grid>
     );
   }
-
-  handleSubmit(event) {
-    event.preventDefault();
-  }
 }

@@ -15,6 +15,11 @@ export default class LoginAuthorize extends Component {
   static propTypes = {
     authorize: PropTypes.func
   }
+
+  static contextTypes = {
+    router: PropTypes.func
+  }
+
   render() {
     const styles = require('./scss/Login.scss');
 
@@ -48,6 +53,6 @@ export default class LoginAuthorize extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    this.props.authorize(this.refs.verificationToken.getValue());
+    this.props.authorize(this.refs.verificationToken.getValue(), this.context.router);
   }
 }

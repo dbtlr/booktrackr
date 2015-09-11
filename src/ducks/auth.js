@@ -77,20 +77,13 @@ export function isLoaded(globalState) {
   return globalState.auth && globalState.auth.loaded;
 }
 
-export function load() {
-  return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/auth')
-  };
-}
-
-export function authorize(token) {
+export function authorize(token, router) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
     promise: (client) => client.post('/auth/access', {
       data: {
         oauth_verifier: token
       }
-    })
+    }).then((result) => { router.transitionTo('/login/complete'); return result; })
   };
 }

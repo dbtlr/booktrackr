@@ -21,24 +21,24 @@ export default class Header extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <Link to="books" className="navbar-brand">BookTrackr</Link>
+            <Link to="/" className="navbar-brand">BookTrackr</Link>
           </div>
           <nav id="bs-navbar" className="collapse navbar-collapse">
             <ul className="nav navbar-nav">
               <li>
-                <Link to="books">Books</Link>
+                <Link to="/">Books</Link>
               </li>
             </ul>
             { 
               user ?
                 <ul className="nav navbar-nav">
                   <li><p className="navbar-text">Logged in as <strong>{user.name}</strong>.</p></li>
-                  <li><a href="book-add">Add Book</a></li>
+                  <li><Link to="/add-book">Add Book</Link></li>
                   <li><a onClick={::this.handleLogout} href="javascript:;">Logout</a></li>
                 </ul>
               :
                 <ul className="nav navbar-nav">
-                  <li><Link to="login">Login</Link></li>
+                  <li><Link to="/login">Login</Link></li>
                 </ul>
             }
           </nav>
