@@ -46,7 +46,7 @@ export function authorize(req, res) {
         secret: body.oauth_token_secret
       };
 
-      res.redirect(303, wpapi.getAuthorizeUrl(body.oauth_token));
+      res.redirect(303, wpApi.getAuthorizeUrl(body.oauth_token));
 
     } else {
       res.status(401).json({ msg: 'Not Logged In'});
