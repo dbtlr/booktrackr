@@ -3,46 +3,60 @@ import {bindActionCreators} from 'redux';
 import DocumentMeta from 'react-document-meta';
 import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
-import {isLoaded as areBooksLoaded, load as loadBooks} from '../ducks/books';
+import * as bookActions from '../ducks/books';
 import BookItem from '../components/BookItem';
-import {Grid, Row, Button} from 'react-bootstrap';
+import {Grid, Row, Col, Button} from 'react-bootstrap';
 
 @connect(
-  state => ({user: state.auth.user}),
-  dispatch => bindActionCreators({}, dispatch)
+  state => ({
+    books: state.books.data,
+    loading: state.books.loading
+  }),
+  dispatch => ({
+    ...bindActionCreators({
+      ...bookActions,
+    }, dispatch)
+  })
 )
 
 export default class Books extends Component {
+
+  static propTypes = {
+    books: PropTypes.array,
+    loading: PropTypes.bool,
+  }
+
   render() {
     const styles = require('./scss/Books.scss');
+
+    const {books, loading} = this.props;
 
     let book = {};
 
     return (
-      <div className={'container'}>
-        <Grid>
-          // Loop over books
-          <Row>
-            <BookItem book={book} />
-          </Row>
-        </Grid>
-        <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
-      </div>
+        <div className={styles.bookList + ' container'}>
+          {books && books.length && books.map((book) => 
+            <Row>
+              <Col xs={12} md={6} lg={4}>
+                <BookItem book={book} />
+              </Col>
+            </Row>
+          )}
+          <footer>
+            <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
+          </footer>
+        </div>
     );
   }
 
   loadMoreBooks() {
-
+    bookActions.load();
   }
 
   static fetchData(store) {
-    const promises = [];
-
-    if (!areBooksLoaded(store.getState())) {
-      promises.push(store.dispatch(loadBooks()));
+    if (!bookActions.isLoaded(store.getState())) {
+      return store.dispatch(bookActions.load());
     }
-
-    return Promise.all(promises);
   }
 }
 

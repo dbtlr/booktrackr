@@ -61,7 +61,9 @@ class ApiClient_ {
             }
 
             request.end((err, res) => {
-              if (err) {
+              if (!res) {
+                reject(err || 'Something very weird happened. No response, no error ...');
+              } else if (err) {
                 reject(res.body || err);
               } else {
                 resolve(res.body);

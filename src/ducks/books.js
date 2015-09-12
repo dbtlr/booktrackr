@@ -22,11 +22,35 @@ export default function reducer(state = initialState, action = {}) {
         loading: true
       };
     case LOAD_SUCCESS:
+      const loadedBooks = [];
+
+      action.result.map(function(item, blah) { 
+        if (!item.content || !item.content.raw || item.content.raw.length == 0) {
+          return;
+        }
+
+        let data = JSON.parse(item.content.raw);
+
+        let book = {
+          id: item.id,
+          key: item.guid,
+          title: data.title,
+          author: data.author || null,
+          beganReadingDate: data.beganReadingDate ? new Date(data.beganReadingDate) : null,
+          finishedReadingDate: data.finishedReadingDate ? new Date(data.finishedReadingDate) : null,
+          status: data.status || null,
+          visibility: data.visibility || null,
+          slug: item.slug || null
+        };
+
+        loadedBooks.push(book);
+      });
+
       return {
         ...state,
         loading: false,
         loaded: true,
-        data: action.result,
+        data: loadedBooks,
         error: null
       };
     case LOAD_FAIL:
@@ -124,6 +148,9 @@ export function getOne(bookSlug) {
 }
 
 export function add(book) {
+  book.beganReadingDate = (new Date(book.beganReadingDate)).toUTCString();
+  book.finishedReadingDate = (new Date(book.finishedReadingDate)).toUTCString();
+
   const data = {
     title: book.title,
     status: 'publish',
