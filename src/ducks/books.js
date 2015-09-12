@@ -4,6 +4,9 @@ const LOAD_FAIL = 'booktrackr/books/LOAD_FAIL';
 const SAVE = 'booktrackr/books/SAVE';
 const SAVE_SUCCESS = 'booktrackr/books/SAVE_SUCCESS';
 const SAVE_FAIL = 'booktrackr/books/SAVE_FAIL';
+const ADD = 'booktrackr/books/ADD';
+const ADD_SUCCESS = 'booktrackr/books/ADD_SUCCESS';
+const ADD_FAIL = 'booktrackr/books/ADD_FAIL';
 
 const initialState = {
   loaded: false,
@@ -35,13 +38,13 @@ export default function reducer(state = initialState, action = {}) {
         error: action.error
       };
     case SAVE:
-      return state; // 'saving' flag handled by redux-form
+      return state;
     case SAVE_SUCCESS:
-      const data = [...state.data];
-      data[action.result.id - 1] = action.result;
+      const save_data = [...state.data];
+      save_data[action.result.id - 1] = action.result;
       return {
         ...state,
-        data: data,
+        data: save_data,
         editing: {
           ...state.editing,
           [action.id]: false
@@ -52,6 +55,31 @@ export default function reducer(state = initialState, action = {}) {
         }
       };
     case SAVE_FAIL:
+      return {
+        ...state,
+        saveError: {
+          ...state.saveError,
+          [action.id]: action.error
+        }
+      };
+    case ADD:
+      return state; 
+    case ADD_SUCCESS:
+      const add_data = [...state.data];
+      add_data[action.result.id - 1] = action.result;
+      return {
+        ...state,
+        data: add_data,
+        editing: {
+          ...state.editing,
+          [action.id]: false
+        },
+        saveError: {
+          ...state.saveError,
+          [action.id]: null
+        }
+      };
+    case ADD_FAIL:
       return {
         ...state,
         saveError: {
@@ -103,7 +131,7 @@ export function add(book) {
   }
 
   return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    types: [ADD, ADD_SUCCESS, ADD_FAIL],
     promise: (client) => client.post('books', { data: data, wp: true })
   };
 }
