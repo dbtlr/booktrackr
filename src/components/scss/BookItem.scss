@@ -1,14 +1,33 @@
 
 .item {
-  padding: 1em;
-  border: 1px solid #eee;
+  display: block;
+  padding: 0;
+  margin: 0 0 10px;
+  text-decoration: none;
+  position: relative;
 
-  h3 {
-    font-size: 1.2em;
-    margin: 0 0 10px;
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 20px;
+    color: white;
+    margin: 0;
+    background: rgba(0,0,0,0.5);
+
+    h3 {
+      font-size: 1.2em;
+      margin: 0 0 10px;
+    }
+  }
+
+  img {
+    width: 100%;
   }
 }
 
 .status {
-  text-align: right;
+  float: right;
 }

@@ -11,13 +11,15 @@ export default class BookItem extends Component {
     const styles = require('./scss/BookItem.scss');
     const {book} = this.props;
     return (
-      <div className={styles.item} key={book.key}>
-        <h3><Link to={'/book/' + book.slug}>{book.title}</Link></h3>
-          <Row>
-            <Col xs={8}>by {book.author}</Col>
-            <Col xs={4} className={styles.status}>{book.status}</Col>
-          </Row>
-      </div>
+      <Link to={'/book/' + book.slug} className={styles.item} key={book.key.raw}>
+        <header>
+          <h3>{book.title}</h3>
+
+          <div className={styles.status}>{book.status}</div>
+          <div className={styles.author}>by {book.author}</div>
+        </header>
+        <img src={'http://lorempixel.com/400/500/?' + book.key.raw} />
+      </Link>
     );
   }
 }

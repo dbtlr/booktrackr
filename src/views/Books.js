@@ -35,13 +35,13 @@ export default class Books extends Component {
 
     return (
         <div className={styles.bookList + ' container'}>
-          {books && books.length && books.map((book) => 
-            <Row>
-              <Col xs={12} md={6} lg={4}>
+          <Row>
+            {books && books.length && books.map((book) => 
+              <Col xs={12} sm={6} lg={4}>
                 <BookItem book={book} />
               </Col>
-            </Row>
-          )}
+            )}
+          </Row>
           <footer>
             <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
           </footer>
