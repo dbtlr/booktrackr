@@ -41,17 +41,19 @@ class ApiClient_ {
             }
 
             if (wp) {
-              let requestData = {
-                url: url,
-                method: method
-              };
+              // We only try to add auth headers in if we have all the right credientials loaded up.
+              if (this.store.getState().auth.user && this.store.getState().auth.user.consumer && this.store.getState().auth.user.access) {          
+                let requestData = {
+                  url: url,
+                  method: method
+                };
 
-              const oauth = this.buildOAuth();
-              const token = this.store.getState().auth.user.access;
+                const oauth = this.buildOAuth(this.store.getState().auth.consumer);
+                const token = this.store.getState().auth.user.access;
+                const headers = oauth.toHeader(oauth.authorize(requestData, token));
 
-              const headers = oauth.toHeader(oauth.authorize(requestData, token));
-
-              request.set(headers); 
+                request.set(headers);
+              }
             }
 
             if (data) {
@@ -74,10 +76,9 @@ class ApiClient_ {
     this.store = store;
   }
 
-  buildOAuth() {
+  buildOAuth(consumerToken) {
     return OAuth({
-      consumer: this.store.getState().auth.user.consumer,
-
+      consumer: consumerToken,
       signature_method: 'HMAC-SHA1'
     });
   }
