@@ -87,29 +87,25 @@ export default function reducer(state = initialState, action = {}) {
         }
       };
     case ADD:
-      return state; 
+      return {
+        ...state,
+        adding: true,
+        addErrors: []
+      }; 
     case ADD_SUCCESS:
       const add_data = [...state.data];
       add_data[action.result.id - 1] = action.result;
       return {
-        ...state,
         data: add_data,
-        editing: {
-          ...state.editing,
-          [action.id]: false
-        },
-        saveError: {
-          ...state.saveError,
-          [action.id]: null
-        }
+        adding: false,
+        addErrors: []
       };
-    case ADD_FAIL:
+    case ADD_FAIL: 
+
       return {
         ...state,
-        saveError: {
-          ...state.saveError,
-          [action.id]: action.error
-        }
+        adding: false,
+        addError: { msg: action.error.message, stack: action.error.stack }
       };
     default:
       return state;

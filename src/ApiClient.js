@@ -41,19 +41,28 @@ class ApiClient_ {
             }
 
             if (wp) {
-              // We only try to add auth headers in if we have all the right credientials loaded up.
-              if (this.store.getState().auth.user && this.store.getState().auth.user.consumer && this.store.getState().auth.user.access) {          
-                let requestData = {
-                  url: url,
-                  method: method
-                };
+              let consumer = { public: this.store.getState().api.key };
+              let token = null;
 
-                const oauth = this.buildOAuth(this.store.getState().auth.consumer);
-                const token = this.store.getState().auth.user.access;
-                const headers = oauth.toHeader(oauth.authorize(requestData, token));
+              if (this.store.getState().auth.user) {
+                if (this.store.getState().auth.user.consumer) {
+                  consumer = this.store.getState().auth.user.consumer;
+                }
 
-                request.set(headers);
+                if (this.store.getState().auth.user.access) {
+                  token = this.store.getState().auth.user.access;
+                }
               }
+
+              let requestData = {
+                url: url,
+                method: method
+              };
+
+              const oauth = this.buildOAuth(consumer);
+              const headers = oauth.toHeader(oauth.authorize(requestData, token));
+
+              request.set(headers);
             }
 
             if (data) {
