@@ -1,3 +1,5 @@
+import * as helper from '../utils/Helper';
+
 const LOAD = 'booktrackr/books/LOAD';
 const LOAD_ONE = 'booktrackr/books/LOAD_ONE';
 const LOAD_SUCCESS = 'booktrackr/books/LOAD_SUCCESS';
@@ -31,17 +33,6 @@ function stripslashes(str) {
           return n1;
       }
     });
-}
-
-// Stolen from Stack Overflow - http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-function generateUUID(){
-  var d = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = (d + Math.random()*16)%16 | 0;
-    d = Math.floor(d/16);
-    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-  });
-  return uuid;
 }
 
 export default function reducer(state = initialState, action = {}) {
@@ -206,7 +197,7 @@ export function getOne(state, bookId) {
 export function addReview(review, book) {
   book.reviews = book.reviews || [];
   book.reviews.push({
-    id: generateUUID(),
+    id: helper.generateUUID(),
     text: review,
     createdDate: new Date()
   });
@@ -217,7 +208,7 @@ export function addReview(review, book) {
 export function addHighlight(highlight, book) {
   book.highlights = book.highlights || [];
   book.highlights.push({
-    id: generateUUID(),
+    id: helper.generateUUID(),
     text: highlight,
     createdDate: new Date()
   });

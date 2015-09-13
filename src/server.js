@@ -4,10 +4,9 @@ import Location from 'react-router/lib/Location';
 import config from './config';
 import favicon from 'serve-favicon';
 import compression from 'compression';
-import httpProxy from 'http-proxy';
 import path from 'path';
 import createStore from './redux/create';
-import api from './api/api';
+import * as api from './api/api';
 import ApiClient from './ApiClient';
 import universalRouter from './universalRouter';
 import Html from './Html';
@@ -17,9 +16,6 @@ import * as wpApi from './utils/wp-api';
 
 const pretty = new PrettyError();
 const app = new Express();
-const proxy = httpProxy.createProxyServer({
-  target: 'http://localhost:' + config.apiPort
-});
 
 app.use(compression());
 
@@ -28,22 +24,8 @@ app.use(compression());
 
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
-// Proxy to API server
-app.use('/api', (req, res) => {
-  proxy.web(req, res);
-});
-
-// added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
-proxy.on('error', (error, req, res) => {
-  let json;
-  console.log('proxy error', error);
-  if (!res.headersSent) {
-    res.writeHead(500, {'content-type': 'application/json'});
-  }
-
-  json = { error: 'proxy_error', reason: error.message };
-  res.end(JSON.stringify(json));
-});
+// Set up the api
+app.use('/api', api.routeHandler(app));
 
 app.use((req, res) => {
   if (__DEVELOPMENT__) {
@@ -89,11 +71,9 @@ if (config.port) {
     if (err) {
       console.error(err);
     } else {
-      api().then(() => {
-        console.info('==> ✅  Server is listening');
-        console.info('==> 🌎  %s running on port %s, API on port %s', config.app.name, config.port, config.apiPort);
-        console.info('----------\n==> 💻  Open http://localhost:%s in a browser to view the app.', config.port);
-      });
+      console.info('==> ✅  Server is listening');
+      console.info('==> 🌎  %s running on port %s', config.app.name, config.port);
+      console.info('----------\n==> 💻  Open http://localhost:%s in a browser to view the app.', config.port);
     }
   });
 } else {

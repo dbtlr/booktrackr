@@ -1,31 +1,21 @@
 import express from 'express';
-import session from 'express-session';
 import bodyParser from 'body-parser';
-import config from '../config';
 import * as auth from './actions/auth';
+import * as upload from './actions/upload';
+import busboy from 'connect-busboy';
 
-const app = express();
+export function routeHandler() {
+  const jsonBodyParser = bodyParser.json();
+  const router = express.Router();
 
-app.use(session({
-  secret: '[This should never be committed to a public repository]',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60000 }
-}));
+  router.get('/auth', jsonBodyParser, auth.checkLogin);
+  router.get('/auth/authorize', jsonBodyParser, auth.authorize);
+  router.post('/auth/access', jsonBodyParser, auth.verifyAccess);
+  router.post('/upload-cover', busboy(), upload.uploadCover);
 
-app.use(bodyParser.json());
-
-export default function api() {
-  return new Promise((resolve) => {
-    app.get('/auth', auth.checkLogin);
-    app.get('/auth/authorize', auth.authorize);
-    app.post('/auth/access', auth.verifyAccess);
-
-    app.get('*', function(req, res) {
-      res.status(404).json({message: 'Not Found'});
-    });
-
-    app.listen(config.apiPort);
-    resolve();
+  router.get('*', function(req, res) {
+    res.status(404).json({message: 'Not Found'});
   });
+
+  return router;
 }

@@ -26,6 +26,10 @@ export default function(store) {
         <Route name="review-add" path="/book/:bookId/add-review" component={AddReview} />
         <Route name="highlight-add" path="/book/:bookId/add-highlight" component={AddHighlight} />
       </Route>
+
+      // Purely test oriented path ... to get around login issues while testing.
+      <Route name="test-form" path="/test-form" component={AddBook} />
+
       <Route name="not-found" path="*" component={NotFound}/>
     </Route>
   );
