@@ -47,7 +47,7 @@ export default class BookPage extends Component {
       <Grid className={styles.bookPage}>
         <Row>
           <Col xs={12} md={6} lg={3}>
-            <img className={styles.bookPageCover} src={'http://lorempixel.com/400/500/?' + book.key.raw} />
+            <img className={styles.bookPageCover} src={book.thumbnail} />
           </Col>
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title}</h1>

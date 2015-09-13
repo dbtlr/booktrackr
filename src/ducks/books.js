@@ -83,7 +83,8 @@ export default function reducer(state = initialState, action = {}) {
           reviews: data.reviews || null,
           highlights: data.highlights || null,
           visibility: data.visibility || null,
-          slug: item.slug || null
+          slug: item.slug || null,
+          thumbnail: 'http://lorempixel.com/400/500/?' + item.id
         };
 
         allBooks[item.id] = book;

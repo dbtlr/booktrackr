@@ -18,7 +18,7 @@ export default class BookItem extends Component {
           <div className={styles.status}>{book.status}</div>
           <div className={styles.author}>by {book.author}</div>
         </header>
-        <img src={'http://lorempixel.com/400/500/?' + book.key.raw} />
+        <img src={book.thumbnail} />
       </Link>
     );
   }
