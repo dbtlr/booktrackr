@@ -32,7 +32,6 @@ export default class Header extends Component {
             { 
               user ?
                 <ul className="nav navbar-nav navbar-right">
-                  <li><p className="navbar-text">Logged in as <strong>{user.name}</strong>.</p></li>
                   <li><Link to="/add-book">Add Book</Link></li>
                   <li><a onClick={::this.handleLogout} href="javascript:;">Logout</a></li>
                 </ul>

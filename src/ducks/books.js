@@ -15,6 +15,35 @@ const initialState = {
   saveError: {}
 };
 
+// Stole this from PHP.js, in order to combat the fact the WP turns on 
+// magic_quotes by default. What is this, PHP 4? (sad panda...)
+function stripslashes(str) {
+  return (str + '')
+    .replace(/\\(.?)/g, function(s, n1) {
+      switch (n1) {
+        case '\\':
+          return '\\';
+        case '0':
+          return '\u0000';
+        case '':
+          return '';
+        default:
+          return n1;
+      }
+    });
+}
+
+// Stolen from Stack Overflow - http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+function generateUUID(){
+  var d = new Date().getTime();
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = (d + Math.random()*16)%16 | 0;
+    d = Math.floor(d/16);
+    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+  return uuid;
+}
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
@@ -41,7 +70,7 @@ export default function reducer(state = initialState, action = {}) {
           return;
         }
 
-        let data = JSON.parse(item.content.raw);
+        let data = JSON.parse(stripslashes(item.content.raw));
 
         let book = {
           id: item.id,
@@ -51,6 +80,8 @@ export default function reducer(state = initialState, action = {}) {
           beganReadingDate: data.beganReadingDate,
           finishedReadingDate: data.finishedReadingDate,
           status: data.status || null,
+          reviews: data.reviews || null,
+          highlights: data.highlights || null,
           visibility: data.visibility || null,
           slug: item.slug || null
         };
@@ -161,7 +192,7 @@ export function save(book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.put('/books' + book.id, { data: data, wp: true })
+    promise: (client) => client.put('/books/' + book.id, { data: data, wp: true })
   };
 }
 
@@ -169,6 +200,27 @@ export function getOne(state, bookId) {
   if (state.books && state.books.allBooks && state.books.allBooks[bookId]) {
     return state.books.allBooks[bookId];
   }
+}
+
+export function addReview(review, book) {
+  book.reviews = book.reviews || [];
+  book.reviews.push({
+    id: generateUUID(),
+    text: review,
+    createdDate: new Date()
+  });
+
+  return save(book);
+}
+
+export function addHighlight(highlight, book) {
+  book.highlights = book.highlights || [];
+  book.highlights.push({
+    id: generateUUID(),
+    text: highlight,
+    createdDate: new Date()
+  });
+  return save(book);
 }
 
 export function add(book) {

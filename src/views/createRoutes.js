@@ -7,6 +7,8 @@ import LoginAuthorize from 'views/LoginAuthorize';
 import LoginComplete from 'views/LoginComplete';
 import RequireLogin from 'views/RequireLogin';
 import AddBook from 'views/AddBook';
+import AddReview from 'views/AddReview';
+import AddHighlight from 'views/AddHighlight';
 import NotFound from 'views/NotFound';
 import BookPage from 'views/BookPage';
 
@@ -20,6 +22,9 @@ export default function(store) {
       <Route name="login-done" path="/login/complete" component={LoginComplete} />
       <Route component={RequireLogin} onEnter={RequireLogin.onEnter(store)}>
         <Route name="book-add" path="/add-book" component={AddBook} />
+        <Route name="book-edit" path="/book/:bookId/edit" component={AddBook} />
+        <Route name="review-add" path="/book/:bookId/add-review" component={AddReview} />
+        <Route name="highlight-add" path="/book/:bookId/add-highlight" component={AddHighlight} />
       </Route>
       <Route name="not-found" path="*" component={NotFound}/>
     </Route>

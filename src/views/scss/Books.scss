@@ -19,3 +19,13 @@
 .bookPageCover {
   width: 100%;
 }
+
+.addReview, .addHighlight {
+  form {
+    overflow: hidden;
+
+    button {
+      float: right;
+    }
+  }
+}

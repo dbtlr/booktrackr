@@ -22,20 +22,22 @@ export default class Reviews extends Component {
     const {book} = this.props;
     const reviews = book.reviews || [];
 
+    console.log(reviews);
+
     return (
       <div>
         <h3>Reviews</h3>
         {reviews.length > 0 ?
           <ul>
-            // Loop here
-            <li>
-              // Highlight
-            </li>
+            {reviews.map((item) => 
+              <li key={item.id || ''}>
+                {item.text}
+              </li>
+            )}
           </ul>
           :
           <p>No Reviews Yet. {this.props.user ? <Link to={"/book/" + book.id + "/add-review"}>Add one</Link> : ''}</p>
         }
-
       </div>
     );
   }

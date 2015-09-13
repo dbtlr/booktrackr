@@ -27,15 +27,15 @@ export default class Highlights extends Component {
         <h3>Highlights</h3>
         {highlights.length > 0 ?
           <ul>
-            // Loop here
-            <li>
-              // Highlight
-            </li>
+            {highlights.map((item) => 
+              <li key={item.id || ''}>
+                {item.text}
+              </li>
+            )}
           </ul>
           :
           <p>No highlights yet. {this.props.user ? <Link to={"/book/" + book.id + "/add-highlight"}>Add one</Link> : ''}</p>
         }
-
       </div>
     );
   }
