@@ -1,10 +1,17 @@
 import React, {Component, PropTypes} from 'react';
-import {Input, Button} from 'react-bootstrap';
+import {Input, Button, Row} from 'react-bootstrap';
 
 export default class CommentForm extends Component {
+  static propTypes = {
+    book: PropTypes.object.isRequired
+  };
+
   render() {
+
+    const styles = require('./scss/CommentForm.scss');
+
     return (
-      <form className="form-vertical" onSubmit={::this.submitForm}>
+      <form className={styles.commentForm + " form-vertical"} onSubmit={::this.submitForm}>
         <Input
           type='text'
           label='Name'
@@ -29,6 +36,7 @@ export default class CommentForm extends Component {
         <Input
           type='textarea'
           label='Comment'
+          rows='10'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
           ref='comment' />

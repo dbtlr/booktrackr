@@ -31,13 +31,13 @@ export default class Header extends Component {
             </ul>
             { 
               user ?
-                <ul className="nav navbar-nav">
+                <ul className="nav navbar-nav navbar-right">
                   <li><p className="navbar-text">Logged in as <strong>{user.name}</strong>.</p></li>
                   <li><Link to="/add-book">Add Book</Link></li>
                   <li><a onClick={::this.handleLogout} href="javascript:;">Logout</a></li>
                 </ul>
               :
-                <ul className="nav navbar-nav">
+                <ul className="nav navbar-nav navbar-right">
                   <li><Link to="/login">Login</Link></li>
                 </ul>
             }

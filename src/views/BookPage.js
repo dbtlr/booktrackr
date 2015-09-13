@@ -3,59 +3,81 @@ import {bindActionCreators} from 'redux';
 import DocumentMeta from 'react-document-meta';
 import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
-import {getOne as getBook} from '../ducks/books';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
 import Reviews from '../components/Reviews';
 import Highlights from '../components/Highlights';
+import NotFound from './NotFound';
+import * as bookActions from '../ducks/books';
+import {Grid, Row, Col} from 'react-bootstrap';
 
 @connect(
-  state => ({user: state.auth.user}),
-  dispatch => bindActionCreators({}, dispatch)
+  state => ({
+    books: state.books,
+    user: state.auth.user
+  }),
+  dispatch => ({
+    ...bindActionCreators(bookActions, dispatch)
+  })
 )
 
 export default class BookPage extends Component {
-  static contextTypes = {
-    router: PropTypes.func
+  static propTypes = {
+    books: PropTypes.object,
+    routeParams: PropTypes.object
   }
 
   render() {
     const styles = require('./scss/Books.scss');
+    const {books, user} = this.props;
+    const bookId = this.props.routeParams.bookId;
+
+    if (!books.allBooks || !books.allBooks[bookId]) {
+      return (<NotFound />);
+    }
+
+    const book = books.allBooks[bookId];
 
     let comments = {};
 
+    const beganDate = book.beganReadingDate ? (new Date(book.beganReadingDate)) : '';
+    const finishedDate = book.finishedReadingDate ? (new Date(book.finishedReadingDate)) : '';
+
     return (
-      <div className={'container'}>
-        <header>
-          <h1>
-            // Book Title
-          </h1>
-          // Book Author
-          // Book Status
-          // Book Reading Started / Ended
-        </header>
+      <Grid className={styles.bookPage}>
+        <Row>
+          <Col xs={12} md={6} lg={3}>
+            <img className={styles.bookPageCover} src={'http://lorempixel.com/400/500/?' + book.key.raw} />
+          </Col>
+          <Col xs={12} md={6} lg={9}>
+            <h1>{book.title}</h1>
 
-        // Book Image
-        // Book Description
+            <div className="author">{book.author}</div>
+            <div className="status">{book.status}</div>
+            {beganDate ? 
+              <div className="beganDate">Date Started Reading: {beganDate.toDateString()}</div> : ''
+            }
+            {finishedDate ? 
+              <div className="endDate">Date Finished Reading: {finishedDate.toDateString()}</div> : ''
+            }
+            <Reviews book={book} />
+            <Highlights book={book} />
 
-        <Reviews />
-        <Highlights />
-
-        <CommentForm />
-        <CommentList comments={comments} />
-      </div>
+          <h3>Leave a Comment</h3>
+          <CommentForm book={book} />
+          <CommentList book={book} />
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 
-  static fetchData(store) {
-    const promises = [];
+  static fetchData(store, params) {
+    const bookId = params.bookId;
 
-    let bookSlug = this.context.router.getCurrentParams().bookSlug;
-    // Load this book
-
-    // Add some way to cause a 404 with unknown slugs.
-
-    return Promise.all(promises);
+    if (!bookActions.isBookLoaded(store.getState(), bookId)) {
+      return store.dispatch(bookActions.loadOne(bookId));
+    }
   }
 }
 

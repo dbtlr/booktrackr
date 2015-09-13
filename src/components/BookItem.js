@@ -11,7 +11,7 @@ export default class BookItem extends Component {
     const styles = require('./scss/BookItem.scss');
     const {book} = this.props;
     return (
-      <Link to={'/book/' + book.slug} className={styles.item} key={book.key.raw}>
+      <Link to={'/book/' + book.id} className={styles.item} key={book.id}>
         <header>
           <h3>{book.title}</h3>
 

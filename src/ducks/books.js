@@ -1,4 +1,5 @@
 const LOAD = 'booktrackr/books/LOAD';
+const LOAD_ONE = 'booktrackr/books/LOAD_ONE';
 const LOAD_SUCCESS = 'booktrackr/books/LOAD_SUCCESS';
 const LOAD_FAIL = 'booktrackr/books/LOAD_FAIL';
 const SAVE = 'booktrackr/books/SAVE';
@@ -21,10 +22,21 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: true
       };
+    case LOAD_ONE:
+      return {
+        ...state,
+        loadingOne: true
+      };
     case LOAD_SUCCESS:
-      const loadedBooks = [];
+      const bookList = state.bookList || [];
+      const allBooks = state.allBooks || {};
 
-      action.result.map(function(item, blah) { 
+      // Make sure this can handle single results as well.
+      if (typeof action.result.map == 'undefined') {
+        action.result = [action.result];
+      }
+
+      action.result.map(function(item) { 
         if (!item.content || !item.content.raw || item.content.raw.length == 0) {
           return;
         }
@@ -36,21 +48,27 @@ export default function reducer(state = initialState, action = {}) {
           key: item.guid,
           title: data.title,
           author: data.author || null,
-          beganReadingDate: data.beganReadingDate ? new Date(data.beganReadingDate) : null,
-          finishedReadingDate: data.finishedReadingDate ? new Date(data.finishedReadingDate) : null,
+          beganReadingDate: data.beganReadingDate,
+          finishedReadingDate: data.finishedReadingDate,
           status: data.status || null,
           visibility: data.visibility || null,
           slug: item.slug || null
         };
 
-        loadedBooks.push(book);
+        allBooks[item.id] = book;
+
+        if (!state.loadingOne) {
+          bookList.push(book);
+        }
       });
 
       return {
         ...state,
         loading: false,
+        loadingOne: false,
         loaded: true,
-        data: loadedBooks,
+        allBooks: allBooks,
+        bookList: bookList,
         error: null
       };
     case LOAD_FAIL:
@@ -58,7 +76,6 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: false,
-        data: null,
         error: action.error
       };
     case SAVE:
@@ -112,14 +129,25 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isLoaded(globalState) {
-  return globalState.books && globalState.books.loaded;
+export function isBookLoaded(state, bookId) {
+  return state.books && state.books.allBooks && state.books.allBooks[bookId];
+}
+
+export function isLoaded(state) {
+  return state.books && state.books.loaded;
 }
 
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: (client) => client.get('/books', { wp: true })
+  };
+}
+
+export function loadOne(bookId) {
+  return {
+    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
+    promise: (client) => client.get('/books/' + bookId, { wp: true })
   };
 }
 
@@ -137,15 +165,18 @@ export function save(book) {
   };
 }
 
-export function getOne(bookSlug) {
-  return {
-
-  };
+export function getOne(state, bookId) {
+  if (state.books && state.books.allBooks && state.books.allBooks[bookId]) {
+    return state.books.allBooks[bookId];
+  }
 }
 
 export function add(book) {
   book.beganReadingDate = (new Date(book.beganReadingDate)).toUTCString();
   book.finishedReadingDate = (new Date(book.finishedReadingDate)).toUTCString();
+
+  if (book.beganReadingDate == 'Invalid Date') book.beganReadingDate = '';
+  if (book.finishedReadingDate == 'Invalid Date') book.finishedReadingDate = '';
 
   const data = {
     title: book.title,

@@ -14,7 +14,7 @@ export default function(store) {
   return (
     <Route component={App}>
       <Route name="books" path="/" component={Books} />
-      <Route name="single-book" path="/book/:bookSlug" component={BookPage} />
+      <Route name="single-book" path="/book/:bookId" component={BookPage} />
       <Route name="login" path="/login" component={Login} />
       <Route name="login-auth" path="/login/authorize" component={LoginAuthorize} />
       <Route name="login-done" path="/login/complete" component={LoginComplete} />

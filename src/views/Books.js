@@ -9,14 +9,10 @@ import {Grid, Row, Col, Button} from 'react-bootstrap';
 
 @connect(
   state => ({
-    books: state.books.data,
+    books: state.books.bookList,
     loading: state.books.loading
   }),
-  dispatch => ({
-    ...bindActionCreators({
-      ...bookActions,
-    }, dispatch)
-  })
+  dispatch => bindActionCreators(bookActions, dispatch)
 )
 
 export default class Books extends Component {
@@ -37,7 +33,7 @@ export default class Books extends Component {
         <div className={styles.bookList + ' container'}>
           <Row>
             {books && books.length && books.map((book) => 
-              <Col xs={12} sm={6} lg={4}>
+              <Col xs={12} sm={6} key={book.id}>
                 <BookItem book={book} />
               </Col>
             )}
