@@ -22,8 +22,6 @@ export default class Reviews extends Component {
     const {book} = this.props;
     const reviews = book.reviews || [];
 
-    console.log(reviews);
-
     return (
       <div>
         <h3>Reviews</h3>
@@ -34,6 +32,7 @@ export default class Reviews extends Component {
                 {item.text}
               </li>
             )}
+            <li><Link to={"/book/" + book.id + "/add-review"}>Add another review</Link></li>
           </ul>
           :
           <p>No Reviews Yet. {this.props.user ? <Link to={"/book/" + book.id + "/add-review"}>Add one</Link> : ''}</p>

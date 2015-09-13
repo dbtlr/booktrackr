@@ -223,12 +223,14 @@ export function addHighlight(highlight, book) {
   return save(book);
 }
 
-export function add(book) {
+export function add(book, next) {
   book.beganReadingDate = (new Date(book.beganReadingDate)).toUTCString();
   book.finishedReadingDate = (new Date(book.finishedReadingDate)).toUTCString();
 
   if (book.beganReadingDate == 'Invalid Date') book.beganReadingDate = '';
   if (book.finishedReadingDate == 'Invalid Date') book.finishedReadingDate = '';
+
+  next = next || ((res) => {return res});
 
   const data = {
     title: book.title,
@@ -238,6 +240,6 @@ export function add(book) {
 
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('books', { data: data, wp: true })
+    promise: (client) => client.post('books', { data: data, wp: true }).then(next)
   };
 }

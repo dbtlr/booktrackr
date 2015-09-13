@@ -17,10 +17,15 @@ import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 )
 
 export default class AddHighlight extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
+
   static propTypes = {
     books: PropTypes.object,
     addHighlight: PropTypes.func,
-    routeParams: PropTypes.object
+    routeParams: PropTypes.object,
+    router: PropTypes.object
   }
 
   render() {
@@ -59,7 +64,7 @@ export default class AddHighlight extends Component {
 
     this.props.addHighlight(this.refs.highlight.getValue(), books.allBooks[bookId]);
 
-    // TODO: Add redirect to book detail page. 
+    this.context.router.transitionTo('/book/' + bookId);
   }
 
   static fetchData(store, params) {

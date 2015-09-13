@@ -17,6 +17,10 @@ import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 )
 
 export default class AddReview extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
+
   static propTypes = {
     books: PropTypes.object,
     addReview: PropTypes.func,
@@ -59,7 +63,7 @@ export default class AddReview extends Component {
 
     this.props.addReview(this.refs.review.getValue(), books.allBooks[bookId]);
 
-    // TODO: Add redirect to book detail page. 
+    this.context.router.transitionTo('/book/' + bookId);
   }
 
   static fetchData(store, params) {

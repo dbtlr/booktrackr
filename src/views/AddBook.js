@@ -11,6 +11,10 @@ import * as bookActions from '../ducks/books';
 )
 
 export default class AddBook extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
+  
   static propTypes = {
     add: PropTypes.func,
     api: PropTypes.object
@@ -90,6 +94,7 @@ export default class AddBook extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const router = this.context.router;
     
     let data = {
       'title': this.refs.title.getValue(),
@@ -100,8 +105,11 @@ export default class AddBook extends Component {
       'visibility': this.refs.visibility.getValue()
     }
 
-    this.props.add(data, this.props.api);
+    this.props.add(data, function(book) {
+      router.transitionTo('/book/' + book.id);
 
-    // TODO: Add redirect to book detail page. 
+      return book;
+    });
+
   }
 }
