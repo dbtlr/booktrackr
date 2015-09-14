@@ -67,11 +67,9 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 export function upload(file, next) {
-  const data = {};
-
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('media', { data: data, wp: true, files: {file: file} }).then(next)
+    promise: (client) => client.post('media', { wp: true, files: {file: file} }).then(next)
   };
 }
 

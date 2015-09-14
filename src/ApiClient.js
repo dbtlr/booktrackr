@@ -13,7 +13,7 @@ class ApiClient_ {
     ['get', 'post', 'put', 'patch', 'del'].
       forEach((method) => {
         this[method] = (path, options) => {
-          let wp = false, data = {}, files = {}, headers = {};
+          let wp = false, data = null, files = {}, headers = {};
 
           if (options) {
             if (options.wp) {
@@ -75,8 +75,7 @@ class ApiClient_ {
 
             if (files) {
               for (var name in files) {
-                request.attach(name, files[name], files[name].name);
-                headers['Content-Disposition'] = 'filename=' + files[name].name; 
+                request.field(name, files[name]);
               }
             }
 
