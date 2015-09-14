@@ -50,7 +50,8 @@ export default class Books extends Component {
   }
 
   static fetchData(store) {
-    if (!bookActions.isLoaded(store.getState())) {
+    console.log(bookActions.isListLoaded(store.getState()));
+    if (!bookActions.isListLoaded(store.getState())) {
       return store.dispatch(bookActions.load());
     }
   }

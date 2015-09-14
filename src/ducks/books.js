@@ -52,6 +52,8 @@ export default function reducer(state = initialState, action = {}) {
       const bookList = state.bookList || [];
       const allBooks = state.allBooks || {};
 
+      let loadedList = state.loadedList || false;
+
       // Make sure this can handle single results as well.
       if (typeof action.result.map == 'undefined') {
         action.result = [action.result];
@@ -83,6 +85,7 @@ export default function reducer(state = initialState, action = {}) {
 
         if (!state.loadingOne) {
           bookList.push(book);
+          loadedList = true;
         }
       });
 
@@ -91,6 +94,7 @@ export default function reducer(state = initialState, action = {}) {
         loading: false,
         loadingOne: false,
         loaded: true,
+        loadedList: loadedList,
         allBooks: allBooks,
         bookList: bookList,
         error: null
@@ -157,8 +161,8 @@ export function isBookLoaded(state, bookId) {
   return state.books && state.books.allBooks && state.books.allBooks[bookId];
 }
 
-export function isLoaded(state) {
-  return state.books && state.books.loaded;
+export function isListLoaded(state) {
+  return state.books && state.books.loadedList;
 }
 
 export function load(page = 1) {
@@ -170,7 +174,7 @@ export function load(page = 1) {
 
 export function loadOne(bookId) {
   return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
+    types: [LOAD_ONE, LOAD_SUCCESS, LOAD_FAIL],
     promise: (client) => client.get('/books/' + bookId, { wp: true })
   };
 }
