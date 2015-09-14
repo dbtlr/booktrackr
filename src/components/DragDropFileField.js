@@ -7,8 +7,6 @@ export default class DragDropFileField extends Component {
     super(props);
     this.state = {
       files: [],
-      uploading: false,
-      uid: helper.generateUUID()
     };
   }
 
@@ -20,18 +18,12 @@ export default class DragDropFileField extends Component {
     dragActiveStyle: React.PropTypes.object,
     maxFileCount: React.PropTypes.number,
     onDrop: React.PropTypes.func,
-    onUploadStart: React.PropTypes.func,
     onFileClear: React.PropTypes.func,
-    onUploadSuccess: React.PropTypes.func,
-    onUploadError: React.PropTypes.func,
     accept: React.PropTypes.string,
-    action: React.PropTypes.string,
-    uploadFieldName: React.PropTypes.string,
     multiple: React.PropTypes.bool
   }
 
   static defaultProps = {
-    uploadFieldName: 'file',
     textField: (<div/>),
     iconClassNamesByExtension: {},
     previewImageStyle: {},
@@ -39,9 +31,6 @@ export default class DragDropFileField extends Component {
     dragActiveStyle: {},
     maxFileCount: 1,
     onDrop: () => {},
-    onUploadError: () => {},
-    onUploadSuccess: () => {},
-    onUploadStart: () => {},
     onFileClear: () => {}
   }
 
@@ -84,10 +73,6 @@ export default class DragDropFileField extends Component {
     }
 
     this.setFiles(files, e);
-
-    this.setState({uploading: true});
-    this.props.onUploadStart(files);
-    React.findDOMNode(this.refs.uploadForm).submit();
   }
 
   toggleInput() {
@@ -108,10 +93,8 @@ export default class DragDropFileField extends Component {
 
   clearFiles() {
     this.setState({
-      files:[],
-      uid: helper.generateUUID()
+      files:[]
     }, () => {
-      console.log(React.findDOMNode(this.refs.hiddenFileInput));
       React.findDOMNode(this.refs.hiddenFileInput).value='';
       this.props.onFileClear();
     });
@@ -170,65 +153,15 @@ export default class DragDropFileField extends Component {
           {preview}
           <span style={styles.clearButton} onClick={this.clearFiles.bind(this)}>&times;</span>
         </div>
-        <form 
-          action={this.props.action}
-          target={this.getIFrameName()}
-          encType="multipart/form-data"
-          ref="uploadForm"
-          method="post">
-          <input
-            ref='hiddenFileInput'
-            style={styles.dragdropField.hidden}
-            type='file'
-            name={this.props.uploadFieldName}
-            accept={this.props.accept}
-            multiple={this.props.multiple}
-            onChange={this.handleDrop.bind(this)} />
-        </form>
 
-        {this.getIframe()}
+        <input
+          ref='hiddenFileInput'
+          style={styles.dragdropField.hidden}
+          type='file'
+          accept={this.props.accept}
+          multiple={this.props.multiple}
+          onChange={this.handleDrop.bind(this)} />
       </div>
     );
-  }
-
-  getIframe() {
-    const name = this.getIFrameName();
-
-    return (
-      <iframe
-        key={name}
-        onLoad={::this.onIFrameLoad}
-        style={{display: 'none'}}
-        name={name}>
-      </iframe>
-    );
-  }
-
-  getIFrameName() {
-    return 'iframe_uploader_' + this.state.uid;
-  }
-
-  onIFrameLoad(e) {
-    // ie8里面render方法会执行onLoad，应该是bug
-    if (!this.startUpload || !this.file) {
-      return;
-    }
-
-    const iframe = e.target;
-    let response;
-
-    try {
-      response = iframe.contentDocument.body.innerHTML;
-      this.props.onUploadSuccess(response, this.file);
-
-    } catch (err) {
-      response = 'cross-domain';
-      this.props.onUploadError(err, null, this.file);
-    }
-
-    this.setState({
-      uploading: false,
-      uid: helper.generateUUID
-    });
   }
 }

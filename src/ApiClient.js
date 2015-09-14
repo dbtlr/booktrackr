@@ -13,7 +13,7 @@ class ApiClient_ {
     ['get', 'post', 'put', 'patch', 'del'].
       forEach((method) => {
         this[method] = (path, options) => {
-          let wp = false, data = {};
+          let wp = false, data = {}, files = {}, headers = {};
 
           if (options) {
             if (options.wp) {
@@ -22,6 +22,10 @@ class ApiClient_ {
 
             if (options.data) {
               data = options.data;
+            }
+
+            if (options.files) {
+              files = options.files;
             }
           }
 
@@ -44,7 +48,7 @@ class ApiClient_ {
               let consumer = { public: this.store.getState().api.key };
               let token = null;
 
-              if (this.store.getState().auth.user) {
+              if (this.store.getState().auth && this.store.getState().auth.user) {
                 if (this.store.getState().auth.user.consumer) {
                   consumer = this.store.getState().auth.user.consumer;
                 }
@@ -60,14 +64,23 @@ class ApiClient_ {
               };
 
               const oauth = this.buildOAuth(consumer);
-              const headers = oauth.toHeader(oauth.authorize(requestData, token));
+              const oAuthHeaders = oauth.toHeader(oauth.authorize(requestData, token));
 
-              request.set(headers);
+              headers = {...headers, ...oAuthHeaders};
             }
 
             if (data) {
               request.send(data);
             }
+
+            if (files) {
+              for (var name in files) {
+                request.attach(name, files[name], files[name].name);
+                headers['Content-Disposition'] = 'filename=' + files[name].name; 
+              }
+            }
+
+            request.set(headers);
 
             request.end((err, res) => {
               if (!res) {
@@ -104,7 +117,7 @@ class ApiClient_ {
 
     if (__SERVER__) {
       // Prepend host and port of the API server to the path.
-      return 'http://localhost:' + config.apiPort + adjustedPath;
+      return 'http://localhost:' + config.port + adjustedPath;
     }
 
     // Prepend `/api` to relative URL, to proxy to API server.

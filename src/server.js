@@ -4,6 +4,7 @@ import Location from 'react-router/lib/Location';
 import config from './config';
 import favicon from 'serve-favicon';
 import compression from 'compression';
+import session from 'express-session';
 import path from 'path';
 import createStore from './redux/create';
 import * as api from './api/api';
@@ -23,6 +24,13 @@ app.use(compression());
 // app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
 
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
+
+app.use(session({
+  secret: '[This should never be committed to a public repository]',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60000 }
+}));
 
 // Set up the api
 app.use('/api', api.routeHandler(app));

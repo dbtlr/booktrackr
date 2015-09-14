@@ -4,18 +4,21 @@ import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
 import {Button, Input, Grid, Row, Col} from 'react-bootstrap';
 import * as bookActions from '../ducks/books';
+import * as coverActions from '../ducks/cover';
 import DragDropFileField from '../components/DragDropFileField';
 
 @connect(
-  state => ({api: state.api, user: state.user}),
-  dispatch => bindActionCreators(bookActions, dispatch)
+  state => ({api: state.api, user: state.user, cover: state.cover}),
+  dispatch => bindActionCreators({...bookActions, ...coverActions}, dispatch)
 )
 
 export default class AddBook extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cover: null
+      cover: null,
+      filename: null,
+      uploading: false
     };
   }
 
@@ -25,7 +28,9 @@ export default class AddBook extends Component {
   
   static propTypes = {
     add: PropTypes.func,
+    upload: PropTypes.func,
     api: PropTypes.object,
+    cover: PropTypes.object,
     user: PropTypes.object
   }
 
@@ -98,12 +103,8 @@ export default class AddBook extends Component {
           </Col>
           <Col xs={12} md={10}>
             <DragDropFileField
-              action='/api/upload-cover'
-              creds={this.props.user && this.props.user.auth ? this.props.user.auth : {}}
               textField={::this.filesTextField()}
               onDrop={::this.handleDroppedCover}
-              onUploadSuccess={::this.handleFileUploadSuccess}
-              onUploadError={::this.handleFileUploadError}
               onFileClear={::this.clearCover} />
           </Col>
         </Row>
@@ -116,56 +117,58 @@ export default class AddBook extends Component {
   }
 
   filesTextField() {
-    const cover = this.state.cover;
+    const {cover, filename, uploading} = this.state;
+
+    if (uploading) {
+      return <strong>Uploading {filename}...</strong>;
+    }
 
     if (!cover) {
       return <strong>Click or drag file here to add a cover image</strong>;
     }
 
-    console.log(cover[0]);
-
     return <div>
-      <strong>Added file: {cover[0].name}</strong>
+      <strong>Added file: {filename}</strong>
       <p>Click or drag file here to replace</p>
     </div>;
   }
 
   handleDroppedCover(event, files) {
-    this.setState({
-      cover: files
-    });
+    const file = files[0];
+
+    this.setState({ filename: file.name, uploading: true });
+
+    this.props.upload(file, function(cover) {
+      this.setState({
+        cover: cover,
+        uploading: false
+      });
+
+      return cover;
+    }.bind(this));
   }
 
   clearCover() {
     this.setState({
-      cover: null
+      cover: null,
+      filename: null
     });
-  }
-
-  handleFileUploadError(e, i) {
-    console.log(e, i);
-  }
-
-  handleFileUploadSuccess(e, i) {
-    console.log(e, i);
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    console.log(this.refs);
-    return;
-
     const router = this.context.router;
     
     let data = {
-      'title': this.refs.title.getValue(),
-      'author': this.refs.author.getValue(),
-      'status': this.refs.status.getValue(),
-      'beganReadingDate': this.refs.beganReadingDate.getValue(),
-      'finishedReadingDate': this.refs.finishedReadingDate.getValue(),
-      'visibility': this.refs.visibility.getValue()
-    }
+      title: this.refs.title.getValue(),
+      author: this.refs.author.getValue(),
+      status: this.refs.status.getValue(),
+      beganReadingDate: this.refs.beganReadingDate.getValue(),
+      finishedReadingDate: this.refs.finishedReadingDate.getValue(),
+      visibility: this.refs.visibility.getValue(),
+      cover: this.state.cover ? { id: this.state.cover.id, link: this.state.cover.link } : null
+    };
 
     this.props.add(data, function(book) {
       router.transitionTo('/book/' + book.id);

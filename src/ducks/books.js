@@ -75,7 +75,7 @@ export default function reducer(state = initialState, action = {}) {
           highlights: data.highlights || null,
           visibility: data.visibility || null,
           slug: item.slug || null,
-          thumbnail: 'http://lorempixel.com/400/500/?' + item.id
+          thumbnail: data.cover ? data.cover.link : 'http://lorempixel.com/400/500/?' + item.id
         };
 
         allBooks[item.id] = book;
@@ -99,7 +99,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: false,
-        error: action.error
+        error: { msg: action.error.message, stack: action.error.stack }
       };
     case SAVE:
       return state;
@@ -123,7 +123,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         saveError: {
           ...state.saveError,
-          [action.id]: action.error
+          [action.id]: { msg: action.error.message, stack: action.error.stack }
         }
       };
     case ADD:
@@ -227,7 +227,8 @@ export function add(book, next) {
   const data = {
     title: book.title,
     status: 'publish',
-    content: JSON.stringify(book)
+    content: JSON.stringify(book),
+    featured_image: book.cover ? book.cover.id : null
   }
 
   return {
