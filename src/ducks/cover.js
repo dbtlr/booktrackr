@@ -18,8 +18,6 @@ export default function reducer(state = initialState, action = {}) {
       };
     case LOAD_SUCCESS:
       const loadCovers = state.covers || {};
-
-      console.log(action.result);
       loadCovers[action.result.id] = action.result;
 
       return {
@@ -71,8 +69,4 @@ export function upload(file, next) {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
     promise: (client) => client.post('media', { wp: true, files: {file: file} }).then(next)
   };
-}
-
-export function getMedia(attachmentId) {
-
 }

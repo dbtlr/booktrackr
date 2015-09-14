@@ -167,7 +167,7 @@ export default class AddBook extends Component {
       beganReadingDate: this.refs.beganReadingDate.getValue(),
       finishedReadingDate: this.refs.finishedReadingDate.getValue(),
       visibility: this.refs.visibility.getValue(),
-      cover: this.state.cover ? { id: this.state.cover.id, link: this.state.cover.link } : null
+      cover: this.state.cover ? { id: this.state.cover.id, url: this.state.cover.source_url } : null
     };
 
     this.props.add(data, function(book) {

@@ -1,4 +1,5 @@
 import * as helper from '../utils/Helper';
+import * as coverActions from './cover'
 
 const LOAD = 'booktrackr/books/LOAD';
 const LOAD_ONE = 'booktrackr/books/LOAD_ONE';
@@ -75,7 +76,7 @@ export default function reducer(state = initialState, action = {}) {
           highlights: data.highlights || null,
           visibility: data.visibility || null,
           slug: item.slug || null,
-          thumbnail: data.cover ? data.cover.link : 'http://lorempixel.com/400/500/?' + item.id
+          thumbnail: data.cover && data.cover.url ? data.cover.url : 'http://lorempixel.com/400/500/?' + item.id
         };
 
         allBooks[item.id] = book;
@@ -160,10 +161,10 @@ export function isLoaded(state) {
   return state.books && state.books.loaded;
 }
 
-export function load() {
+export function load(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books', { wp: true })
+    promise: (client) => client.get('/books', { params: { per_page: 20, page: page }, wp: true })
   };
 }
 
@@ -233,6 +234,9 @@ export function add(book, next) {
 
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('books', { data: data, wp: true }).then(next)
+    promise: (client) => {
+      return client.post('books', { data: data, wp: true })
+        .then(next)
+    }
   };
 }
