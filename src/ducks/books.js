@@ -36,6 +36,38 @@ function stripslashes(str) {
     });
 }
 
+function filterBooks(books) {
+  let newBooks = [];
+
+  books.map(function(item) {
+    let book = {
+      id: item.id,
+      key: item.guid.raw,
+      title: item.title.raw,
+      slug: item.slug || null,
+      meta: {},
+      cover: ''
+    };
+
+    let meta = item._embedded['http://v2.wp-api.org/meta'];
+    let attachment = item._embedded['http://v2.wp-api.org/attachment'];
+
+    for (let key in meta[0]) {
+      if (meta[0][key].key == 'data') {
+        book.meta = JSON.parse(stripslashes(meta[0][key].value));
+      }
+    }
+
+    for (let key in attachment[0]) {
+      book.cover = attachment[0][key].source_url;
+    }
+
+    newBooks.push(book);
+  });
+
+  return newBooks;
+}
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
@@ -59,30 +91,9 @@ export default function reducer(state = initialState, action = {}) {
         action.result = [action.result];
       }
 
-      action.result.map(function(item) {
-        let book = {
-          id: item.id,
-          key: item.guid.raw,
-          title: item.title.raw,
-          slug: item.slug || null,
-          meta: {},
-          cover: ''
-        };
+      action.result.map(function(book) {
 
-        let meta = item._embedded['http://v2.wp-api.org/meta'];
-        let attachment = item._embedded['http://v2.wp-api.org/attachment'];
-
-        for (let key in meta[0]) {
-          if (meta[0][key].key == 'data') {
-            book.meta = JSON.parse(stripslashes(meta[0][key].value));
-          }
-        }
-
-        for (let key in attachment[0]) {
-          book.cover = attachment[0][key].source_url;
-        }
-
-        allBooks[item.id] = book;
+        allBooks[book.id] = book;
 
         if (!state.loadingOne) {
           bookList.push(book);
@@ -166,7 +177,7 @@ export function isListLoaded(state) {
 export function load(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true })
+    promise: (client) => client.get('/books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks)
   };
 }
 

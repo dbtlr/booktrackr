@@ -9,6 +9,7 @@ import {Grid, Row, Col, Button} from 'react-bootstrap';
 
 @connect(
   state => ({
+    auth: state.auth,
     books: state.books.bookList,
     loading: state.books.loading
   }),
@@ -18,25 +19,28 @@ import {Grid, Row, Col, Button} from 'react-bootstrap';
 export default class Books extends Component {
 
   static propTypes = {
+    auth: PropTypes.object,
     books: PropTypes.array,
     loading: PropTypes.bool,
   }
 
+
   render() {
     const styles = require('./scss/Books.scss');
-
-    const {books, loading} = this.props;
-
-    let book = {};
+    const {books, loading, auth} = this.props;
 
     return (
         <div className={styles.bookList + ' container'}>
           <Row>
-            {books && books.length && books.map((book) => 
-              <Col xs={12} sm={6} key={book.id}>
-                <BookItem book={book} />
-              </Col>
-            )}
+            {books.length > 0 && books.map((book) => 
+              (book.meta.visibility == 'public' || auth.user) ?
+                <Col xs={12} sm={6} key={book.id}>
+                  <BookItem book={book} />
+                </Col>
+                :
+                'hi'
+              )
+            }
           </Row>
           <footer>
             <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
@@ -46,12 +50,12 @@ export default class Books extends Component {
   }
 
   loadMoreBooks() {
-    bookActions.load();
+    bookActions.load(1);
   }
 
   static fetchData(store) {
     if (!bookActions.isListLoaded(store.getState())) {
-      return store.dispatch(bookActions.load());
+      return store.dispatch(bookActions.load(1));
     }
   }
 }
