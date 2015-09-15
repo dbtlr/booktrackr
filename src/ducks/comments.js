@@ -22,14 +22,11 @@ export default function reducer(state = initialState, action = {}) {
         error: null
       };
     case LOAD_SUCCESS:
-      console.log(action.result);
       let loadComments = state.comments || {};
 
       if (action.result[0]) {
         loadComments[action.result[0].post] = action.result;
       }
-
-      console.log(loadComments);
 
       return {
         ...state,
@@ -86,10 +83,10 @@ export function areLoaded(state, bookId) {
   return state.comments && state.comments.comments && state.comments.comments[bookId];
 }
 
-export function addComment(comment) {
+export function addComment(comment, next) {
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('/comments', { data: comment, wp: true })
+    promise: (client) => client.post('/comments', { data: comment, wp: true }).then(next)
   };
 }
 

@@ -22,7 +22,7 @@ export default class CommentForm extends Component {
     const styles = require('./scss/CommentForm.scss');
 
     return (
-      <form className={styles.commentForm + " form-vertical"} onSubmit={::this.submitForm}>
+      <form ref='form' className={styles.commentForm + " form-vertical"} onSubmit={::this.submitForm}>
         <Input
           type='text'
           label='Name'
@@ -69,6 +69,14 @@ export default class CommentForm extends Component {
       content: this.refs.comment.getValue()
     }
 
-    this.props.addComment(data);
+    this.props.addComment(data, function(comment) {
+      // Reset the form on sumbit.
+      React.findDOMNode(this.refs.form).reset();
+      React.findDOMNode(this.refs.email).value = '';
+      React.findDOMNode(this.refs.url).value = '';
+      React.findDOMNode(this.refs.comment).value = '';
+
+      return comment;
+    }.bind(this));
   }
 }

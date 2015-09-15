@@ -29,15 +29,13 @@ export default class CommentList extends Component {
       commentList = comments[this.props.book.id];
     }
 
-    console.log(commentList);
-
     return (
       <div className={styles.commentList}>
         {commentList.length > 0 ?
           <ul>
             {commentList.map(comment =>
-            <li>
-              <CommentItem name={comment.author_name} date={comment.date} url={comment.author_url} comment={comment.content} />
+            <li key={comment.id}>
+              <CommentItem name={comment.author_name} date={comment.date} url={comment.author_url} comment={comment.content.rendered} />
             </li>)}
           </ul>
           :

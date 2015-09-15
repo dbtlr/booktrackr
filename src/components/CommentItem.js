@@ -4,7 +4,7 @@ import {Grid, Col, Row} from 'react-bootstrap';
 export default class CommentItem extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    date: PropTypes.object.isRequired,
+    date: PropTypes.string.isRequired,
     url: PropTypes.string,
     comment: PropTypes.string.isRequired
   };
@@ -20,7 +20,7 @@ export default class CommentItem extends Component {
         <Col xs={12} md={4}>
           {date.toDateString()}
         </Col>
-        <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment.rendered}}>
+        <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment}}>
           
         </Col>
       </Row>
