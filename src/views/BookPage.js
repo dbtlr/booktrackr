@@ -40,20 +40,20 @@ export default class BookPage extends Component {
 
     let comments = {};
 
-    const beganDate = book.beganReadingDate ? (new Date(book.beganReadingDate)) : '';
-    const finishedDate = book.finishedReadingDate ? (new Date(book.finishedReadingDate)) : '';
+    const beganDate = book.meta.beganReadingDate ? (new Date(book.meta.beganReadingDate)) : '';
+    const finishedDate = book.meta.finishedReadingDate ? (new Date(book.meta.finishedReadingDate)) : '';
 
     return (
       <Grid className={styles.bookPage}>
         <Row>
           <Col xs={12} md={6} lg={3}>
-            <img className={styles.bookPageCover} src={book.thumbnail} />
+            <img className={styles.bookPageCover} src={book.cover} />
           </Col>
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title}</h1>
 
-            <div className="author">{book.author}</div>
-            <div className="status">{book.status}</div>
+            <div className="author">{book.meta.author}</div>
+            <div className="status">{book.meta.status}</div>
             {beganDate ? 
               <div className="beganDate">Date Started Reading: {beganDate.toDateString()}</div> : ''
             }

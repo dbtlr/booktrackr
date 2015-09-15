@@ -48,6 +48,10 @@ export default class AddReview extends Component {
             type='textarea'
             rows='6'
             ref='review' />
+          <Input
+            type='text'
+            placeholder='Rating (1-5)'
+            ref='rating' />
 
           <Button bsStyle="primary" type="submit">Add Review</Button>
         </form>
@@ -61,7 +65,7 @@ export default class AddReview extends Component {
     const bookId = this.props.routeParams.bookId;
     const {books} = this.props;
 
-    this.props.addReview(this.refs.review.getValue(), books.allBooks[bookId]);
+    this.props.addReview(this.refs.review.getValue(), this.refs.rating.getValue(), books.allBooks[bookId]);
 
     this.context.router.transitionTo('/book/' + bookId);
   }

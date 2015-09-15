@@ -20,7 +20,7 @@ export default class Reviews extends Component {
 
   render() {
     const {book} = this.props;
-    const reviews = book.reviews || [];
+    const reviews = book.meta.reviews || [];
 
     return (
       <div>

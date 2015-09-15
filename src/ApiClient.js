@@ -13,7 +13,7 @@ class ApiClient_ {
     ['get', 'post', 'put', 'patch', 'del'].
       forEach((method) => {
         this[method] = (path, options) => {
-          let wp = false, data = null, files = {}, headers = {};
+          let wp = false, data = null, files = {}, params = {}, headers = {};
 
           if (options) {
             if (options.wp) {
@@ -27,6 +27,10 @@ class ApiClient_ {
             if (options.files) {
               files = options.files;
             }
+
+            if (options.params) {
+              params = options.params;
+            }
           }
 
 
@@ -34,8 +38,8 @@ class ApiClient_ {
             const url = this.formatUrl(path, wp);
             const request = superagent[method](url);
 
-            if (options && options.params) {
-              request.query(options.params);
+            if (params) {
+              request.query(params);
             }
 
             if (__SERVER__) {

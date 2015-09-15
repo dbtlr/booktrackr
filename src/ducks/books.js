@@ -60,26 +60,30 @@ export default function reducer(state = initialState, action = {}) {
       }
 
       action.result.map(function(item) { 
-        if (!item.content || !item.content.raw || item.content.raw.length == 0) {
-          return;
-        }
-
-        let data = JSON.parse(stripslashes(item.content.raw));
-
         let book = {
           id: item.id,
-          key: item.guid,
-          title: data.title,
-          author: data.author || null,
-          beganReadingDate: data.beganReadingDate,
-          finishedReadingDate: data.finishedReadingDate,
-          status: data.status || null,
-          reviews: data.reviews || null,
-          highlights: data.highlights || null,
-          visibility: data.visibility || null,
+          key: item.guid.raw,
+          title: item.title.raw,
           slug: item.slug || null,
-          thumbnail: data.cover && data.cover.url ? data.cover.url : 'http://lorempixel.com/400/500/?' + item.id
+          meta: {},
+          cover: ''
         };
+
+        let meta = item._embedded['http://v2.wp-api.org/meta'];
+        let attachment = item._embedded['http://v2.wp-api.org/attachment'];
+
+        // Comments, I think.
+        let replies = item._embedded['replies'];
+
+        for (let key in meta[0]) {
+          if (meta[0][key].key == 'data') {
+            book.meta = JSON.parse(stripslashes(meta[0][key].value));
+          }
+        }
+
+        for (let key in attachment[0]) {
+          book.cover = attachment[0][key].source_url;
+        }
 
         allBooks[item.id] = book;
 
@@ -138,10 +142,9 @@ export default function reducer(state = initialState, action = {}) {
         addErrors: []
       }; 
     case ADD_SUCCESS:
-      const add_data = [...state.data];
-      add_data[action.result.id - 1] = action.result;
+
       return {
-        data: add_data,
+        ...state,
         adding: false,
         addErrors: []
       };
@@ -175,7 +178,7 @@ export function load(page = 1) {
 export function loadOne(bookId) {
   return {
     types: [LOAD_ONE, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books/' + bookId, { wp: true })
+    promise: (client) => client.get('/books/' + bookId, { params: { '_embed': 1 }, wp: true })
   };
 }
 
@@ -199,11 +202,12 @@ export function getOne(state, bookId) {
   }
 }
 
-export function addReview(review, book) {
+export function addReview(review, rating, book) {
   book.reviews = book.reviews || [];
   book.reviews.push({
     id: helper.generateUUID(),
     text: review,
+    rating: rating,
     createdDate: new Date()
   });
 
@@ -232,7 +236,6 @@ export function add(book, next) {
   const data = {
     title: book.title,
     status: 'publish',
-    content: JSON.stringify(book),
     featured_image: book.cover ? book.cover.id : null
   }
 
@@ -240,6 +243,7 @@ export function add(book, next) {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
     promise: (client) => {
       return client.post('books', { data: data, wp: true })
+        .then((res) => { client.post('books/' + res.id + '/meta', { data: { key: 'data', value: JSON.stringify(book)}, wp: true}); return res; })
         .then(next)
     }
   };

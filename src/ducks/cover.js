@@ -52,7 +52,6 @@ export default function reducer(state = initialState, action = {}) {
       };
 
     case ADD_FAIL:
-      console.log(action);
       return {
         ...state,
         adding: false,
