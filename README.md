@@ -32,3 +32,12 @@ This will configure either your local environment or the server it is on with ho
 npm run setup
 ```
 
+
+## TODO
+
+- Tags
+- Pagination
+- Review Ratings
+- UI Cleanup
+- Documentation
+
