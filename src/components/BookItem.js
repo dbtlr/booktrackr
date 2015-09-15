@@ -15,10 +15,10 @@ export default class BookItem extends Component {
         <header>
           <h3>{book.title}</h3>
 
-          <div className={styles.status}>{book.status}</div>
-          <div className={styles.author}>by {book.author}</div>
+          <div className={styles.status}>{book.meta.status}</div>
+          <div className={styles.author}>by {book.meta.author}</div>
         </header>
-        <img src={book.thumbnail} />
+        <img src={book.cover} />
       </Link>
     );
   }

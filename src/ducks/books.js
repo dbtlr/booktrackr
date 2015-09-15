@@ -171,7 +171,7 @@ export function isListLoaded(state) {
 export function load(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books', { params: { per_page: 20, page: page }, wp: true })
+    promise: (client) => client.get('/books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true })
   };
 }
 
