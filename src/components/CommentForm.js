@@ -1,8 +1,19 @@
 import React, {Component, PropTypes} from 'react';
 import {Input, Button, Row} from 'react-bootstrap';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as commentActions from '../ducks/comments';
+
+@connect(
+  state => ({}),
+  dispatch => ({
+    ...bindActionCreators(commentActions, dispatch)
+  })
+)
 
 export default class CommentForm extends Component {
   static propTypes = {
+    addComment: PropTypes.func,
     book: PropTypes.object.isRequired
   };
 
@@ -51,10 +62,13 @@ export default class CommentForm extends Component {
     event.preventDefault();
 
     let data = {
-      'name': this.refs.name.getValue(),
-      'email': this.refs.email.getValue(),
-      'url': this.refs.url.getValue(),
-      'comment': this.refs.comment.getValue()
+      post: this.props.book.id,
+      author_name: this.refs.name.getValue(),
+      author_email: this.refs.email.getValue(),
+      author_url: this.refs.url.getValue(),
+      content: this.refs.comment.getValue()
     }
+
+    this.props.addComment(data);
   }
 }

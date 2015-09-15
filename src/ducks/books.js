@@ -59,7 +59,7 @@ export default function reducer(state = initialState, action = {}) {
         action.result = [action.result];
       }
 
-      action.result.map(function(item) { 
+      action.result.map(function(item) {
         let book = {
           id: item.id,
           key: item.guid.raw,
@@ -71,9 +71,6 @@ export default function reducer(state = initialState, action = {}) {
 
         let meta = item._embedded['http://v2.wp-api.org/meta'];
         let attachment = item._embedded['http://v2.wp-api.org/attachment'];
-
-        // Comments, I think.
-        let replies = item._embedded['replies'];
 
         for (let key in meta[0]) {
           if (meta[0][key].key == 'data') {
@@ -142,14 +139,12 @@ export default function reducer(state = initialState, action = {}) {
         addErrors: []
       }; 
     case ADD_SUCCESS:
-
       return {
         ...state,
         adding: false,
         addErrors: []
       };
     case ADD_FAIL: 
-
       return {
         ...state,
         adding: false,

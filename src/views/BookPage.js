@@ -9,15 +9,17 @@ import Reviews from '../components/Reviews';
 import Highlights from '../components/Highlights';
 import NotFound from './NotFound';
 import * as bookActions from '../ducks/books';
+import * as commentActions from '../ducks/comments';
 import {Grid, Row, Col} from 'react-bootstrap';
 
 @connect(
   state => ({
     books: state.books,
+    comments: state.comments,
     user: state.auth.user
   }),
   dispatch => ({
-    ...bindActionCreators(bookActions, dispatch)
+    ...bindActionCreators({...bookActions, ...commentActions}, dispatch)
   })
 )
 
@@ -63,9 +65,9 @@ export default class BookPage extends Component {
             <Reviews book={book} />
             <Highlights book={book} />
 
-          <h3>Leave a Comment</h3>
-          <CommentForm book={book} />
-          <CommentList book={book} />
+            <h3>Leave a Comment</h3>
+            <CommentForm book={book} />
+            <CommentList book={book} />
           </Col>
         </Row>
       </Grid>
@@ -74,10 +76,17 @@ export default class BookPage extends Component {
 
   static fetchData(store, params) {
     const bookId = params.bookId;
+    let promises = [];
 
     if (!bookActions.isBookLoaded(store.getState(), bookId)) {
-      return store.dispatch(bookActions.loadOne(bookId));
+      promises.push(store.dispatch(bookActions.loadOne(bookId)));
     }
+
+    if (!commentActions.areLoaded(store.getState(), bookId)) {
+      promises.push(store.dispatch(commentActions.load(bookId)));
+    }
+
+    return promises;
   }
 }
 

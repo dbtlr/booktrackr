@@ -10,20 +10,20 @@ export default class CommentItem extends Component {
   };
 
   render() {
+    const date = new Date(this.props.date);
+
     return (
-      <Grid>
-        <Row>
-          <Col xs={12} md={8}>
-            // Name // Website
-          </Col>
-          <Col xs={12} md={4}>
-            // Date
-          </Col>
-          <Col xs={12}>
-            // Comment Body
-          </Col>
-        </Row>
-      </Grid>
+      <Row>
+        <Col xs={12} md={8}>
+          {this.props.name}
+        </Col>
+        <Col xs={12} md={4}>
+          {date.toDateString()}
+        </Col>
+        <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment.rendered}}>
+          
+        </Col>
+      </Row>
     );
   }
 }
