@@ -225,17 +225,34 @@ export function loadOne(bookId) {
   };
 }
 
-export function save(book) {
-  const data = {
-    title: book.title,
+export function save(data, originalBook, next) {
+  const newBook = {
+    title: data.title,
     status: 'publish',
-    content: JSON.stringify(book)
+    featured_image: book.cover ? book.cover.id : originalBook.featured_image
   }
+
+  let meta = originalBook.meta;
+  meta.author = data.author;
+  meta.status = data.status;
+  meta.visibility = data.visibility;
+
+  meta.beganReadingDate = (new Date(data.beganReadingDate)).toUTCString();
+  meta.finishedReadingDate = (new Date(data.finishedReadingDate)).toUTCString();
+
+  if (meta.beganReadingDate == 'Invalid Date') meta.beganReadingDate = '';
+  if (meta.finishedReadingDate == 'Invalid Date') meta.finishedReadingDate = '';
+
+  next = next || ((res) => {return res});
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.put('books/' + book.id, { data: data, wp: true })
+    promise: (client) => client.put('books/' + originalBook.id, { data: newBook, wp: true })
+        .then((res) => { client.post('books/' + originalBook.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}); return res; })
+        .then((res) => { originalBook.terms.map(term => client.delete('books/' + originalBook.id + '/terms/genre/' + term.id, {data: {}, wp: true})); return res; })
+        .then((res) => { book.tags.map(tagId => client.post('books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
+        .then(next)
   };
 }
 
@@ -259,7 +276,7 @@ export function addReview(review, rating, book) {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
     promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
-  };;
+  };
 }
 
 export function addHighlight(highlight, book) {
@@ -275,7 +292,88 @@ export function addHighlight(highlight, book) {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
     promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
-  };;
+  };
+}
+
+export function updateHighlight(id, highlight, book) {
+  let meta = book.meta;
+  meta.highlights = meta.highlights || [];
+
+  for (let i in meta.highlights) {
+    if (meta.highlights[i].id === id) {
+      meta.highlights[i].text = highlight;
+      meta.highlights[i].updatedDate = new Date();
+      break;
+    }
+  }
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
+}
+
+export function deleteHighlight(id, book) {
+  let meta = book.meta;
+  let newHighLights = [];
+
+  meta.highlights = meta.highlights || [];
+
+  for (let i in meta.highlights) {
+    if (meta.highlights[i].id !== id) {
+      newHighLights.push(meta.highlight[i]);
+    }
+  }
+
+  meta.highlights = newHighLights;
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
+}
+
+export function updateReview(id, review, rating, book) {
+  let meta = book.meta;
+  meta.reviews = meta.reviews || [];
+
+  for (let i in meta.reviews) {
+    if (meta.reviews[i].id === id) {
+      meta.reviews[i].text = review;
+      meta.reviews[i].rating = rating;
+      meta.reviews[i].updatedDate = new Date();
+      break;
+    }
+  }
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
+}
+
+export function deleteReview(id, book) {
+  let meta = book.meta;
+  let newReviews = [];
+
+  meta.reviews = meta.reviews || [];
+
+  for (let i in meta.reviews) {
+    if (meta.reviews[i].id !== id) {
+      meta.push(meta.highlight[i]);
+    }
+  }
+
+  meta.reviews = meta;
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
 }
 
 export function add(book, next) {
