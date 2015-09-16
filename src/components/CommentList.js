@@ -1,32 +1,26 @@
 import React, {Component, PropTypes} from 'react';
 import CommentItem from './CommentItem';
 import {Alert} from 'react-bootstrap';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as commentActions from '../ducks/comments';
 
 @connect(
-  state => ({comments: state.comments.comments }),
-  dispatch => ({
-    ...bindActionCreators(commentActions, dispatch)
-  })
+  state => ({comments: state.comments.comments })
 )
 
 export default class CommentList extends Component {
   static propTypes = {
     book: PropTypes.object,
-    comments: PropTypes.object,
-    load: PropTypes.func
+    comments: PropTypes.object
   };
 
   render() {
     const styles = require('./scss/CommentList.scss');
-    const {comments} = this.props;
-    const name='', date={}, url='', comment='';
+    const {comments, book} = this.props;
 
     let commentList = [];
-    if (typeof comments[this.props.book.id]) {
-      commentList = comments[this.props.book.id];
+    if (typeof comments[book.id] !== 'undefined') {
+      commentList = comments[book.id];
     }
 
     return (
