@@ -39,6 +39,10 @@ function stripslashes(str) {
 function filterBooks(books) {
   let newBooks = [];
 
+  if (!books.length) {
+    books = [books];
+  }
+
   books.map(function(item) {
     let book = {
       id: item.id,
@@ -46,11 +50,14 @@ function filterBooks(books) {
       title: item.title.raw,
       slug: item.slug || null,
       meta: {},
+      terms: {},
+      genre: [],
       cover: ''
     };
 
     let meta = item._embedded['http://v2.wp-api.org/meta'];
     let attachment = item._embedded['http://v2.wp-api.org/attachment'];
+    let terms = item._embedded['http://v2.wp-api.org/term'];
 
     for (let key in meta[0]) {
       if (meta[0][key].key == 'data') {
@@ -59,7 +66,15 @@ function filterBooks(books) {
     }
 
     for (let key in attachment[0]) {
-      book.cover = attachment[0][key].source_url;
+      if (attachment[0][key].id == item.featured_image) {
+        book.cover = attachment[0][key].source_url;
+        break;
+      }
+    }
+
+    book.terms = terms;
+    for (let key in terms[0]) {
+        book.genre.push(terms[0][key].name);
     }
 
     newBooks.push(book);
@@ -177,14 +192,14 @@ export function isListLoaded(state) {
 export function load(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks)
+    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks)
   };
 }
 
 export function loadOne(bookId) {
   return {
     types: [LOAD_ONE, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/books/' + bookId, { params: { '_embed': 1 }, wp: true })
+    promise: (client) => client.get('books/' + bookId, { params: { '_embed': 1 }, wp: true }).then(filterBooks)
   };
 }
 
@@ -198,7 +213,7 @@ export function save(book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.put('/books/' + book.id, { data: data, wp: true })
+    promise: (client) => client.put('books/' + book.id, { data: data, wp: true })
   };
 }
 
@@ -250,6 +265,7 @@ export function add(book, next) {
     promise: (client) => {
       return client.post('books', { data: data, wp: true })
         .then((res) => { client.post('books/' + res.id + '/meta', { data: { key: 'data', value: JSON.stringify(book)}, wp: true}); return res; })
+        .then((res) => { book.tags.map(tagId => client.post('books/' + res.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
         .then(next)
     }
   };

@@ -5,11 +5,12 @@ import DocumentMeta from 'react-document-meta';
 import {Button, Input, Grid, Row, Col} from 'react-bootstrap';
 import * as bookActions from '../ducks/books';
 import * as coverActions from '../ducks/cover';
+import * as tagActions from '../ducks/tags';
 import DragDropFileField from '../components/DragDropFileField';
 
 @connect(
-  state => ({api: state.api, user: state.user, cover: state.cover}),
-  dispatch => bindActionCreators({...bookActions, ...coverActions}, dispatch)
+  state => ({api: state.api, user: state.user, cover: state.cover, tags: state.tags.tags}),
+  dispatch => bindActionCreators({...bookActions, ...coverActions, ...tagActions}, dispatch)
 )
 
 export default class AddBook extends Component {
@@ -29,6 +30,7 @@ export default class AddBook extends Component {
   static propTypes = {
     add: PropTypes.func,
     upload: PropTypes.func,
+    tags: PropTypes.object,
     api: PropTypes.object,
     cover: PropTypes.object,
     user: PropTypes.object
@@ -36,6 +38,11 @@ export default class AddBook extends Component {
 
   render() {
     const styles = require('./scss/Books.scss');
+
+    let tags = [];
+    for (let id in this.props.tags) {
+      tags.push(<Input type="checkbox" label={this.props.tags[id]} ref={'tags-' + id} key={id} value={id} />);
+    }
 
     return (
       <Grid className='form-horizontal'>
@@ -96,6 +103,8 @@ export default class AddBook extends Component {
             <option value='public'>Public</option>
             <option value='private'>Private</option>
         </Input>
+
+        {tags}
 
         <Row>
           <Col xs={12} md={2}>
@@ -167,14 +176,27 @@ export default class AddBook extends Component {
       beganReadingDate: this.refs.beganReadingDate.getValue(),
       finishedReadingDate: this.refs.finishedReadingDate.getValue(),
       visibility: this.refs.visibility.getValue(),
-      cover: this.state.cover ? { id: this.state.cover.id, url: this.state.cover.source_url } : null
+      cover: this.state.cover ? { id: this.state.cover.id, url: this.state.cover.source_url } : null,
+      tags: []
     };
+
+
+    for (let id in this.props.tags) {
+      if (this.refs['tags-' + id].getChecked()) {
+        data.tags.push(id);
+      }
+    }
 
     this.props.add(data, function(book) {
       router.transitionTo('/book/' + book.id);
 
       return book;
     });
+  }
 
+  static fetchData(store) {
+    if (!tagActions.areTagsLoaded(store.getState())) {
+      return store.dispatch(tagActions.load());
+    }
   }
 }

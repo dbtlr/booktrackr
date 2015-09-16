@@ -39,11 +39,18 @@ export default class BookPage extends Component {
     }
 
     const book = books.allBooks[bookId];
+    const meta = book.meta || {};
 
     let comments = {};
 
-    const beganDate = book.meta.beganReadingDate ? (new Date(book.meta.beganReadingDate)) : '';
-    const finishedDate = book.meta.finishedReadingDate ? (new Date(book.meta.finishedReadingDate)) : '';
+    const beganDate = meta.beganReadingDate ? (new Date(meta.beganReadingDate)) : '';
+    const finishedDate = meta.finishedReadingDate ? (new Date(meta.finishedReadingDate)) : '';
+
+    const readableStatus = {
+      'read': 'Read',
+      'to-read': 'To Read',
+      'reading': 'Currently Reading'
+    };
 
     return (
       <Grid className={styles.bookPage}>
@@ -54,8 +61,9 @@ export default class BookPage extends Component {
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title}</h1>
 
-            <div className="author">{book.meta.author}</div>
-            <div className="status">{book.meta.status}</div>
+            <div className="author">Author: {meta.author}</div>
+            <div className="genre">Genre: {book.genre.join(', ')}</div>
+            <div className="status">Status: {readableStatus[meta.status]}</div>
             {beganDate ? 
               <div className="beganDate">Date Started Reading: {beganDate.toDateString()}</div> : ''
             }

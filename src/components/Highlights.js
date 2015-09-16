@@ -20,7 +20,7 @@ export default class Highlights extends Component {
 
   render() {
     const {book} = this.props;
-    const highlights = book.meta.highlights || [];
+    const highlights = book.meta && book.meta.highlights ? book.meta.highlights : [];
 
     return (
       <div>

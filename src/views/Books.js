@@ -38,7 +38,7 @@ export default class Books extends Component {
                   <BookItem book={book} />
                 </Col>
                 :
-                'hi'
+                ''
               )
             }
           </Row>
