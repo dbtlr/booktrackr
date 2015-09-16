@@ -35,7 +35,6 @@ npm run setup
 
 ## TODO
 
-- Tags
 - Pagination
 - Review Ratings
 - UI Cleanup

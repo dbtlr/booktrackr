@@ -15,7 +15,9 @@ const ADD_FAIL = 'booktrackr/books/ADD_FAIL';
 const initialState = {
   loaded: false,
   editing: {},
-  saveError: {}
+  saveError: {},
+  bookList: [],
+  allBooks: [],
 };
 
 // Stole this from PHP.js, in order to combat the fact the WP turns on 
@@ -56,25 +58,30 @@ function filterBooks(books) {
     };
 
     let meta = item._embedded['http://v2.wp-api.org/meta'];
+    if (meta) {
+      for (let key in meta[0]) {
+        if (meta[0][key].key == 'data') {
+          book.meta = JSON.parse(stripslashes(meta[0][key].value));
+        }
+      }
+    }
+
     let attachment = item._embedded['http://v2.wp-api.org/attachment'];
+    if (attachment) {
+      for (let key in attachment[0]) {
+        if (attachment[0][key].id == item.featured_image) {
+          book.cover = attachment[0][key].source_url;
+          break;
+        }
+      }
+    }
+
     let terms = item._embedded['http://v2.wp-api.org/term'];
-
-    for (let key in meta[0]) {
-      if (meta[0][key].key == 'data') {
-        book.meta = JSON.parse(stripslashes(meta[0][key].value));
+    if (terms) {
+      book.terms = terms;
+      for (let key in terms[0]) {
+          book.genre.push(terms[0][key].name);
       }
-    }
-
-    for (let key in attachment[0]) {
-      if (attachment[0][key].id == item.featured_image) {
-        book.cover = attachment[0][key].source_url;
-        break;
-      }
-    }
-
-    book.terms = terms;
-    for (let key in terms[0]) {
-        book.genre.push(terms[0][key].name);
     }
 
     newBooks.push(book);
