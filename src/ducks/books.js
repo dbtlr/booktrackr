@@ -263,7 +263,18 @@ export function getOne(state, bookId) {
 }
 
 export function likeBook(book) {
-  
+  let meta = book.meta;
+
+  meta.likes = meta.likes || [];
+  meta.likes.push({
+    date: new Date()
+  });
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
 }
 
 export function addReview(review, rating, book) {
