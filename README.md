@@ -45,6 +45,7 @@ npm run setup
 - Like Book
 - Like Review
 - Like Highlight
+- Add HTML editing to Reviews
 - UI Cleanup
 - Documentation
 
