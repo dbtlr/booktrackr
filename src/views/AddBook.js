@@ -41,7 +41,7 @@ export default class AddBook extends Component {
 
     let tags = [];
     for (let id in this.props.tags) {
-      tags.push(<Input type="checkbox" label={this.props.tags[id]} ref={'tags-' + id} key={id} value={id} />);
+      tags.push(<Col key={id} lg={3} xs={6}><Input type="checkbox" label={this.props.tags[id]} ref={'tags-' + id} value={id} /></Col>);
     }
 
     return (
@@ -104,19 +104,22 @@ export default class AddBook extends Component {
             <option value='private'>Private</option>
         </Input>
 
-        {tags}
+        <div className='form-group'>
+          <Col xs={2} componentClass='label' className='control-label'><span>Genre</span></Col>
+          <Col xs={10}>{tags}</Col>
+        </div>
 
-        <Row>
-          <Col xs={12} md={2}>
-            <label>Cover Image</label>
+        <div className='form-group'>
+          <Col xs={2} componentClass='label' className='control-label'>
+            <span>Cover Image</span>
           </Col>
-          <Col xs={12} md={10}>
+          <Col xs={10}>
             <DragDropFileField
               textField={::this.filesTextField()}
               onDrop={::this.handleDroppedCover}
               onFileClear={::this.clearCover} />
           </Col>
-        </Row>
+        </div>
 
         <div className={styles.buttonGroup}>
           <Button bsStyle="primary" type="submit" onClick={::this.handleSubmit}>Add Book</Button>
