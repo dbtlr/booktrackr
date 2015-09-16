@@ -5,13 +5,7 @@ import OAuth from 'oauth-1.0a';
 export function buildApiUrl(path) {
   const data = wpConfig.read();
 
-  let url = data.wp_api_protocol + '://' + data.wp_api_host;
-
-  if (data.wp_api_port != 80) {
-    url += ':' + data.wp_api_port;
-  }
-
-  return url + data.wp_api_prefix + path
+  return data.wp_api + path
 }
 
 function buildOAuth() {

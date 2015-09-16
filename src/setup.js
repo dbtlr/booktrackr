@@ -2,7 +2,7 @@ import cli from 'cli';
 import prompt from 'prompt';
 import * as wpConfig from './utils/wp-config';
 
-let data = wpConfig.read();
+let data = wpConfig.read() || {};
 
 prompt.start();
 
@@ -18,22 +18,10 @@ const schema = {
       required: true,
       default: data.oauth_token_secret || ''
     },
-    wp_api_host: {
-      message: 'Host for the wordpress api',
+    wp_api: {
+      message: 'Wordpress API',
       required: true,
-      default: data.wp_api_host || ''
-    },
-    wp_api_port: {
-      message: 'Port for the wordpress api',
-      default: data.wp_api_port || 80
-    },
-    wp_api_protocol: {
-      message: 'Protocol for the wordpress api',
-      default: data.wp_api_protocol || 'http'
-    },
-    wp_api_prefix: {
-      message: 'Path prefix for the wordpress api',
-      default: data.wp_api_prefix || ''
+      default: data.wp_api || ''
     }
   }
 };

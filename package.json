@@ -73,6 +73,7 @@
     "lru-memoize": "0.0.2",
     "map-props": "^0.1.1",
     "oauth": "^0.9.13",
+    "oauth-1.0a": "^0.2.1",
     "piping": "0.2.0",
     "pretty-error": "^1.1.2",
     "prompt": "^0.2.14",
