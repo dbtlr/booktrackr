@@ -29,7 +29,7 @@ export default class Reviews extends Component {
           <ul>
             {reviews.map((item) => 
               <li key={item.id || ''}>
-                {item.text}
+                {item.text} {this.printRating(item.rating)}
               </li>
             )}
             <li><Link to={"/book/" + book.id + "/add-review"}>Add another review</Link></li>
@@ -39,5 +39,14 @@ export default class Reviews extends Component {
         }
       </div>
     );
+  }
+
+  printRating(rating) {
+    let rendered = [];
+    for (let i=1; i <= 5; i++) {
+      rendered.push(<span>★</span>);
+    }
+
+    return rendered;
   }
 }

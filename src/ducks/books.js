@@ -246,25 +246,36 @@ export function getOne(state, bookId) {
 }
 
 export function addReview(review, rating, book) {
-  book.reviews = book.reviews || [];
-  book.reviews.push({
+  let meta = book.meta;
+  meta.reviews = meta.reviews || [];
+  meta.reviews.push({
     id: helper.generateUUID(),
     text: review,
     rating: rating,
     createdDate: new Date()
   });
 
-  return save(book);
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };;
 }
 
 export function addHighlight(highlight, book) {
-  book.highlights = book.highlights || [];
-  book.highlights.push({
+  let meta = book.meta;
+  meta.highlights = meta.highlights || [];
+  meta.highlights.push({
     id: helper.generateUUID(),
     text: highlight,
     createdDate: new Date()
   });
-  return save(book);
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };;
 }
 
 export function add(book, next) {

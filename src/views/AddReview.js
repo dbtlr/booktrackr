@@ -38,6 +38,20 @@ export default class AddReview extends Component {
 
     const book = books.allBooks[bookId];
 
+    let ratings = [];
+    for (let i=1; i <= 5; i++) {
+      ratings.push(
+        <label key={'rating-' + i}>
+          <input
+            type='radio'
+            name='rating'
+            ref={'rating-' + i }
+            value={i} /> {i}
+        </label>
+        );
+    }
+
+
     return (
       <Grid className={styles.addReview}>
         <h1>Add a Review</h1>
@@ -48,10 +62,11 @@ export default class AddReview extends Component {
             type='textarea'
             rows='6'
             ref='review' />
-          <Input
-            type='text'
-            placeholder='Rating (1-5)'
-            ref='rating' />
+
+          <div className='form-group'>
+            <Col xs={1} componentClass='label' className='control-label'><span>Rating</span></Col>
+            <Col xs={11} className={styles.ratings}>{ratings}</Col>
+          </div>
 
           <Button bsStyle="primary" type="submit">Add Review</Button>
         </form>
@@ -62,10 +77,20 @@ export default class AddReview extends Component {
   submitForm(event) {
     event.preventDefault();
 
+    let rating = 0;
+    for (let i=1; i <= 5; i++) {
+      let node = React.findDOMNode(this.refs['rating-' + i]);
+
+      if (node.checked === i) {
+        rating = i;
+        break;
+      }
+    }
+
     const bookId = this.props.routeParams.bookId;
     const {books} = this.props;
 
-    this.props.addReview(this.refs.review.getValue(), this.refs.rating.getValue(), books.allBooks[bookId]);
+    this.props.addReview(this.refs.review.getValue(), rating, books.allBooks[bookId]);
 
     this.context.router.transitionTo('/book/' + bookId);
   }
