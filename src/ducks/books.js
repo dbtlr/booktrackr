@@ -262,6 +262,10 @@ export function getOne(state, bookId) {
   }
 }
 
+export function likeBook(book) {
+  
+}
+
 export function addReview(review, rating, book) {
   let meta = book.meta;
   meta.reviews = meta.reviews || [];
@@ -269,6 +273,7 @@ export function addReview(review, rating, book) {
     id: helper.generateUUID(),
     text: review,
     rating: rating,
+    likes: [],
     createdDate: new Date()
   });
 
@@ -285,6 +290,7 @@ export function addHighlight(highlight, book) {
   meta.highlights.push({
     id: helper.generateUUID(),
     text: highlight,
+    likes: [],
     createdDate: new Date()
   });
 
@@ -303,6 +309,27 @@ export function updateHighlight(id, highlight, book) {
     if (meta.highlights[i].id === id) {
       meta.highlights[i].text = highlight;
       meta.highlights[i].updatedDate = new Date();
+      break;
+    }
+  }
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
+}
+
+export function likeHighlight(id, book) {
+  let meta = book.meta;
+  meta.highlights = meta.highlights || [];
+
+  for (let i in meta.highlights) {
+    if (meta.highlights[i].id === id) {
+      meta.highlights[i].like = meta.highlights[i].like || [];
+      meta.highlights[i].like.push({
+        date: new Date()
+      });
       break;
     }
   }
@@ -344,6 +371,27 @@ export function updateReview(id, review, rating, book) {
       meta.reviews[i].text = review;
       meta.reviews[i].rating = rating;
       meta.reviews[i].updatedDate = new Date();
+      break;
+    }
+  }
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+  };
+}
+
+export function likeReview(id, book) {
+  let meta = book.meta;
+  meta.reviews = meta.reviews || [];
+
+  for (let i in meta.reviews) {
+    if (meta.reviews[i].id === id) {
+      meta.reviews[i].like = meta.reviews[i].like || [];
+      meta.reviews[i].like.push({
+        date: new Date()
+      });
       break;
     }
   }
