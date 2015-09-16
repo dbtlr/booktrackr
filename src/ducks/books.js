@@ -18,6 +18,8 @@ const initialState = {
   saveError: {},
   bookList: [],
   allBooks: [],
+  nextPage: 1,
+  hasMorePages: true
 };
 
 // Stole this from PHP.js, in order to combat the fact the WP turns on 
@@ -41,9 +43,10 @@ function stripslashes(str) {
 function filterBooks(books) {
   let newBooks = [];
 
-  if (!books.length) {
+  if (typeof books.length == 'undefined') {
     books = [books];
   }
+
 
   books.map(function(item) {
     let book = {
@@ -90,6 +93,16 @@ function filterBooks(books) {
   return newBooks;
 }
 
+export function readableStatus(status) {
+  const statuses = {
+    'read': 'Read',
+    'to-read': 'To Read',
+    'reading': 'Currently Reading'
+  };
+
+  return statuses[status] || status;
+}
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
@@ -131,6 +144,8 @@ export default function reducer(state = initialState, action = {}) {
         loadedList: loadedList,
         allBooks: allBooks,
         bookList: bookList,
+        nextPage: state.nextPage + 1,
+        hasMorePages: action.result.length > 0,
         error: null
       };
     case LOAD_FAIL:

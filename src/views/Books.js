@@ -11,7 +11,9 @@ import {Grid, Row, Col, Button} from 'react-bootstrap';
   state => ({
     auth: state.auth,
     books: state.books.bookList,
-    loading: state.books.loading
+    loading: state.books.loading,
+    nextPage: state.books.nextPage,
+    hasMorePages: state.books.hasMorePages,
   }),
   dispatch => bindActionCreators(bookActions, dispatch)
 )
@@ -19,15 +21,18 @@ import {Grid, Row, Col, Button} from 'react-bootstrap';
 export default class Books extends Component {
 
   static propTypes = {
+    load: PropTypes.func,
     auth: PropTypes.object,
     books: PropTypes.array,
     loading: PropTypes.bool,
+    hasMorePages: PropTypes.bool,
+    nextPage: PropTypes.number
   }
 
 
   render() {
     const styles = require('./scss/Books.scss');
-    const {books, loading, auth} = this.props;
+    const {books, loading, auth, hasMorePages} = this.props;
 
     return (
         <div className={styles.bookList + ' container'}>
@@ -43,14 +48,18 @@ export default class Books extends Component {
             }
           </Row>
           <footer>
-            <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
+            {hasMorePages ?
+              <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
+              :
+              ''
+            }
           </footer>
         </div>
     );
   }
 
   loadMoreBooks() {
-    bookActions.load(1);
+    this.props.load(this.props.nextPage);
   }
 
   static fetchData(store) {

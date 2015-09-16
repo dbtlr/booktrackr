@@ -35,7 +35,6 @@ npm run setup
 
 ## TODO
 
-- Pagination
 - Review Ratings
 - UI Cleanup
 - Documentation

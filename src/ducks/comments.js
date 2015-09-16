@@ -10,7 +10,8 @@ const LOAD_FAIL = 'booktrackr/comments/LOAD_FAIL';
 const initialState = {
   loaded: false,
   editing: {},
-  saveError: {}
+  saveError: {},
+  comments: {}
 };
 
 export default function reducer(state = initialState, action = {}) {

@@ -25,7 +25,7 @@ export default class CommentList extends Component {
     const name='', date={}, url='', comment='';
 
     let commentList = [];
-    if (comments[this.props.book.id]) {
+    if (typeof comments[this.props.book.id]) {
       commentList = comments[this.props.book.id];
     }
 
