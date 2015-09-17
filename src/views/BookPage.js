@@ -8,6 +8,7 @@ import CommentList from '../components/CommentList';
 import Reviews from '../components/Reviews';
 import Highlights from '../components/Highlights';
 import NotFound from './NotFound';
+import Loading from './Loading';
 import * as bookActions from '../ducks/book';
 import * as commentActions from '../ducks/comments';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -16,6 +17,7 @@ import {Link} from 'react-router';
 @connect(
   state => ({
     book: state.book.book,
+    loading: state.book.loading,
     comments: state.comments,
     user: state.auth.user
   }),
@@ -29,12 +31,17 @@ export default class BookPage extends Component {
     book: PropTypes.object,
     user: PropTypes.object,
     routeParams: PropTypes.object,
+    loading: PropTypes.boolean,
   }
 
   render() {
     const styles = require('./scss/Books.scss');
-    const {book, user} = this.props;
+    const {book, user, loading} = this.props;
     const bookId = this.props.routeParams.bookId;
+
+    if (loading) {
+      return (<Loading />);
+    }
 
     if (!book) {
       return (<NotFound />);

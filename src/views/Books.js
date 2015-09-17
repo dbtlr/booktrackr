@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
 import * as bookListActions from '../ducks/book-list';
 import BookItem from '../components/BookItem';
+import Loading from './Loading';
 import {Grid, Row, Col, Button} from 'react-bootstrap';
 
 @connect(
@@ -33,6 +34,10 @@ export default class Books extends Component {
     const styles = require('./scss/Books.scss');
     const {books, loading, auth, hasMorePages} = this.props;
 
+    if (loading) {
+      return (<Loading />);
+    }
+
     let list = [];
 
     for (let id in books) {
@@ -40,7 +45,6 @@ export default class Books extends Component {
       if (book.meta.visibility == 'private' && !auth.user) {
         continue;
       }
-
 
       list.push(
         <Col xs={12} sm={6} key={book.id}>
