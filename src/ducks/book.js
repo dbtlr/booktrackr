@@ -51,7 +51,7 @@ export function formatBook(item) {
   if (meta) {
     for (let key in meta[0]) {
       if (meta[0][key].key == 'data') {
-        book.meta = JSON.parse(helper.stripslashes(meta[0][key].value));
+        book.meta = JSON.parse(meta[0][key].value);
 
         if (book.meta.text) {
           book.meta.text = helper.stripslashes(book.meta.text);

@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
 import NotFound from './NotFound';
 import * as bookActions from '../ducks/book';
-import * as hightlightActions from '../ducks/highlights';
+import * as highlightActions from '../ducks/highlights';
 import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 
 @connect(

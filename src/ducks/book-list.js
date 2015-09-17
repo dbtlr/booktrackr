@@ -14,18 +14,6 @@ const initialState = {
   hasMorePages: true,
 };
 
-export function filterBooks(books) {
-  let newBooks = [];
-
-  if (typeof books.length == 'undefined') {
-    books = [books];
-  }
-
-  books.map(item => newBooks.push(bookActions.formatBook(item)));
-
-  return newBooks;
-}
-
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
@@ -34,10 +22,18 @@ export default function reducer(state = initialState, action = {}) {
         loading: true,
       };
     case LOAD_SUCCESS:
+      let books = state.bookList || [];
+
+      if (typeof action.result.length == 'undefined') {
+        books = [action.result];
+      }
+
+      action.result.map(item => books.push(bookActions.formatBook(item)));
+
       return {
         ...state,
         loading: false,
-        bookList: {...state.bookList, ...action.result},
+        bookList: books,
         nextPage: state.nextPage + 1,
         hasMorePages: action.result.length > 0,
         error: null,
@@ -60,6 +56,6 @@ export function isListLoaded(state) {
 export function loadList(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks),
+    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }),
   };
 }

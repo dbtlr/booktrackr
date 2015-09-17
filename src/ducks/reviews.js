@@ -104,13 +104,14 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 
-export function addReview(review, rating, book) {
+export function addReview(review, from, rating, book) {
   let meta = book.meta;
   meta.reviews = meta.reviews || [];
   meta.reviews.push({
     id: helper.generateUUID(),
     text: review,
     rating: rating,
+    from: from,
     likes: [],
     createdDate: new Date(),
   });
@@ -122,7 +123,7 @@ export function addReview(review, rating, book) {
   };
 }
 
-export function updateReview(id, review, rating, book) {
+export function updateReview(id, review, from, rating, book) {
   let meta = book.meta;
   meta.reviews = meta.reviews || [];
 
@@ -130,6 +131,7 @@ export function updateReview(id, review, rating, book) {
     if (meta.reviews[i].id === id) {
       meta.reviews[i].text = review;
       meta.reviews[i].rating = rating;
+      meta.reviews[i].from = from;
       meta.reviews[i].updatedDate = new Date();
       break;
     }

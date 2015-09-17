@@ -77,8 +77,14 @@ export default class EditReview extends Component {
 
         <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
+            type='text'
+            label='From'
+            defaultValue={review ? review.from : ''}
+            ref='from' />
+          <Input
             type='textarea'
             rows='6'
+            label='Review'
             defaultValue={review ? review.text : ''}
             ref='review' />
 
@@ -110,12 +116,12 @@ export default class EditReview extends Component {
     const {book} = this.props;
 
     if (reviewId) {
-      this.props.updateReview(reviewId, this.refs.review.getValue(), rating, book);
+      this.props.updateReview(reviewId, this.refs.review.getValue(), this.refs.from.getValue(), rating, book);
     } else {
-      this.props.addReview(this.refs.review.getValue(), rating, book);
+      this.props.addReview(this.refs.review.getValue(), this.refs.from.getValue(), rating, book);
     }
 
-    this.context.router.transitionTo('/book/' + bookId);
+    this.context.router.transitionTo('/book/' + book.id);
   }
 
   static fetchData(store, params) {

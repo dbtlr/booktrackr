@@ -24,7 +24,7 @@ export default class Books extends Component {
   static propTypes = {
     load: PropTypes.func,
     auth: PropTypes.object,
-    books: PropTypes.object,
+    books: PropTypes.array,
     loading: PropTypes.bool,
     hasMorePages: PropTypes.bool,
     nextPage: PropTypes.number,
