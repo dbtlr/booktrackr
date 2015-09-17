@@ -8,14 +8,16 @@ import CommentList from '../components/CommentList';
 import Reviews from '../components/Reviews';
 import Highlights from '../components/Highlights';
 import NotFound from './NotFound';
-import * as bookActions from '../ducks/books';
+import Loading from './Loading';
+import * as bookActions from '../ducks/book';
 import * as commentActions from '../ducks/comments';
 import {Grid, Row, Col} from 'react-bootstrap';
 import {Link} from 'react-router';
 
 @connect(
   state => ({
-    books: state.books,
+    book: state.book.book,
+    loading: state.book.loading,
     comments: state.comments,
     user: state.auth.user
   }),
@@ -26,21 +28,25 @@ import {Link} from 'react-router';
 
 export default class BookPage extends Component {
   static propTypes = {
-    books: PropTypes.object,
+    book: PropTypes.object,
     user: PropTypes.object,
     routeParams: PropTypes.object,
+    loading: PropTypes.boolean,
   }
 
   render() {
     const styles = require('./scss/Books.scss');
-    const {books, user} = this.props;
+    const {book, user, loading} = this.props;
     const bookId = this.props.routeParams.bookId;
 
-    if (!books.allBooks || !books.allBooks[bookId]) {
+    if (loading) {
+      return (<Loading />);
+    }
+
+    if (!book) {
       return (<NotFound />);
     }
 
-    const book = books.allBooks[bookId];
     const meta = book.meta || {};
 
     let comments = {};
@@ -83,7 +89,7 @@ export default class BookPage extends Component {
     let promises = [];
 
     if (!bookActions.isBookLoaded(store.getState(), bookId)) {
-      promises.push(store.dispatch(bookActions.loadOne(bookId)));
+      promises.push(store.dispatch(bookActions.loadBook(bookId)));
     }
 
     if (!commentActions.areLoaded(store.getState(), bookId)) {

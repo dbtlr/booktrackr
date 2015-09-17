@@ -28,3 +28,21 @@ export function generateUUID(){
   });
   return uuid;
 }
+
+// Stole this from PHP.js, in order to combat the fact the WP turns on
+// magic_quotes by default. What is this, PHP 4? (sad panda...)
+export function stripslashes(str) {
+  return (str + '')
+    .replace(/\\(.?)/g, function(s, n1) {
+      switch (n1) {
+        case '\\':
+          return '\\';
+        case '0':
+          return '\u0000';
+        case '':
+          return '';
+        default:
+          return n1;
+      }
+    });
+}

@@ -10,6 +10,7 @@ import EditBook from 'views/EditBook';
 import EditReview from 'views/EditReview';
 import EditHighlight from 'views/EditHighlight';
 import NotFound from 'views/NotFound';
+import Loading from 'views/Loading';
 import BookPage from 'views/BookPage';
 
 export default function(store) {
@@ -27,8 +28,9 @@ export default function(store) {
         <Route name='highlight-add' path='/book/:bookId/highlight(/:highlightId)' component={EditHighlight} />
       </Route>
 
-      // Purely test oriented path ... to get around login issues while testing.
+      // Purely test oriented paths ...
       <Route name='test-form' path='/test-form' component={EditBook} />
+      <Route name='loading' path='/loading' component={Loading} />
 
       <Route name='not-found' path='*' component={NotFound}/>
     </Route>

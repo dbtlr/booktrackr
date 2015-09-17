@@ -4,15 +4,16 @@ import DocumentMeta from 'react-document-meta';
 import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
 import NotFound from './NotFound';
-import * as bookActions from '../ducks/books';
+import * as bookActions from '../ducks/book';
+import * as reviewActions from '../ducks/reviews';
 import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 
 @connect(
   state => ({
-    books: state.books
+    book: state.book.book
   }),
   dispatch => ({
-    ...bindActionCreators(bookActions, dispatch)
+    ...bindActionCreators({...bookActions, ...reviewActions}, dispatch)
   })
 )
 
@@ -22,22 +23,20 @@ export default class EditReview extends Component {
   }
 
   static propTypes = {
-    books: PropTypes.object,
+    book: PropTypes.object,
     addReview: PropTypes.func,
     routeParams: PropTypes.object,
   }
 
   render() {
     const styles = require('./scss/Books.scss');
-    const {books} = this.props;
-    const bookId = this.props.routeParams.bookId;
+    const {book} = this.props;
     const reviewId = this.props.routeParams.reviewId;
 
-    if (!books.allBooks || !books.allBooks[bookId]) {
+    if (!book) {
       return (<NotFound />);
     }
 
-    const book = books.allBooks[bookId];
     let review;
 
     if (reviewId) {
@@ -78,8 +77,14 @@ export default class EditReview extends Component {
 
         <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
+            type='text'
+            label='From'
+            defaultValue={review ? review.from : ''}
+            ref='from' />
+          <Input
             type='textarea'
             rows='6'
+            label='Review'
             defaultValue={review ? review.text : ''}
             ref='review' />
 
@@ -107,24 +112,26 @@ export default class EditReview extends Component {
       }
     }
 
-    const bookId = this.props.routeParams.bookId;
     const reviewId = this.props.routeParams.reviewId;
-    const {books} = this.props;
+    const {book} = this.props;
 
     if (reviewId) {
-      this.props.updateReview(reviewId, this.refs.review.getValue(), rating, books.allBooks[bookId]);
+      this.props.updateReview(reviewId, this.refs.review.getValue(), this.refs.from.getValue(), rating, book);
     } else {
-      this.props.addReview(this.refs.review.getValue(), rating, books.allBooks[bookId]);
+      this.props.addReview(this.refs.review.getValue(), this.refs.from.getValue(), rating, book);
     }
 
-    this.context.router.transitionTo('/book/' + bookId);
+    this.context.router.transitionTo('/book/' + book.id);
   }
 
   static fetchData(store, params) {
     const bookId = params.bookId;
+    let promises = [];
 
     if (!bookActions.isBookLoaded(store.getState(), bookId)) {
-      return store.dispatch(bookActions.loadOne(bookId));
+      promises.push(store.dispatch(bookActions.loadBook(bookId)));
     }
+
+    return promises;
   }
 }

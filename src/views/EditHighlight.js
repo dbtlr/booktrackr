@@ -4,15 +4,16 @@ import DocumentMeta from 'react-document-meta';
 import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
 import NotFound from './NotFound';
-import * as bookActions from '../ducks/books';
+import * as bookActions from '../ducks/book';
+import * as highlightActions from '../ducks/highlights';
 import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 
 @connect(
   state => ({
-    books: state.books
+    book: state.book.book
   }),
   dispatch => ({
-    ...bindActionCreators(bookActions, dispatch)
+    ...bindActionCreators({...bookActions, ...highlightActions}, dispatch)
   })
 )
 
@@ -22,7 +23,7 @@ export default class EditHighlight extends Component {
   }
 
   static propTypes = {
-    books: PropTypes.object,
+    book: PropTypes.object,
     addHighlight: PropTypes.func,
     routeParams: PropTypes.object,
     router: PropTypes.object,
@@ -30,15 +31,13 @@ export default class EditHighlight extends Component {
 
   render() {
     const styles = require('./scss/Books.scss');
-    const {books} = this.props;
-    const bookId = this.props.routeParams.bookId;
+    const {book} = this.props;
     const highlightId = this.props.routeParams.highlightId;
 
-    if (!books.allBooks || !books.allBooks[bookId]) {
+    if (!book) {
       return (<NotFound />);
     }
 
-    const book = books.allBooks[bookId];
     let highlight;
 
     if (highlightId) {
@@ -78,24 +77,26 @@ export default class EditHighlight extends Component {
   submitForm(event) {
     event.preventDefault();
 
-    const bookId = this.props.routeParams.bookId;
     const highlightId = this.props.routeParams.highlightId;
-    const {books} = this.props;
+    const {book} = this.props;
 
     if (highlightId) {
-      this.props.updateHighlight(highlightId, this.refs.highlight.getValue(), books.allBooks[bookId]);
+      this.props.updateHighlight(highlightId, this.refs.highlight.getValue(), book);
     } else {
-      this.props.addHighlight(this.refs.highlight.getValue(), books.allBooks[bookId]);
+      this.props.addHighlight(this.refs.highlight.getValue(), book);
     }
 
-    this.context.router.transitionTo('/book/' + bookId);
+    this.context.router.transitionTo('/book/' + book.id);
   }
 
   static fetchData(store, params) {
     const bookId = params.bookId;
+    let promises = [];
 
     if (!bookActions.isBookLoaded(store.getState(), bookId)) {
-      return store.dispatch(bookActions.loadOne(bookId));
+      promises.push(store.dispatch(bookActions.loadBook(bookId)));
     }
+
+    return promises;
   }
 }

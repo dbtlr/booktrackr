@@ -13,7 +13,7 @@ header {
   }
 }
 .app {
-  min-height: 100%; 
+  min-height: 100%;
   position:relative;
 
   :global(.navbar-brand) {
@@ -36,3 +36,10 @@ header {
   right: 0;
 }
 
+.loading {
+  text-align: center;
+
+  img {
+    margin-top:150px;
+  }
+}

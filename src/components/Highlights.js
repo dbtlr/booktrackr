@@ -1,16 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import {Button} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import * as bookActions from '../ducks/books';
+import * as highlightActions from '../ducks/highlights';
 
 @connect(
   state => ({
     user: state.auth.user
   }),
   dispatch => ({
-    ...bindActionCreators(bookActions, dispatch)
+    ...bindActionCreators(highlightActions, dispatch)
   })
 )
 
@@ -24,17 +24,25 @@ export default class Highlights extends Component {
   render() {
     const {book} = this.props;
     const highlights = book.meta && book.meta.highlights ? book.meta.highlights : [];
+    const styles = require('./scss/Items.scss');
 
     return (
-      <div>
+      <div className={styles.items}>
         <h3>Highlights {this.props.user ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
         {highlights.length > 0 ?
           <ul>
             {highlights.map((item) =>
-              <li key={item.id || ''}>
-                {item.text} {this.props.user ? <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link> : ''}
-                {this.props.user ? <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button> : ''}
-              </li>
+              <Row componentClass='li'  key={item.id || ''}>
+                  { this.props.user ?
+                    <Col xs={12} className={styles.actions}>
+                      <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link>
+                      <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>
+                    </Col>
+                  :
+                    ''
+                  }
+                <Col xs={12} className='body'>{item.text}</Col>
+              </Row>
             )}
 
           </ul>
