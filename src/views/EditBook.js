@@ -3,13 +3,13 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
 import {Button, Input, Grid, Row, Col} from 'react-bootstrap';
-import * as bookActions from '../ducks/books';
+import * as bookActions from '../ducks/book';
 import * as coverActions from '../ducks/cover';
 import * as tagActions from '../ducks/tags';
 import DragDropFileField from '../components/DragDropFileField';
 
 @connect(
-  state => ({api: state.api, user: state.user, cover: state.cover, tags: state.tags.tags, books: state.books}),
+  state => ({api: state.api, user: state.user, cover: state.cover, tags: state.tags.tags, book: state.book.book}),
   dispatch => bindActionCreators({...bookActions, ...coverActions, ...tagActions}, dispatch)
 )
 
@@ -28,11 +28,11 @@ export default class EditBook extends Component {
   }
 
   static propTypes = {
-    add: PropTypes.func,
-    save: PropTypes.func,
+    addBook: PropTypes.func,
+    updateBook: PropTypes.func,
     upload: PropTypes.func,
     tags: PropTypes.object,
-    books: PropTypes.object,
+    book: PropTypes.object,
     api: PropTypes.object,
     cover: PropTypes.object,
     user: PropTypes.object,
@@ -41,17 +41,15 @@ export default class EditBook extends Component {
   render() {
     const styles = require('./scss/Books.scss');
     const bookId = this.props.routeParams.bookId;
-    const {books} = this.props;
+    const {book} = this.props;
 
-    let book = null;
     let terms = [];
 
     if (bookId) {
-      if (!books.allBooks || !books.allBooks[bookId]) {
+      if (!book) {
         return (<NotFound />);
       }
 
-      book = books.allBooks[bookId];
       book.terms[0] && book.terms[0].map(term => {
         terms.push(term.id);
       });
@@ -70,8 +68,6 @@ export default class EditBook extends Component {
         </Col>
       );
     }
-
-    console.log(book.meta.beganReadingDate);
 
     return (
       <Grid className='form-horizontal'>
@@ -203,11 +199,10 @@ export default class EditBook extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    const {books} = this.props;
+    const {book} = this.props;
     const router = this.context.router;
     const bookId = this.props.routeParams.bookId;
 
-    let origBook = null;
     let data = {
       title: this.refs.title.getValue(),
       author: this.refs.author.getValue(),
@@ -226,30 +221,38 @@ export default class EditBook extends Component {
     }
 
     if (bookId) {
-      if (!books.allBooks || !books.allBooks[bookId]) {
+      if (!book) {
         router.transitionTo('/book/' + book.id);
         return;
       }
 
-      origBook = books.allBooks[bookId];
-      this.props.save(data, origBook, function(book) {
-        router.transitionTo('/book/' + book.id);
+      this.props.updateBook(data, book, function(item) {
+        router.transitionTo('/book/' + item.id);
 
-        return book;
+        return item;
       });
 
     } else {
-      this.props.add(data, function(book) {
-        router.transitionTo('/book/' + book.id);
+      this.props.addBook(data, function(item) {
+        router.transitionTo('/book/' + item.id);
 
-        return book;
+        return item;
       });
     }
   }
 
-  static fetchData(store) {
-    if (!tagActions.areTagsLoaded(store.getState())) {
-      return store.dispatch(tagActions.load());
+  static fetchData(store, params) {
+    const bookId = params.bookId;
+    let promises = [];
+
+    if (!bookActions.isBookLoaded(store.getState(), bookId)) {
+      promises.push(store.dispatch(bookActions.loadBook(bookId)));
     }
+
+    if (!tagActions.areTagsLoaded(store.getState())) {
+      promises.push(store.dispatch(tagActions.load()));
+    }
+
+    return promises;
   }
 }

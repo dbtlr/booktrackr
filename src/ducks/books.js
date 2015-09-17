@@ -1,5 +1,6 @@
 import * as helper from '../utils/Helper';
 import * as coverActions from './cover'
+import * as bookActions from './book'
 
 const LOAD = 'booktrackr/books/LOAD';
 const LOAD_ONE = 'booktrackr/books/LOAD_ONE';
@@ -22,76 +23,14 @@ const initialState = {
   hasMorePages: true,
 };
 
-// Stole this from PHP.js, in order to combat the fact the WP turns on
-// magic_quotes by default. What is this, PHP 4? (sad panda...)
-function stripslashes(str) {
-  return (str + '')
-    .replace(/\\(.?)/g, function(s, n1) {
-      switch (n1) {
-        case '\\':
-          return '\\';
-        case '0':
-          return '\u0000';
-        case '':
-          return '';
-        default:
-          return n1;
-      }
-    });
-}
-
-function filterBooks(books) {
+export function filterBooks(books) {
   let newBooks = [];
 
   if (typeof books.length == 'undefined') {
     books = [books];
   }
 
-  books.map(function(item) {
-    let book = {
-      id: item.id,
-      key: item.guid.raw,
-      title: stripslashes(item.title.raw),
-      slug: item.slug || null,
-      meta: {},
-      terms: {},
-      genre: [],
-      cover: '',
-    };
-
-    let meta = item._embedded['http://v2.wp-api.org/meta'];
-    if (meta) {
-      for (let key in meta[0]) {
-        if (meta[0][key].key == 'data') {
-          book.meta = JSON.parse(stripslashes(meta[0][key].value));
-
-          if (book.meta.text) {
-            book.meta.text = stripslashes(book.meta.text);
-          }
-        }
-      }
-    }
-
-    let attachment = item._embedded['http://v2.wp-api.org/attachment'];
-    if (attachment) {
-      for (let key in attachment[0]) {
-        if (attachment[0][key].id == item.featured_image) {
-          book.cover = attachment[0][key].source_url;
-          break;
-        }
-      }
-    }
-
-    let terms = item._embedded['http://v2.wp-api.org/term'];
-    if (terms) {
-      book.terms = terms;
-      for (let key in terms[0]) {
-        book.genre.push(terms[0][key].name);
-      }
-    }
-
-    newBooks.push(book);
-  });
+  books.map(item => newBooks.push(bookActions.formatBook(item)));
 
   return newBooks;
 }
@@ -209,10 +148,6 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isBookLoaded(state, bookId) {
-  return state.books && state.books.allBooks && state.books.allBooks[bookId];
-}
-
 export function isListLoaded(state) {
   return state.books && state.books.loadedList;
 }
@@ -222,50 +157,6 @@ export function load(page = 1) {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks),
   };
-}
-
-export function loadOne(bookId) {
-  return {
-    types: [LOAD_ONE, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books/' + bookId, { params: { '_embed': 1 }, wp: true }).then(filterBooks),
-  };
-}
-
-export function save(data, originalBook, next) {
-  const newBook = {
-    title: data.title,
-    status: 'publish',
-    featured_image: data.cover ? data.cover.id : originalBook.featured_image,
-  }
-
-  let meta = originalBook.meta;
-  meta.author = data.author;
-  meta.status = data.status;
-  meta.visibility = data.visibility;
-
-  meta.beganReadingDate = (new Date(data.beganReadingDate)).toUTCString();
-  meta.finishedReadingDate = (new Date(data.finishedReadingDate)).toUTCString();
-
-  if (meta.beganReadingDate == 'Invalid Date') meta.beganReadingDate = '';
-  if (meta.finishedReadingDate == 'Invalid Date') meta.finishedReadingDate = '';
-
-  next = next || ((res) => { return res; });
-
-  return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    id: data.id,
-    promise: (client) => client.put('books/' + originalBook.id, { data: newBook, wp: true })
-        .then((res) => { client.post('books/' + originalBook.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}); return res; })
-        .then((res) => { originalBook.terms[0] && originalBook.terms[0].map(term => client.del('books/' + originalBook.id + '/terms/genre/' + term.id, {data: {}, wp: true})); return res; })
-        .then((res) => { data.tags.map(tagId => client.post('books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
-        .then(next)
-  };
-}
-
-export function getOne(state, bookId) {
-  if (state.books && state.books.allBooks && state.books.allBooks[bookId]) {
-    return state.books.allBooks[bookId];
-  }
 }
 
 export function likeBook(book) {
@@ -438,31 +329,5 @@ export function deleteReview(id, book, next) {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
     promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}).then(next),
-  };
-}
-
-export function add(book, next) {
-  book.beganReadingDate = (new Date(book.beganReadingDate)).toUTCString();
-  book.finishedReadingDate = (new Date(book.finishedReadingDate)).toUTCString();
-
-  if (book.beganReadingDate == 'Invalid Date') book.beganReadingDate = '';
-  if (book.finishedReadingDate == 'Invalid Date') book.finishedReadingDate = '';
-
-  next = next || ((res) => { return res; });
-
-  const data = {
-    title: book.title,
-    status: 'publish',
-    featured_image: book.cover ? book.cover.id : null,
-  }
-
-  return {
-    types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => {
-      return client.post('books', { data: data, wp: true })
-        .then((res) => { client.post('books/' + res.id + '/meta', { data: { key: 'data', value: JSON.stringify(book)}, wp: true}); return res; })
-        .then((res) => { book.tags.map(tagId => client.post('books/' + res.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
-        .then(next)
-    }
   };
 }

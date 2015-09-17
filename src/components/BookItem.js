@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Col, Row} from 'react-bootstrap';
 import {Link} from 'react-router';
-import * as bookActions from '../ducks/books';
+import * as bookActions from '../ducks/book';
 
 export default class BookItem extends Component {
   static propTypes = {
