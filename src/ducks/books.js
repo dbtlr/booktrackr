@@ -366,7 +366,7 @@ export function deleteHighlight(id, book) {
 
   for (let i in meta.highlights) {
     if (meta.highlights[i].id !== id) {
-      newHighLights.push(meta.highlight[i]);
+      newHighLights.push(meta.highlights[i]);
     }
   }
 
@@ -375,7 +375,7 @@ export function deleteHighlight(id, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}).then(next),
   };
 }
 
@@ -420,7 +420,7 @@ export function likeReview(id, book) {
   };
 }
 
-export function deleteReview(id, book) {
+export function deleteReview(id, book, next) {
   let meta = book.meta;
   let newReviews = [];
 
@@ -428,16 +428,16 @@ export function deleteReview(id, book) {
 
   for (let i in meta.reviews) {
     if (meta.reviews[i].id !== id) {
-      meta.push(meta.highlight[i]);
+      newReviews.push(meta.reviews[i]);
     }
   }
 
-  meta.reviews = meta;
+  meta.reviews = newReviews;
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}).then(next),
   };
 }
 

@@ -1,14 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import {Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as bookActions from '../ducks/books';
 
 @connect(
   state => ({
     user: state.auth.user
   }),
   dispatch => ({
-    ...bindActionCreators({}, dispatch)
+    ...bindActionCreators(bookActions, dispatch)
   })
 )
 
@@ -16,6 +18,7 @@ export default class Reviews extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
     user: PropTypes.object,
+    deleteReview: PropTypes.func,
   };
 
   render() {
@@ -29,7 +32,10 @@ export default class Reviews extends Component {
           <ul>
             {reviews.map((item) =>
               <li key={item.id || ''}>
-                {item.text} {this.printRating(item.rating)} {this.props.user ? <Link to={'/book/' + book.id + '/review/' + item.id }>(edit)</Link> : ''}
+                {item.text}
+                {this.printRating(item.rating)}
+                {this.props.user ? <Link to={'/book/' + book.id + '/review/' + item.id }>(edit)</Link> : ''}
+                {this.props.user ? <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button> : ''}
               </li>
             )}
           </ul>
@@ -38,6 +44,15 @@ export default class Reviews extends Component {
         }
       </div>
     );
+  }
+
+  deleteItem(reviewId) {
+    const {book} = this.props;
+    return e => {
+      if (confirm('Are you sure you want to delete this review?')) {
+        this.props.deleteReview(reviewId, book);
+      }
+    };
   }
 
   printRating(rating) {
