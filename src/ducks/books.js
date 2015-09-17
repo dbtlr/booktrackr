@@ -19,10 +19,10 @@ const initialState = {
   bookList: [],
   allBooks: [],
   nextPage: 1,
-  hasMorePages: true
+  hasMorePages: true,
 };
 
-// Stole this from PHP.js, in order to combat the fact the WP turns on 
+// Stole this from PHP.js, in order to combat the fact the WP turns on
 // magic_quotes by default. What is this, PHP 4? (sad panda...)
 function stripslashes(str) {
   return (str + '')
@@ -57,7 +57,7 @@ function filterBooks(books) {
       meta: {},
       terms: {},
       genre: [],
-      cover: ''
+      cover: '',
     };
 
     let meta = item._embedded['http://v2.wp-api.org/meta'];
@@ -83,7 +83,7 @@ function filterBooks(books) {
     if (terms) {
       book.terms = terms;
       for (let key in terms[0]) {
-          book.genre.push(terms[0][key].name);
+        book.genre.push(terms[0][key].name);
       }
     }
 
@@ -95,9 +95,9 @@ function filterBooks(books) {
 
 export function readableStatus(status) {
   const statuses = {
-    'read': 'Read',
+    read: 'Read',
     'to-read': 'To Read',
-    'reading': 'Currently Reading'
+    reading: 'Currently Reading',
   };
 
   return statuses[status] || status;
@@ -108,12 +108,12 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case LOAD_ONE:
       return {
         ...state,
-        loadingOne: true
+        loadingOne: true,
       };
     case LOAD_SUCCESS:
       const bookList = state.bookList || [];
@@ -146,57 +146,57 @@ export default function reducer(state = initialState, action = {}) {
         bookList: bookList,
         nextPage: state.nextPage + 1,
         hasMorePages: action.result.length > 0,
-        error: null
+        error: null,
       };
     case LOAD_FAIL:
       return {
         ...state,
         loading: false,
         loaded: false,
-        error: { msg: action.error.message, stack: action.error.stack }
+        error: { msg: action.error.message, stack: action.error.stack },
       };
     case SAVE:
       return state;
     case SAVE_SUCCESS:
-      const save_data = [...state.data];
-      save_data[action.result.id - 1] = action.result;
+      const saveData = [...state.data];
+      saveData[action.result.id - 1] = action.result;
       return {
         ...state,
-        data: save_data,
+        data: saveData,
         editing: {
           ...state.editing,
-          [action.id]: false
+          [action.id]: false,
         },
         saveError: {
           ...state.saveError,
-          [action.id]: null
-        }
+          [action.id]: null,
+        },
       };
     case SAVE_FAIL:
       return {
         ...state,
         saveError: {
           ...state.saveError,
-          [action.id]: { msg: action.error.message, stack: action.error.stack }
-        }
+          [action.id]: { msg: action.error.message, stack: action.error.stack },
+        },
       };
     case ADD:
       return {
         ...state,
         adding: true,
-        addErrors: []
-      }; 
+        addErrors: [],
+      };
     case ADD_SUCCESS:
       return {
         ...state,
         adding: false,
-        addErrors: []
+        addErrors: [],
       };
-    case ADD_FAIL: 
+    case ADD_FAIL:
       return {
         ...state,
         adding: false,
-        addError: { msg: action.error.message, stack: action.error.stack }
+        addError: { msg: action.error.message, stack: action.error.stack },
       };
     default:
       return state;
@@ -214,14 +214,14 @@ export function isListLoaded(state) {
 export function load(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks)
+    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }).then(filterBooks),
   };
 }
 
 export function loadOne(bookId) {
   return {
     types: [LOAD_ONE, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books/' + bookId, { params: { '_embed': 1 }, wp: true }).then(filterBooks)
+    promise: (client) => client.get('books/' + bookId, { params: { '_embed': 1 }, wp: true }).then(filterBooks),
   };
 }
 
@@ -229,7 +229,7 @@ export function save(data, originalBook, next) {
   const newBook = {
     title: data.title,
     status: 'publish',
-    featured_image: book.cover ? book.cover.id : originalBook.featured_image
+    featured_image: book.cover ? book.cover.id : originalBook.featured_image,
   }
 
   let meta = originalBook.meta;
@@ -243,7 +243,7 @@ export function save(data, originalBook, next) {
   if (meta.beganReadingDate == 'Invalid Date') meta.beganReadingDate = '';
   if (meta.finishedReadingDate == 'Invalid Date') meta.finishedReadingDate = '';
 
-  next = next || ((res) => {return res});
+  next = next || ((res) => { return res; });
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
@@ -267,13 +267,13 @@ export function likeBook(book) {
 
   meta.likes = meta.likes || [];
   meta.likes.push({
-    date: new Date()
+    date: new Date(),
   });
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -285,13 +285,13 @@ export function addReview(review, rating, book) {
     text: review,
     rating: rating,
     likes: [],
-    createdDate: new Date()
+    createdDate: new Date(),
   });
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -302,13 +302,13 @@ export function addHighlight(highlight, book) {
     id: helper.generateUUID(),
     text: highlight,
     likes: [],
-    createdDate: new Date()
+    createdDate: new Date(),
   });
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -327,7 +327,7 @@ export function updateHighlight(id, highlight, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -339,7 +339,7 @@ export function likeHighlight(id, book) {
     if (meta.highlights[i].id === id) {
       meta.highlights[i].like = meta.highlights[i].like || [];
       meta.highlights[i].like.push({
-        date: new Date()
+        date: new Date(),
       });
       break;
     }
@@ -348,7 +348,7 @@ export function likeHighlight(id, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -369,7 +369,7 @@ export function deleteHighlight(id, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -389,7 +389,7 @@ export function updateReview(id, review, rating, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -401,7 +401,7 @@ export function likeReview(id, book) {
     if (meta.reviews[i].id === id) {
       meta.reviews[i].like = meta.reviews[i].like || [];
       meta.reviews[i].like.push({
-        date: new Date()
+        date: new Date(),
       });
       break;
     }
@@ -410,7 +410,7 @@ export function likeReview(id, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -431,7 +431,7 @@ export function deleteReview(id, book) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     id: book.id,
-    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true})
+    promise: (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}),
   };
 }
 
@@ -442,12 +442,12 @@ export function add(book, next) {
   if (book.beganReadingDate == 'Invalid Date') book.beganReadingDate = '';
   if (book.finishedReadingDate == 'Invalid Date') book.finishedReadingDate = '';
 
-  next = next || ((res) => {return res});
+  next = next || ((res) => { return res; });
 
   const data = {
     title: book.title,
     status: 'publish',
-    featured_image: book.cover ? book.cover.id : null
+    featured_image: book.cover ? book.cover.id : null,
   }
 
   return {

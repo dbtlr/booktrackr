@@ -6,7 +6,7 @@ export default class CommentItem extends Component {
     name: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
     url: PropTypes.string,
-    comment: PropTypes.string.isRequired
+    comment: PropTypes.string.isRequired,
   };
 
   render() {
@@ -21,7 +21,7 @@ export default class CommentItem extends Component {
           {date.toDateString()}
         </Col>
         <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment}}>
-          
+
         </Col>
       </Row>
     );

@@ -20,7 +20,7 @@ export default class DragDropFileField extends Component {
     onDrop: React.PropTypes.func,
     onFileClear: React.PropTypes.func,
     accept: React.PropTypes.string,
-    multiple: React.PropTypes.bool
+    multiple: React.PropTypes.bool,
   }
 
   static defaultProps = {
@@ -31,7 +31,7 @@ export default class DragDropFileField extends Component {
     dragActiveStyle: {},
     maxFileCount: 1,
     onDrop: () => {},
-    onFileClear: () => {}
+    onFileClear: () => {},
   }
 
   componentDidMount() {}
@@ -45,7 +45,7 @@ export default class DragDropFileField extends Component {
   handleDragLeave(e) {
     if (this.state.isDragActive) {
       this.setState({
-        isDragActive: false
+        isDragActive: false,
       });
     }
   }
@@ -55,7 +55,7 @@ export default class DragDropFileField extends Component {
     e.dataTransfer.dropEffect = 'copy';
     if (!this.state.isDragActive) {
       this.setState({
-        isDragActive: true
+        isDragActive: true,
       });
     }
 
@@ -66,10 +66,10 @@ export default class DragDropFileField extends Component {
     let files;
 
     if (e.dataTransfer) {
-     files = e.dataTransfer.files;
+      files = e.dataTransfer.files;
 
     } else if (e.target) {
-     files = e.target.files;
+      files = e.target.files;
     }
 
     this.setFiles(files, e);
@@ -84,8 +84,8 @@ export default class DragDropFileField extends Component {
       let files = Array.prototype.slice.call(_files, 0, this.props.maxFileCount);
       this.setState({
         files: files,
-        isDragActive: false
-      }, () =>{
+        isDragActive: false,
+      }, () => {
         this.props.onDrop(e, files);
       });
     }
@@ -93,15 +93,14 @@ export default class DragDropFileField extends Component {
 
   clearFiles() {
     this.setState({
-      files:[]
+      files: [],
     }, () => {
-      React.findDOMNode(this.refs.hiddenFileInput).value='';
+      React.findDOMNode(this.refs.hiddenFileInput).value = '';
       this.props.onFileClear();
     });
   }
 
   render() {
-
     let rootStyle = styles.dragdropField.root;
     let textFieldStyle = styles.dragdropField.textField;
     let previewStyle = styles.dragdropField.hidden;
@@ -115,7 +114,7 @@ export default class DragDropFileField extends Component {
 
     let preview;
     if (this.state.files.length > 0) {
-      preview = Array.prototype.map.call(this.state.files, (f, i) =>{
+      preview = Array.prototype.map.call(this.state.files, (f, i) => {
         if (f.type.indexOf('image') > -1) {
           let src = helper.getUrl().createObjectURL(f);
 

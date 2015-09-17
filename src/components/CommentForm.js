@@ -14,7 +14,7 @@ import * as commentActions from '../ducks/comments';
 export default class CommentForm extends Component {
   static propTypes = {
     addComment: PropTypes.func,
-    book: PropTypes.object.isRequired
+    book: PropTypes.object.isRequired,
   };
 
   render() {
@@ -22,7 +22,7 @@ export default class CommentForm extends Component {
     const styles = require('./scss/CommentForm.scss');
 
     return (
-      <form ref='form' className={styles.commentForm + " form-vertical"} onSubmit={::this.submitForm}>
+      <form ref='form' className={styles.commentForm + ' form-vertical'} onSubmit={::this.submitForm}>
         <Input
           type='text'
           label='Name'
@@ -52,7 +52,7 @@ export default class CommentForm extends Component {
           wrapperClassName='col-xs-10'
           ref='comment' />
 
-        <Button bsStyle="primary" type="submit">Add Comment</Button>
+        <Button bsStyle='primary' type='submit'>Add Comment</Button>
       </form>
     );
 
@@ -66,8 +66,8 @@ export default class CommentForm extends Component {
       author_name: this.refs.name.getValue(),
       author_email: this.refs.email.getValue(),
       author_url: this.refs.url.getValue(),
-      content: this.refs.comment.getValue()
-    }
+      content: this.refs.comment.getValue(),
+    };
 
     this.props.addComment(data, function(comment) {
       // Reset the form on sumbit.

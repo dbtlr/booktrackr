@@ -7,7 +7,7 @@ const LOAD_FAIL = 'booktrackr/tags/LOAD_FAIL';
 const initialState = {
   loaded: false,
   editing: {},
-  saveError: {}
+  saveError: {},
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -17,7 +17,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: true,
         loaded: false,
-        error: null
+        error: null,
       };
 
     case LOAD_SUCCESS:
@@ -32,14 +32,14 @@ export default function reducer(state = initialState, action = {}) {
         tags: loadTags,
         loading: false,
         loaded: true,
-        error: null
+        error: null,
       };
     case LOAD_FAIL:
       return {
         ...state,
         loading: false,
         loaded: false,
-        error: { msg: action.error.message, stack: action.error.stack }
+        error: { msg: action.error.message, stack: action.error.stack },
       };
     default:
       return state;
@@ -53,6 +53,6 @@ export function areTagsLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/terms/genre', { params: {per_page: 100}, wp: true })
+    promise: (client) => client.get('/terms/genre', { params: {per_page: 100}, wp: true }),
   };
 }

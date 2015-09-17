@@ -15,7 +15,7 @@ import {bindActionCreators} from 'redux';
 export default class Highlights extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
-    user: PropTypes.object
+    user: PropTypes.object,
   };
 
   render() {
@@ -27,15 +27,15 @@ export default class Highlights extends Component {
         <h3>Highlights</h3>
         {highlights.length > 0 ?
           <ul>
-            {highlights.map((item) => 
+            {highlights.map((item) =>
               <li key={item.id || ''}>
                 {item.text}
               </li>
             )}
-            <li><Link to={"/book/" + book.id + "/add-highlight"}>Add another highlight</Link></li>
+            <li><Link to={'/book/' + book.id + '/add-highlight'}>Add another highlight</Link></li>
           </ul>
           :
-          <p>No highlights yet. {this.props.user ? <Link to={"/book/" + book.id + "/add-highlight"}>Add one</Link> : ''}</p>
+          <p>No highlights yet. {this.props.user ? <Link to={'/book/' + book.id + '/add-highlight'}>Add one</Link> : ''}</p>
         }
       </div>
     );

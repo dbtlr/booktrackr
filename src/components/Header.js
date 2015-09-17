@@ -12,32 +12,32 @@ export default class Header extends Component {
     let user = this.props.user;
 
     return (
-      <header className="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
-        <div className="container">
-          <div className="navbar-header">
-            <button className="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
+      <header className='navbar navbar-static-top bs-docs-nav' id='top' role='banner'>
+        <div className='container'>
+          <div className='navbar-header'>
+            <button className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#bs-navbar' aria-controls='bs-navbar' aria-expanded='false'>
+              <span className='sr-only'>Toggle navigation</span>
+              <span className='icon-bar'></span>
+              <span className='icon-bar'></span>
+              <span className='icon-bar'></span>
             </button>
-            <Link to="/" className="navbar-brand">BookTrackr</Link>
+            <Link to='/' className='navbar-brand'>BookTrackr</Link>
           </div>
-          <nav id="bs-navbar" className="collapse navbar-collapse">
-            <ul className="nav navbar-nav">
+          <nav id='bs-navbar' className='collapse navbar-collapse'>
+            <ul className='nav navbar-nav'>
               <li>
-                <Link to="/">Books</Link>
+                <Link to='/'>Books</Link>
               </li>
             </ul>
-            { 
+            {
               user ?
-                <ul className="nav navbar-nav navbar-right">
-                  <li><Link to="/add-book">Add Book</Link></li>
-                  <li><a onClick={::this.handleLogout} href="javascript:;">Logout</a></li>
+                <ul className='nav navbar-nav navbar-right'>
+                  <li><Link to='/add-book'>Add Book</Link></li>
+                  <li><a onClick={::this.handleLogout} href='javascript:;'>Logout</a></li>
                 </ul>
               :
-                <ul className="nav navbar-nav navbar-right">
-                  <li><Link to="/login">Login</Link></li>
+                <ul className='nav navbar-nav navbar-right'>
+                  <li><Link to='/login'>Login</Link></li>
                 </ul>
             }
           </nav>

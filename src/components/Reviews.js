@@ -15,7 +15,7 @@ import {bindActionCreators} from 'redux';
 export default class Reviews extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
-    user: PropTypes.object
+    user: PropTypes.object,
   };
 
   render() {
@@ -27,15 +27,15 @@ export default class Reviews extends Component {
         <h3>Reviews</h3>
         {reviews.length > 0 ?
           <ul>
-            {reviews.map((item) => 
+            {reviews.map((item) =>
               <li key={item.id || ''}>
                 {item.text} {this.printRating(item.rating)}
               </li>
             )}
-            <li><Link to={"/book/" + book.id + "/add-review"}>Add another review</Link></li>
+            <li><Link to={'/book/' + book.id + '/add-review'}>Add another review</Link></li>
           </ul>
           :
-          <p>No Reviews Yet. {this.props.user ? <Link to={"/book/" + book.id + "/add-review"}>Add one</Link> : ''}</p>
+          <p>No Reviews Yet. {this.props.user ? <Link to={'/book/' + book.id + '/add-review'}>Add one</Link> : ''}</p>
         }
       </div>
     );
@@ -43,7 +43,7 @@ export default class Reviews extends Component {
 
   printRating(rating) {
     let rendered = [];
-    for (let i=1; i <= 5; i++) {
+    for (let i = 1; i <= 5; i++) {
       rendered.push(<span>★</span>);
     }
 

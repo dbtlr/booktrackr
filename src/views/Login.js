@@ -13,7 +13,7 @@ export default class Login extends Component {
       <Grid>
         <Row>
           <Col xs={4} xsOffset={4}>
-            <DocumentMeta title="Login | BookTrackr"/>
+            <DocumentMeta title='Login | BookTrackr'/>
             <header>
               <h1>Login</h1>
             </header>
@@ -21,7 +21,7 @@ export default class Login extends Component {
             <div>
               <h2>Step 1</h2>
               <p>First head over to the WordPress blog, login and authorize the connection. Once you have done that, copy the verificatiion token and come back here.
-              <Link className="btn btn-primary" to="/login/authorize" onClick={this.launchAuthorize}>Get Authorization Token</Link></p>
+              <Link className='btn btn-primary' to='/login/authorize' onClick={this.launchAuthorize}>Get Authorization Token</Link></p>
             </div>
           </Col>
         </Row>

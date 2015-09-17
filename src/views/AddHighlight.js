@@ -18,14 +18,14 @@ import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 
 export default class AddHighlight extends Component {
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   }
 
   static propTypes = {
     books: PropTypes.object,
     addHighlight: PropTypes.func,
     routeParams: PropTypes.object,
-    router: PropTypes.object
+    router: PropTypes.object,
   }
 
   render() {
@@ -44,13 +44,13 @@ export default class AddHighlight extends Component {
         <h1>Add a Highlight</h1>
         <p>For {book.title}</p>
 
-        <form className={"form-vertical"} onSubmit={::this.submitForm}>
+        <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
             type='textarea'
             rows='6'
             ref='highlist' />
 
-          <Button bsStyle="primary" type="submit">Add Highlight</Button>
+          <Button bsStyle='primary' type='submit'>Add Highlight</Button>
         </form>
       </Grid>
     );
@@ -75,4 +75,3 @@ export default class AddHighlight extends Component {
     }
   }
 }
-

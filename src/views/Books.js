@@ -26,9 +26,8 @@ export default class Books extends Component {
     books: PropTypes.array,
     loading: PropTypes.bool,
     hasMorePages: PropTypes.bool,
-    nextPage: PropTypes.number
+    nextPage: PropTypes.number,
   }
-
 
   render() {
     const styles = require('./scss/Books.scss');
@@ -37,7 +36,7 @@ export default class Books extends Component {
     return (
         <div className={styles.bookList + ' container'}>
           <Row>
-            {books.length > 0 && books.map((book) => 
+            {books.length > 0 && books.map((book) =>
               (book.meta.visibility == 'public' || auth.user) ?
                 <Col xs={12} sm={6} key={book.id}>
                   <BookItem book={book} />
@@ -49,7 +48,7 @@ export default class Books extends Component {
           </Row>
           <footer>
             {hasMorePages ?
-              <Button bsStyle="default" onClick={::this.loadMoreBooks}>Load More Books</Button>
+              <Button bsStyle='default' onClick={::this.loadMoreBooks}>Load More Books</Button>
               :
               ''
             }
@@ -68,4 +67,3 @@ export default class Books extends Component {
     }
   }
 }
-

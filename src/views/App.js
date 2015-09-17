@@ -29,9 +29,9 @@ const meta = {
       'twitter:description': description,
       'twitter:image': image,
       'twitter:image:width': '200',
-      'twitter:image:height': '200'
-    }
-  }
+      'twitter:image:height': '200',
+    },
+  },
 };
 
 @connect(
@@ -43,12 +43,12 @@ export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
     user: PropTypes.object,
-    logout: PropTypes.func.isRequired
+    logout: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
@@ -76,4 +76,3 @@ export default class App extends Component {
     );
   }
 }
-

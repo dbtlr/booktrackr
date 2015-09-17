@@ -6,7 +6,7 @@ const ADD_SUCCESS = 'booktrackr/cover/LOGIN_SUCCESS';
 const ADD_FAIL = 'booktrackr/cover/ADD_FAIL';
 
 const initialState = {
-  loaded: false
+  loaded: false,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -14,7 +14,7 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case LOAD_SUCCESS:
       const loadCovers = state.covers || {};
@@ -24,7 +24,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: true,
-        covers: loadCovers
+        covers: loadCovers,
       };
 
     case LOAD_FAIL:
@@ -32,13 +32,13 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: false,
-        error: { msg: action.error.message, stack: action.error.stack }
+        error: { msg: action.error.message, stack: action.error.stack },
       };
 
     case ADD:
       return {
         ...state,
-        adding: true
+        adding: true,
       };
 
     case ADD_SUCCESS:
@@ -48,14 +48,14 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         adding: false,
-        covers: addCovers
+        covers: addCovers,
       };
 
     case ADD_FAIL:
       return {
         ...state,
         adding: false,
-        addError: { msg: action.error.message, stack: action.error.stack }
+        addError: { msg: action.error.message, stack: action.error.stack },
       };
 
     default:
@@ -66,6 +66,6 @@ export default function reducer(state = initialState, action = {}) {
 export function upload(file, next) {
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('media', { wp: true, files: {file: file} }).then(next)
+    promise: (client) => client.post('media', { wp: true, files: {file: file} }).then(next),
   };
 }

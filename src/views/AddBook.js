@@ -19,21 +19,21 @@ export default class AddBook extends Component {
     this.state = {
       cover: null,
       filename: null,
-      uploading: false
+      uploading: false,
     };
   }
 
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   }
-  
+
   static propTypes = {
     add: PropTypes.func,
     upload: PropTypes.func,
     tags: PropTypes.object,
     api: PropTypes.object,
     cover: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
   }
 
   render() {
@@ -41,12 +41,12 @@ export default class AddBook extends Component {
 
     let tags = [];
     for (let id in this.props.tags) {
-      tags.push(<Col key={id} lg={3} xs={6}><Input type="checkbox" label={this.props.tags[id]} ref={'tags-' + id} value={id} /></Col>);
+      tags.push(<Col key={id} lg={3} xs={6}><Input type='checkbox' label={this.props.tags[id]} ref={'tags-' + id} value={id} /></Col>);
     }
 
     return (
       <Grid className='form-horizontal'>
-        <DocumentMeta title="Add Book | BookTrackr"/>
+        <DocumentMeta title='Add Book | BookTrackr'/>
         <header>
           <h1>Add a Book</h1>
         </header>
@@ -71,7 +71,7 @@ export default class AddBook extends Component {
           placeholder='select'
           ref='status'
           labelClassName='col-xs-2'
-          wrapperClassName='col-xs-10'>                  
+          wrapperClassName='col-xs-10'>
             <option value='to-read'>To Read</option>
             <option value='reading'>Currently Reading</option>
             <option value='read'>Read</option>
@@ -99,7 +99,7 @@ export default class AddBook extends Component {
           placeholder='select'
           ref='visibility'
           labelClassName='col-xs-2'
-          wrapperClassName='col-xs-10'>                  
+          wrapperClassName='col-xs-10'>
             <option value='public'>Public</option>
             <option value='private'>Private</option>
         </Input>
@@ -122,7 +122,7 @@ export default class AddBook extends Component {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button bsStyle="primary" type="submit" onClick={::this.handleSubmit}>Add Book</Button>
+          <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>Add Book</Button>
         </div>
       </Grid>
     )
@@ -153,7 +153,7 @@ export default class AddBook extends Component {
     this.props.upload(file, function(cover) {
       this.setState({
         cover: cover,
-        uploading: false
+        uploading: false,
       });
 
       return cover;
@@ -163,7 +163,7 @@ export default class AddBook extends Component {
   clearCover() {
     this.setState({
       cover: null,
-      filename: null
+      filename: null,
     });
   }
 
@@ -171,7 +171,7 @@ export default class AddBook extends Component {
     event.preventDefault();
 
     const router = this.context.router;
-    
+
     let data = {
       title: this.refs.title.getValue(),
       author: this.refs.author.getValue(),
@@ -179,10 +179,9 @@ export default class AddBook extends Component {
       beganReadingDate: this.refs.beganReadingDate.getValue(),
       finishedReadingDate: this.refs.finishedReadingDate.getValue(),
       visibility: this.refs.visibility.getValue(),
-      cover: this.state.cover ? { id: this.state.cover.id, url: this.state.cover.source_url } : null,
-      tags: []
+      cover: this.state.cover ? { id: this.state.cover.id, url: this.state.cover.sourceUrl } : null,
+      tags: [],
     };
-
 
     for (let id in this.props.tags) {
       if (this.refs['tags-' + id].getChecked()) {

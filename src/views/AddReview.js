@@ -18,13 +18,13 @@ import {Grid, Row, Col, Input, Button} from 'react-bootstrap';
 
 export default class AddReview extends Component {
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   }
 
   static propTypes = {
     books: PropTypes.object,
     addReview: PropTypes.func,
-    routeParams: PropTypes.object
+    routeParams: PropTypes.object,
   }
 
   render() {
@@ -39,7 +39,8 @@ export default class AddReview extends Component {
     const book = books.allBooks[bookId];
 
     let ratings = [];
-    for (let i=1; i <= 5; i++) {
+
+    for (let i = 1; i <= 5; i++) {
       ratings.push(
         <label key={'rating-' + i}>
           <input
@@ -51,13 +52,12 @@ export default class AddReview extends Component {
         );
     }
 
-
     return (
       <Grid className={styles.addReview}>
         <h1>Add a Review</h1>
         <p>For {book.title}</p>
 
-        <form className={"form-vertical"} onSubmit={::this.submitForm}>
+        <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
             type='textarea'
             rows='6'
@@ -68,7 +68,7 @@ export default class AddReview extends Component {
             <Col xs={11} className={styles.ratings}>{ratings}</Col>
           </div>
 
-          <Button bsStyle="primary" type="submit">Add Review</Button>
+          <Button bsStyle='primary' type='submit'>Add Review</Button>
         </form>
       </Grid>
     );
@@ -78,7 +78,7 @@ export default class AddReview extends Component {
     event.preventDefault();
 
     let rating = 0;
-    for (let i=1; i <= 5; i++) {
+    for (let i = 1; i <= 5; i++) {
       let node = React.findDOMNode(this.refs['rating-' + i]);
 
       if (node.checked === i) {
@@ -103,4 +103,3 @@ export default class AddReview extends Component {
     }
   }
 }
-

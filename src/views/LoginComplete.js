@@ -13,7 +13,7 @@ export default class LoginComplete extends Component {
       <Grid>
         <Row>
           <Col xs={4} xsOffset={4}>
-            <DocumentMeta title="Login | BookTrackr"/>
+            <DocumentMeta title='Login | BookTrackr'/>
             <header>
               <h1>Login</h1>
             </header>
@@ -21,7 +21,6 @@ export default class LoginComplete extends Component {
             <div>
               <h2>Completed</h2>
               <p>You're all set!</p>
-              
             </div>
           </Col>
         </Row>

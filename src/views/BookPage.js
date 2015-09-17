@@ -26,7 +26,7 @@ import {Grid, Row, Col} from 'react-bootstrap';
 export default class BookPage extends Component {
   static propTypes = {
     books: PropTypes.object,
-    routeParams: PropTypes.object
+    routeParams: PropTypes.object,
   }
 
   render() {
@@ -55,14 +55,14 @@ export default class BookPage extends Component {
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title}</h1>
 
-            <div className="author">Author: {meta.author}</div>
-            <div className="genre">Genre: {book.genre.join(', ')}</div>
-            <div className="status">Status: {bookActions.readableStatus(meta.status)}</div>
-            {beganDate ? 
-              <div className="beganDate">Date Started Reading: {beganDate.toDateString()}</div> : ''
+            <div className='author'>Author: {meta.author}</div>
+            <div className='genre'>Genre: {book.genre.join(', ')}</div>
+            <div className='status'>Status: {bookActions.readableStatus(meta.status)}</div>
+            {beganDate ?
+              <div className='beganDate'>Date Started Reading: {beganDate.toDateString()}</div> : ''
             }
-            {finishedDate ? 
-              <div className="endDate">Date Finished Reading: {finishedDate.toDateString()}</div> : ''
+            {finishedDate ?
+              <div className='endDate'>Date Finished Reading: {finishedDate.toDateString()}</div> : ''
             }
             <Reviews book={book} />
             <Highlights book={book} />
@@ -91,4 +91,3 @@ export default class BookPage extends Component {
     return promises;
   }
 }
-

@@ -13,11 +13,11 @@ import * as auth from '../ducks/auth';
 
 export default class LoginAuthorize extends Component {
   static propTypes = {
-    authorize: PropTypes.func
+    authorize: PropTypes.func,
   }
 
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   }
 
   render() {
@@ -27,7 +27,7 @@ export default class LoginAuthorize extends Component {
       <Grid>
         <Row>
           <Col xs={4} xsOffset={4}>
-            <DocumentMeta title="Login | BookTrackr"/>
+            <DocumentMeta title='Login | BookTrackr'/>
             <header>
               <h1>Login</h1>
             </header>
@@ -41,7 +41,7 @@ export default class LoginAuthorize extends Component {
                   placeholder='Verification Token'
                   ref='verificationToken' />
 
-                <Button bsStyle="primary" type="submit">Verify</Button>
+                <Button bsStyle='primary' type='submit'>Verify</Button>
               </form>
             </div>
           </Col>
