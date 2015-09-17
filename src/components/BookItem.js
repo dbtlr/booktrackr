@@ -5,7 +5,7 @@ import * as bookActions from '../ducks/books';
 
 export default class BookItem extends Component {
   static propTypes = {
-    book: PropTypes.object.isRequired
+    book: PropTypes.object.isRequired,
   };
 
   render() {

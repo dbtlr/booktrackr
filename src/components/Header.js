@@ -5,7 +5,7 @@ import {Navbar, Nav, NavItem} from 'react-bootstrap';
 export default class Header extends Component {
   static propTypes = {
     logout: PropTypes.func.isRequired,
-    user: PropTypes.object
+    user: PropTypes.object,
   };
 
   render() {

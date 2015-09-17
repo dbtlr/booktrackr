@@ -13,5 +13,5 @@ export default combineReducers({
   books,
   cover,
   comments,
-  tags
+  tags,
 });

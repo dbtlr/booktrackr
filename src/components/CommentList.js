@@ -11,7 +11,7 @@ import * as commentActions from '../ducks/comments';
 export default class CommentList extends Component {
   static propTypes = {
     book: PropTypes.object,
-    comments: PropTypes.object
+    comments: PropTypes.object,
   };
 
   render() {
@@ -33,7 +33,7 @@ export default class CommentList extends Component {
             </li>)}
           </ul>
           :
-          <Alert bsStyle="warning" className={styles.commentListAlert}>No comments yet.</Alert>
+          <Alert bsStyle='warning' className={styles.commentListAlert}>No comments yet.</Alert>
         }
       </div>
     );
