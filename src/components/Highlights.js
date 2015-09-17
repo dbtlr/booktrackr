@@ -3,14 +3,14 @@ import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {Button} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import * as bookActions from '../ducks/books';
+import * as highlightActions from '../ducks/highlights';
 
 @connect(
   state => ({
     user: state.auth.user
   }),
   dispatch => ({
-    ...bindActionCreators(bookActions, dispatch)
+    ...bindActionCreators(highlightActions, dispatch)
   })
 )
 

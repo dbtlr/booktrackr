@@ -3,19 +3,19 @@ import {bindActionCreators} from 'redux';
 import DocumentMeta from 'react-document-meta';
 import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
-import * as bookActions from '../ducks/books';
+import * as bookListActions from '../ducks/book-list';
 import BookItem from '../components/BookItem';
 import {Grid, Row, Col, Button} from 'react-bootstrap';
 
 @connect(
   state => ({
     auth: state.auth,
-    books: state.books.bookList,
-    loading: state.books.loading,
-    nextPage: state.books.nextPage,
-    hasMorePages: state.books.hasMorePages,
+    books: state.bookList.bookList,
+    loading: state.bookList.loading,
+    nextPage: state.bookList.nextPage,
+    hasMorePages: state.bookList.hasMorePages,
   }),
-  dispatch => bindActionCreators(bookActions, dispatch)
+  dispatch => bindActionCreators(bookListActions, dispatch)
 )
 
 export default class Books extends Component {
@@ -23,7 +23,7 @@ export default class Books extends Component {
   static propTypes = {
     load: PropTypes.func,
     auth: PropTypes.object,
-    books: PropTypes.array,
+    books: PropTypes.object,
     loading: PropTypes.bool,
     hasMorePages: PropTypes.bool,
     nextPage: PropTypes.number,
@@ -33,18 +33,26 @@ export default class Books extends Component {
     const styles = require('./scss/Books.scss');
     const {books, loading, auth, hasMorePages} = this.props;
 
+    let list = [];
+
+    for (let id in books) {
+      let book = books[id];
+      if (book.meta.visibility == 'private' && !auth.user) {
+        continue;
+      }
+
+
+      list.push(
+        <Col xs={12} sm={6} key={book.id}>
+          <BookItem book={book} />
+        </Col>
+      );
+    }
+
     return (
         <div className={styles.bookList + ' container'}>
           <Row>
-            {books.length > 0 && books.map((book) =>
-              (book.meta.visibility == 'public' || auth.user) ?
-                <Col xs={12} sm={6} key={book.id}>
-                  <BookItem book={book} />
-                </Col>
-                :
-                ''
-              )
-            }
+            {list}
           </Row>
           <footer>
             {hasMorePages ?
@@ -58,12 +66,12 @@ export default class Books extends Component {
   }
 
   loadMoreBooks() {
-    this.props.load(this.props.nextPage);
+    this.props.loadList(this.props.nextPage);
   }
 
   static fetchData(store) {
-    if (!bookActions.isListLoaded(store.getState())) {
-      return store.dispatch(bookActions.load(1));
+    if (!bookListActions.isListLoaded(store.getState())) {
+      return store.dispatch(bookListActions.loadList(1));
     }
   }
 }

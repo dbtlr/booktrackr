@@ -1,16 +1,20 @@
 import * as helper from '../utils/Helper';
-import * as coverActions from './cover'
 
-const LOAD = 'booktrackr/books/LOAD';
-const LOAD_ONE = 'booktrackr/books/LOAD_ONE';
-const LOAD_SUCCESS = 'booktrackr/books/LOAD_SUCCESS';
-const LOAD_FAIL = 'booktrackr/books/LOAD_FAIL';
-const SAVE = 'booktrackr/books/SAVE';
-const SAVE_SUCCESS = 'booktrackr/books/SAVE_SUCCESS';
-const SAVE_FAIL = 'booktrackr/books/SAVE_FAIL';
-const ADD = 'booktrackr/books/ADD';
-const ADD_SUCCESS = 'booktrackr/books/ADD_SUCCESS';
-const ADD_FAIL = 'booktrackr/books/ADD_FAIL';
+const LOAD = 'booktrackr/book/LOAD';
+const LOAD_SUCCESS = 'booktrackr/book/LOAD_SUCCESS';
+const LOAD_FAIL = 'booktrackr/book/LOAD_FAIL';
+const SAVE = 'booktrackr/book/SAVE';
+const SAVE_SUCCESS = 'booktrackr/book/SAVE_SUCCESS';
+const SAVE_FAIL = 'booktrackr/book/SAVE_FAIL';
+const ADD = 'booktrackr/book/ADD';
+const ADD_SUCCESS = 'booktrackr/book/ADD_SUCCESS';
+const ADD_FAIL = 'booktrackr/book/ADD_FAIL';
+const DELETE = 'booktrackr/book/DELETE';
+const DELETE_SUCCESS = 'booktrackr/book/DELETE_SUCCESS';
+const DELETE_FAIL = 'booktrackr/book/DELETE_FAIL';
+const LIKE = 'booktrackr/book/LIKE';
+const LIKE_SUCCESS = 'booktrackr/book/LIKE_SUCCESS';
+const LIKE_FAIL = 'booktrackr/book/LIKE_FAIL';
 
 const initialState = {
   loading: false,
@@ -32,6 +36,16 @@ export function formatBook(item) {
     genre: [],
     cover: '',
   };
+
+  export function readableStatus(status) {
+    const statuses = {
+      read: 'Read',
+      'to-read': 'To Read',
+      reading: 'Currently Reading',
+    };
+
+    return statuses[status] || status;
+  }
 
   let meta = item._embedded['http://v2.wp-api.org/meta'];
   if (meta) {
@@ -67,6 +81,10 @@ export function formatBook(item) {
   return book;
 }
 
+export function saveMetaPromise(book, meta) {
+  return (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true});
+}
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
@@ -85,6 +103,23 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
+        error: { msg: action.error.message, stack: action.error.stack },
+      };
+    case LIKE:
+      return {
+        ...state,
+        deleting: true,
+      };
+    case LIKE_SUCCESS:
+      return {
+        ...state,
+        deleting: false,
+        error: null,
+      };
+    case LIKE_FAIL:
+      return {
+        ...state,
+        deleting: false,
         error: { msg: action.error.message, stack: action.error.stack },
       };
     case SAVE:
@@ -196,5 +231,20 @@ export function addBook(book, next) {
         .then((res) => { book.tags.map(tagId => client.post('books/' + res.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
         .then(next)
     }
+  };
+}
+
+export function likeBook(book) {
+  let meta = book.meta;
+
+  meta.likes = meta.likes || [];
+  meta.likes.push({
+    date: new Date(),
+  });
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: saveMetaPromise(book, meta),
   };
 }
