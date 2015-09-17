@@ -31,12 +31,30 @@ export default class EditReview extends Component {
     const styles = require('./scss/Books.scss');
     const {books} = this.props;
     const bookId = this.props.routeParams.bookId;
+    const reviewId = this.props.routeParams.reviewId;
 
     if (!books.allBooks || !books.allBooks[bookId]) {
       return (<NotFound />);
     }
 
     const book = books.allBooks[bookId];
+    let review;
+
+    if (reviewId) {
+      if (!book.meta || !book.meta.reviews) {
+        return (<NotFound />);
+      }
+
+      book.meta.reviews.map(item => {
+        if (item.id == reviewId) {
+          review = item;
+        }
+      });
+
+      if (!review) {
+        return (<NotFound />);
+      }
+    }
 
     let ratings = [];
 
@@ -47,20 +65,22 @@ export default class EditReview extends Component {
             type='radio'
             name='rating'
             ref={'rating-' + i }
+            defaultChecked={review && review.rating == i ? 1 : 0}
             value={i} /> {i}
         </label>
-        );
+      );
     }
 
     return (
       <Grid className={styles.addReview}>
-        <h1>Add a Review</h1>
+        <h1>{review ? 'Edit' : 'Add'} a Review</h1>
         <p>For {book.title}</p>
 
         <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
             type='textarea'
             rows='6'
+            defaultValue={review ? review.text : ''}
             ref='review' />
 
           <div className='form-group'>
@@ -68,7 +88,7 @@ export default class EditReview extends Component {
             <Col xs={11} className={styles.ratings}>{ratings}</Col>
           </div>
 
-          <Button bsStyle='primary' type='submit'>Add Review</Button>
+          <Button bsStyle='primary' type='submit'>{review ? 'Edit' : 'Add'} Review</Button>
         </form>
       </Grid>
     );
@@ -81,16 +101,21 @@ export default class EditReview extends Component {
     for (let i = 1; i <= 5; i++) {
       let node = React.findDOMNode(this.refs['rating-' + i]);
 
-      if (node.checked === i) {
+      if (node.checked) {
         rating = i;
         break;
       }
     }
 
     const bookId = this.props.routeParams.bookId;
+    const reviewId = this.props.routeParams.reviewId;
     const {books} = this.props;
 
-    this.props.addReview(this.refs.review.getValue(), rating, books.allBooks[bookId]);
+    if (reviewId) {
+      this.props.updateReview(reviewId, this.refs.review.getValue(), rating, books.allBooks[bookId]);
+    } else {
+      this.props.addReview(this.refs.review.getValue(), rating, books.allBooks[bookId]);
+    }
 
     this.context.router.transitionTo('/book/' + bookId);
   }

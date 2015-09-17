@@ -24,18 +24,17 @@ export default class Reviews extends Component {
 
     return (
       <div>
-        <h3>Reviews</h3>
+        <h3>Reviews {this.props.user ? <Link className='small' to={'/book/' + book.id + '/review'}>Add</Link> : ''}</h3>
         {reviews.length > 0 ?
           <ul>
             {reviews.map((item) =>
               <li key={item.id || ''}>
-                {item.text} {this.printRating(item.rating)}
+                {item.text} {this.printRating(item.rating)} {this.props.user ? <Link to={'/book/' + book.id + '/review/' + item.id }>(edit)</Link> : ''}
               </li>
             )}
-            {this.props.user ? <li><Link to={'/book/' + book.id + '/review'}>Add another review</Link></li> : ''}
           </ul>
           :
-          <p>No Reviews Yet. {this.props.user ? <Link to={'/book/' + book.id + '/review'}>Add one</Link> : ''}</p>
+          <p>No Reviews Yet.</p>
         }
       </div>
     );
@@ -43,7 +42,7 @@ export default class Reviews extends Component {
 
   printRating(rating) {
     let rendered = [];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= rating; i++) {
       rendered.push(<span>★</span>);
     }
 

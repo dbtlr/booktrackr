@@ -52,7 +52,7 @@ function filterBooks(books) {
     let book = {
       id: item.id,
       key: item.guid.raw,
-      title: item.title.raw,
+      title: stripslashes(item.title.raw),
       slug: item.slug || null,
       meta: {},
       terms: {},
@@ -65,6 +65,10 @@ function filterBooks(books) {
       for (let key in meta[0]) {
         if (meta[0][key].key == 'data') {
           book.meta = JSON.parse(stripslashes(meta[0][key].value));
+
+          if (book.meta.text) {
+            book.meta.text = stripslashes(book.meta.text);
+          }
         }
       }
     }

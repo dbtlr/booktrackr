@@ -32,25 +32,44 @@ export default class EditHighlight extends Component {
     const styles = require('./scss/Books.scss');
     const {books} = this.props;
     const bookId = this.props.routeParams.bookId;
+    const highlightId = this.props.routeParams.highlightId;
 
     if (!books.allBooks || !books.allBooks[bookId]) {
       return (<NotFound />);
     }
 
     const book = books.allBooks[bookId];
+    let highlight;
+
+    if (highlightId) {
+      if (!book.meta || !book.meta.highlights) {
+        return (<NotFound />);
+      }
+
+      book.meta.highlights.map(item => {
+        if (item.id == highlightId) {
+          highlight = item;
+        }
+      });
+
+      if (!highlight) {
+        return (<NotFound />);
+      }
+    }
 
     return (
       <Grid className={styles.addHighlight}>
-        <h1>Add a Highlight</h1>
+        <h1>{highlight ? 'Edit' : 'Add'} a Highlight</h1>
         <p>For {book.title}</p>
 
         <form className={'form-vertical'} onSubmit={::this.submitForm}>
           <Input
             type='textarea'
             rows='6'
-            ref='highlist' />
+            defaultValue={highlight ? highlight.text : ''}
+            ref='highlight' />
 
-          <Button bsStyle='primary' type='submit'>Add Highlight</Button>
+          <Button bsStyle='primary' type='submit'>{highlight ? 'Edit' : 'Add'} Highlight</Button>
         </form>
       </Grid>
     );
@@ -60,9 +79,14 @@ export default class EditHighlight extends Component {
     event.preventDefault();
 
     const bookId = this.props.routeParams.bookId;
+    const highlightId = this.props.routeParams.highlightId;
     const {books} = this.props;
 
-    this.props.addHighlight(this.refs.highlight.getValue(), books.allBooks[bookId]);
+    if (highlightId) {
+      this.props.updateHighlight(highlightId, this.refs.highlight.getValue(), books.allBooks[bookId]);
+    } else {
+      this.props.addHighlight(this.refs.highlight.getValue(), books.allBooks[bookId]);
+    }
 
     this.context.router.transitionTo('/book/' + bookId);
   }

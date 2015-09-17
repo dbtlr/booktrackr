@@ -24,18 +24,18 @@ export default class Highlights extends Component {
 
     return (
       <div>
-        <h3>Highlights</h3>
+        <h3>Highlights {this.props.user ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
         {highlights.length > 0 ?
           <ul>
             {highlights.map((item) =>
               <li key={item.id || ''}>
-                {item.text}
+                {item.text} {this.props.user ? <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link> : ''}
               </li>
             )}
-            {this.props.user ? <li><Link to={'/book/' + book.id + '/highlight'}>Add another highlight</Link></li> : ''}
+
           </ul>
           :
-          <p>No highlights yet. {this.props.user ? <Link to={'/book/' + book.id + '/highlight'}>Add one</Link> : ''}</p>
+          <p>No highlights yet.</p>
         }
       </div>
     );
