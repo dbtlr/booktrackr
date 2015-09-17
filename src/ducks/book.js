@@ -168,7 +168,7 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 export function isBookLoaded(state, bookId) {
-  return state.book && state.book.book && state.books.book.id === bookId;
+  return state.book && state.book.book && state.book.book.id === bookId;
 }
 
 export function loadBook(bookId) {
