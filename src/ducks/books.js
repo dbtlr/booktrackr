@@ -47,7 +47,6 @@ function filterBooks(books) {
     books = [books];
   }
 
-
   books.map(function(item) {
     let book = {
       id: item.id,
@@ -131,6 +130,9 @@ export default function reducer(state = initialState, action = {}) {
       }
 
       action.result.map(function(book) {
+        if (!book) {
+          return;
+        }
 
         allBooks[book.id] = book;
 
@@ -233,7 +235,7 @@ export function save(data, originalBook, next) {
   const newBook = {
     title: data.title,
     status: 'publish',
-    featured_image: book.cover ? book.cover.id : originalBook.featured_image,
+    featured_image: data.cover ? data.cover.id : originalBook.featured_image,
   }
 
   let meta = originalBook.meta;
@@ -251,11 +253,11 @@ export function save(data, originalBook, next) {
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    id: book.id,
+    id: data.id,
     promise: (client) => client.put('books/' + originalBook.id, { data: newBook, wp: true })
         .then((res) => { client.post('books/' + originalBook.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}); return res; })
-        .then((res) => { originalBook.terms.map(term => client.delete('books/' + originalBook.id + '/terms/genre/' + term.id, {data: {}, wp: true})); return res; })
-        .then((res) => { book.tags.map(tagId => client.post('books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
+        .then((res) => { originalBook.terms[0] && originalBook.terms[0].map(term => client.del('books/' + originalBook.id + '/terms/genre/' + term.id, {data: {}, wp: true})); return res; })
+        .then((res) => { data.tags.map(tagId => client.post('books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
         .then(next)
   };
 }

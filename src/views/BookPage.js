@@ -11,6 +11,7 @@ import NotFound from './NotFound';
 import * as bookActions from '../ducks/books';
 import * as commentActions from '../ducks/comments';
 import {Grid, Row, Col} from 'react-bootstrap';
+import {Link} from 'react-router';
 
 @connect(
   state => ({
@@ -26,6 +27,7 @@ import {Grid, Row, Col} from 'react-bootstrap';
 export default class BookPage extends Component {
   static propTypes = {
     books: PropTypes.object,
+    user: PropTypes.object,
     routeParams: PropTypes.object,
   }
 
@@ -53,7 +55,7 @@ export default class BookPage extends Component {
             <img className={styles.bookPageCover} src={book.cover} />
           </Col>
           <Col xs={12} md={6} lg={9}>
-            <h1>{book.title}</h1>
+            <h1>{book.title} {user ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
 
             <div className='author'>Author: {meta.author}</div>
             <div className='genre'>Genre: {book.genre.join(', ')}</div>

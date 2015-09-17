@@ -9,7 +9,7 @@ import * as tagActions from '../ducks/tags';
 import DragDropFileField from '../components/DragDropFileField';
 
 @connect(
-  state => ({api: state.api, user: state.user, cover: state.cover, tags: state.tags.tags}),
+  state => ({api: state.api, user: state.user, cover: state.cover, tags: state.tags.tags, books: state.books}),
   dispatch => bindActionCreators({...bookActions, ...coverActions, ...tagActions}, dispatch)
 )
 
@@ -29,8 +29,10 @@ export default class EditBook extends Component {
 
   static propTypes = {
     add: PropTypes.func,
+    save: PropTypes.func,
     upload: PropTypes.func,
     tags: PropTypes.object,
+    books: PropTypes.object,
     api: PropTypes.object,
     cover: PropTypes.object,
     user: PropTypes.object,
@@ -38,17 +40,44 @@ export default class EditBook extends Component {
 
   render() {
     const styles = require('./scss/Books.scss');
+    const bookId = this.props.routeParams.bookId;
+    const {books} = this.props;
+
+    let book = null;
+    let terms = [];
+
+    if (bookId) {
+      if (!books.allBooks || !books.allBooks[bookId]) {
+        return (<NotFound />);
+      }
+
+      book = books.allBooks[bookId];
+      book.terms[0] && book.terms[0].map(term => {
+        terms.push(term.id);
+      });
+    }
 
     let tags = [];
     for (let id in this.props.tags) {
-      tags.push(<Col key={id} lg={3} xs={6}><Input type='checkbox' label={this.props.tags[id]} ref={'tags-' + id} value={id} /></Col>);
+      tags.push(
+        <Col key={id} lg={3} xs={6}>
+          <Input
+            type='checkbox'
+            label={this.props.tags[id]}
+            ref={'tags-' + id}
+            checked={terms.find(x => x == id)}
+            value={id} />
+        </Col>
+      );
     }
+
+    console.log(book.meta.beganReadingDate);
 
     return (
       <Grid className='form-horizontal'>
         <DocumentMeta title='Add Book | BookTrackr'/>
         <header>
-          <h1>Add a Book</h1>
+          <h1>{book ? 'Edit' : 'Add'} a Book</h1>
         </header>
 
         <Input
@@ -56,6 +85,7 @@ export default class EditBook extends Component {
           label='Book title'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
+          defaultValue={book ? book.title : ''}
           ref='title' />
 
         <Input
@@ -63,6 +93,7 @@ export default class EditBook extends Component {
           label='Author'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
+          defaultValue={book ? book.author : ''}
           ref='author' />
 
         <Input
@@ -72,9 +103,9 @@ export default class EditBook extends Component {
           ref='status'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'>
-            <option value='to-read'>To Read</option>
-            <option value='reading'>Currently Reading</option>
-            <option value='read'>Read</option>
+            <option value='to-read' checked={book.status == 'to-read' ? 'checked' : ''}>To Read</option>
+            <option value='reading' checked={book.status == 'reading' ? 'checked' : ''}>Currently Reading</option>
+            <option value='read' checked={book.status == 'read' ? 'checked' : ''}>Read</option>
         </Input>
 
         <Input
@@ -83,6 +114,7 @@ export default class EditBook extends Component {
           placeholder='mm-dd-yyyy'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
+          defaultValue={book.meta.beganReadingDate ? new Date(book.meta.beganReadingDate).toLocaleDateString() : ''}
           ref='beganReadingDate' />
 
         <Input
@@ -91,6 +123,7 @@ export default class EditBook extends Component {
           placeholder='mm-dd-yyyy'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
+          defaultValue={book.meta.finishedReadingDate ? new Date(book.meta.finishedReadingDate).toLocaleDateString() : ''}
           ref='finishedReadingDate' />
 
         <Input
@@ -100,8 +133,8 @@ export default class EditBook extends Component {
           ref='visibility'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'>
-            <option value='public'>Public</option>
-            <option value='private'>Private</option>
+            <option value='public' checked={book.visibility == 'public' ? 'checked' : ''}>Public</option>
+            <option value='private' checked={book.visibility == 'private' ? 'checked' : ''}>Private</option>
         </Input>
 
         <div className='form-group'>
@@ -122,7 +155,7 @@ export default class EditBook extends Component {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>Add Book</Button>
+          <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>{book ? 'Edit' : 'Add'} Book</Button>
         </div>
       </Grid>
     )
@@ -170,8 +203,11 @@ export default class EditBook extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    const {books} = this.props;
     const router = this.context.router;
+    const bookId = this.props.routeParams.bookId;
 
+    let origBook = null;
     let data = {
       title: this.refs.title.getValue(),
       author: this.refs.author.getValue(),
@@ -189,11 +225,26 @@ export default class EditBook extends Component {
       }
     }
 
-    this.props.add(data, function(book) {
-      router.transitionTo('/book/' + book.id);
+    if (bookId) {
+      if (!books.allBooks || !books.allBooks[bookId]) {
+        router.transitionTo('/book/' + book.id);
+        return;
+      }
 
-      return book;
-    });
+      origBook = books.allBooks[bookId];
+      this.props.save(data, origBook, function(book) {
+        router.transitionTo('/book/' + book.id);
+
+        return book;
+      });
+
+    } else {
+      this.props.add(data, function(book) {
+        router.transitionTo('/book/' + book.id);
+
+        return book;
+      });
+    }
   }
 
   static fetchData(store) {
