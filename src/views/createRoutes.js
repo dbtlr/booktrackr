@@ -6,9 +6,9 @@ import Login from 'views/Login';
 import LoginAuthorize from 'views/LoginAuthorize';
 import LoginComplete from 'views/LoginComplete';
 import RequireLogin from 'views/RequireLogin';
-import AddBook from 'views/AddBook';
-import AddReview from 'views/AddReview';
-import AddHighlight from 'views/AddHighlight';
+import EditBook from 'views/EditBook';
+import EditReview from 'views/EditReview';
+import EditHighlight from 'views/EditHighlight';
 import NotFound from 'views/NotFound';
 import BookPage from 'views/BookPage';
 
@@ -21,14 +21,14 @@ export default function(store) {
       <Route name='login-auth' path='/login/authorize' component={LoginAuthorize} />
       <Route name='login-done' path='/login/complete' component={LoginComplete} />
       <Route component={RequireLogin} onEnter={RequireLogin.onEnter(store)}>
-        <Route name='book-add' path='/add-book' component={AddBook} />
-        <Route name='book-edit' path='/book/:bookId/edit' component={AddBook} />
-        <Route name='review-add' path='/book/:bookId/add-review' component={AddReview} />
-        <Route name='highlight-add' path='/book/:bookId/add-highlight' component={AddHighlight} />
+        <Route name='book-add' path='/add-book' component={EditBook} />
+        <Route name='book-edit' path='/book/:bookId/edit' component={EditBook} />
+        <Route name='review-add' path='/book/:bookId/review(/:reviewId)' component={EditReview} />
+        <Route name='highlight-add' path='/book/:bookId/highlight(/:highlightId)' component={EditHighlight} />
       </Route>
 
       // Purely test oriented path ... to get around login issues while testing.
-      <Route name='test-form' path='/test-form' component={AddBook} />
+      <Route name='test-form' path='/test-form' component={EditBook} />
 
       <Route name='not-found' path='*' component={NotFound}/>
     </Route>

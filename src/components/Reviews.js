@@ -32,10 +32,10 @@ export default class Reviews extends Component {
                 {item.text} {this.printRating(item.rating)}
               </li>
             )}
-            <li><Link to={'/book/' + book.id + '/add-review'}>Add another review</Link></li>
+            {this.props.user ? <li><Link to={'/book/' + book.id + '/review'}>Add another review</Link></li> : ''}
           </ul>
           :
-          <p>No Reviews Yet. {this.props.user ? <Link to={'/book/' + book.id + '/add-review'}>Add one</Link> : ''}</p>
+          <p>No Reviews Yet. {this.props.user ? <Link to={'/book/' + book.id + '/review'}>Add one</Link> : ''}</p>
         }
       </div>
     );

@@ -32,10 +32,10 @@ export default class Highlights extends Component {
                 {item.text}
               </li>
             )}
-            <li><Link to={'/book/' + book.id + '/add-highlight'}>Add another highlight</Link></li>
+            {this.props.user ? <li><Link to={'/book/' + book.id + '/highlight'}>Add another highlight</Link></li> : ''}
           </ul>
           :
-          <p>No highlights yet. {this.props.user ? <Link to={'/book/' + book.id + '/add-highlight'}>Add one</Link> : ''}</p>
+          <p>No highlights yet. {this.props.user ? <Link to={'/book/' + book.id + '/highlight'}>Add one</Link> : ''}</p>
         }
       </div>
     );

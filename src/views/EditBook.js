@@ -13,7 +13,7 @@ import DragDropFileField from '../components/DragDropFileField';
   dispatch => bindActionCreators({...bookActions, ...coverActions, ...tagActions}, dispatch)
 )
 
-export default class AddBook extends Component {
+export default class EditBook extends Component {
   constructor(props) {
     super(props);
     this.state = {
