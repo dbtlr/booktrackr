@@ -245,7 +245,7 @@ export default class EditBook extends Component {
     const bookId = params.bookId;
     let promises = [];
 
-    if (!bookActions.isBookLoaded(store.getState(), bookId)) {
+    if (bookId && !bookActions.isBookLoaded(store.getState(), bookId)) {
       promises.push(store.dispatch(bookActions.loadBook(bookId)));
     }
 
