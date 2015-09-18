@@ -30,6 +30,21 @@
   }
 }
 
+.likeButton {
+  margin: 0 0 10px;
+  cursor: pointer;
+  display: inline-block;
+
+  i {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  span {
+    font-size: 14px;
+  }
+}
+
 .buttonGroup {
   margin-top: 30px;
   overflow: hidden;

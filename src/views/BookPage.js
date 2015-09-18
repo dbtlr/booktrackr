@@ -27,11 +27,20 @@ import {Link} from 'react-router';
 )
 
 export default class BookPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      liked: false,
+    };
+  }
+
   static propTypes = {
     book: PropTypes.object,
     user: PropTypes.object,
     routeParams: PropTypes.object,
     loading: PropTypes.boolean,
+    addLike: PropTypes.func,
+    unLike: PropTypes.func,
   }
 
   render() {
@@ -62,6 +71,10 @@ export default class BookPage extends Component {
           </Col>
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title} {user ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
+            <div className={styles.likeButton} onClick={::this.toggleLikeBook}>
+              <i className={'fa ' + (this.state.liked ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
+              <span>{::this.getLikeStatement(book.meta.likes)}</span>
+            </div>
 
             <div className='author'>Author: {meta.author}</div>
             <div className='genre'>Genre: {book.genre.join(', ')}</div>
@@ -82,6 +95,31 @@ export default class BookPage extends Component {
         </Row>
       </Grid>
     );
+  }
+
+  getLikeStatement(likes) {
+    likes = likes ? likes.length : 0;
+
+    if (likes == 1) {
+      return likes + ' person likes this';
+    }
+
+    if (likes > 1) {
+      return likes + ' people like this';
+    }
+
+    return 'Nobody likes this yet.';
+  }
+
+  toggleLikeBook() {
+    if (this.state.liked) {
+      this.setState({liked: false});
+      this.props.unLike(this.props.book);
+
+    } else {
+      this.setState({liked: true});
+      this.props.addLike(this.props.book);
+    }
   }
 
   static fetchData(store, params) {

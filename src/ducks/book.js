@@ -234,13 +234,26 @@ export function addBook(book, next) {
   };
 }
 
-export function likeBook(book) {
+export function addLike(book) {
   let meta = book.meta;
 
   meta.likes = meta.likes || [];
   meta.likes.push({
     date: new Date(),
   });
+
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: saveMetaPromise(book, meta),
+  };
+}
+
+export function unLike(book) {
+  let meta = book.meta;
+
+  meta.likes = meta.likes || [];
+  meta.likes.pop();
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],

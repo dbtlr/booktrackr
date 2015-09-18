@@ -47,7 +47,7 @@ export default class Books extends Component {
       }
 
       list.push(
-        <Col xs={12} sm={6} key={book.id}>
+        <Col xs={12} sm={6} key={'book-list-' + book.id}>
           <BookItem book={book} />
         </Col>
       );
