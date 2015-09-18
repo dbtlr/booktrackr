@@ -35,11 +35,5 @@ npm run setup
 
 ## TODO
 
-- Delete Book
-- Delete Comment
-- Like Book
-- Like Review
-- Like Highlight
 - Add HTML editing to Reviews
-- UI Cleanup
 - Documentation

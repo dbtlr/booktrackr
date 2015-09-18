@@ -15,10 +15,19 @@ import * as highlightActions from '../ducks/highlights';
 )
 
 export default class Highlights extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      likes: {},
+    };
+  }
+
   static propTypes = {
     book: PropTypes.object.isRequired,
     user: PropTypes.object,
     deleteHighlight: PropTypes.func,
+    unLikeHighlight: PropTypes.func,
+    likeHighlight: PropTypes.func,
   };
 
   render() {
@@ -31,26 +40,67 @@ export default class Highlights extends Component {
         <h3>Highlights {this.props.user ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
         {highlights.length > 0 ?
           <ul>
-            {highlights.map((item) =>
-              <Row componentClass='li'  key={item.id || ''}>
-                  { this.props.user ?
-                    <Col xs={12} className={styles.actions}>
-                      <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link>
-                      <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>
-                    </Col>
-                  :
-                    ''
-                  }
-                <Col xs={12} className='body'>{item.text}</Col>
-              </Row>
-            )}
-
+            {highlights.map((item) => item.deleted ? '' : this.getHighlight(item))}
           </ul>
           :
           <p>No highlights yet.</p>
         }
       </div>
     );
+  }
+
+  getHighlight(item) {
+    const {book} = this.props;
+    const styles = require('./scss/Items.scss');
+
+    return (
+      <Row componentClass='li'  key={item.id || ''}>
+          { this.props.user ?
+            <Col xs={12} className={styles.actions}>
+              <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link>
+              <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>
+            </Col>
+          :
+            ''
+          }
+        <Col xs={12} className='body'>{item.text}</Col>
+        <Col xs={12}  className={styles.likeButton} onClick={::this.toggleLike(item.id)}>
+          <i className={'fa ' + (this.state.likes[item.id] ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
+          <span>{::this.getLikeStatement(item.likes)}</span>
+        </Col>
+      </Row>
+    );
+  }
+
+  getLikeStatement(likes) {
+    likes = likes ? likes.length : 0;
+
+    if (likes == 1) {
+      return likes + ' person likes this';
+    }
+
+    if (likes > 1) {
+      return likes + ' people like this';
+    }
+
+    return 'Nobody likes this yet.';
+  }
+
+  toggleLike(id) {
+    return () => {
+      let likes = this.state.likes;
+
+      if (likes[id]) {
+        likes[id] = false;
+        this.props.unLikeHighlight(id, this.props.book);
+
+      } else {
+        likes[id] = true;
+        this.props.likeHighlight(id, this.props.book);
+      }
+
+      this.setState({likes: likes});
+    };
   }
 
   deleteItem(highlightId) {

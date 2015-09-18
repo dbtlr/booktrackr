@@ -150,8 +150,8 @@ export function likeReview(id, book) {
 
   for (let i in meta.reviews) {
     if (meta.reviews[i].id === id) {
-      meta.reviews[i].like = meta.reviews[i].like || [];
-      meta.reviews[i].like.push({
+      meta.reviews[i].likes = meta.reviews[i].likes || [];
+      meta.reviews[i].likes.push({
         date: new Date(),
       });
       break;
@@ -165,22 +165,38 @@ export function likeReview(id, book) {
   };
 }
 
+export function unLikeReview(id, book) {
+  let meta = book.meta;
+  meta.reviews = meta.reviews || [];
+
+  for (let i in meta.reviews) {
+    if (meta.reviews[i].id === id) {
+      meta.reviews[i].likes = meta.reviews[i].likes || [];
+      meta.reviews[i].likes.pop();
+      break;
+    }
+  }
+
+  return {
+    types: [LIKE, SAVE_SUCCESS, SAVE_FAIL],
+    id: book.id,
+    promise: bookActions.saveMetaPromise(book, meta),
+  };
+}
+
 export function deleteReview(id, book, next) {
   let meta = book.meta;
-  let newReviews = [];
 
   meta.reviews = meta.reviews || [];
 
   for (let i in meta.reviews) {
-    if (meta.reviews[i].id !== id) {
-      newReviews.push(meta.reviews[i]);
+    if (meta.reviews[i].id === id) {
+      meta.reviews[i].delete = true;
     }
   }
 
-  meta.reviews = newReviews;
-
   return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    types: [DELETE, DELETE_SUCCESS, DELETE_FAIL],
     id: book.id,
     promise: bookActions.saveMetaPromise(book, meta),
   };

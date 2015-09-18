@@ -32,7 +32,7 @@ export function verifyAccess(req, res) {
       res.status(201).json({ consumer: { public: data.oauth_token, secret: data.oauth_token_secret}, access: req.session.oauth.access });
 
     } else {
-      res.status(401).json({ msg: 'Not Logged In'});
+      res.status(401).json({ msg: result.body || 'No logged in' });
     }
   });
 }
@@ -52,7 +52,7 @@ export function authorize(req, res) {
       res.redirect(303, wpApi.getAuthorizeUrl(body.oauth_token));
 
     } else {
-      res.status(401).json({ msg: 'Not Logged In'});
+      res.status(401).json({ msg: result.body || 'Not logged in' });
     }
   });
 }

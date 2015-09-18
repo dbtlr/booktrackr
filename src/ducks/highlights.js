@@ -114,7 +114,7 @@ export function addHighlight(highlight, book) {
   });
 
   return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    types: [ADD, ADD_SUCCESS, ADD_FAIL],
     id: book.id,
     promise: bookActions.saveMetaPromise(book, meta),
   };
@@ -145,8 +145,8 @@ export function likeHighlight(id, book) {
 
   for (let i in meta.highlights) {
     if (meta.highlights[i].id === id) {
-      meta.highlights[i].like = meta.highlights[i].like || [];
-      meta.highlights[i].like.push({
+      meta.highlights[i].likes = meta.highlights[i].likes || [];
+      meta.highlights[i].likes.push({
         date: new Date(),
       });
       break;
@@ -154,7 +154,26 @@ export function likeHighlight(id, book) {
   }
 
   return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    types: [LIKE, LIKE_SUCCESS, LIKE_FAIL],
+    id: book.id,
+    promise: bookActions.saveMetaPromise(book, meta),
+  };
+}
+
+export function unLikeHighlight(id, book) {
+  let meta = book.meta;
+  meta.highlights = meta.highlights || [];
+
+  for (let i in meta.highlights) {
+    if (meta.highlights[i].id === id) {
+      meta.highlights[i].likes = meta.highlights[i].likes || [];
+      meta.highlights[i].likes.pop();
+      break;
+    }
+  }
+
+  return {
+    types: [LIKE, LIKE_SUCCESS, LIKE_FAIL],
     id: book.id,
     promise: bookActions.saveMetaPromise(book, meta),
   };
@@ -162,20 +181,17 @@ export function likeHighlight(id, book) {
 
 export function deleteHighlight(id, book) {
   let meta = book.meta;
-  let newHighLights = [];
 
   meta.highlights = meta.highlights || [];
 
   for (let i in meta.highlights) {
-    if (meta.highlights[i].id !== id) {
-      newHighLights.push(meta.highlights[i]);
+    if (meta.highlights[i].id === id) {
+      meta.highlights[i].deleted = true;
     }
   }
 
-  meta.highlights = newHighLights;
-
   return {
-    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    types: [DELETE, DELETE_SUCCESS, DELETE_FAIL],
     id: book.id,
     promise: bookActions.saveMetaPromise(book, meta),
   };
