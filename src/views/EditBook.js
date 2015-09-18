@@ -99,9 +99,9 @@ export default class EditBook extends Component {
           ref='status'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'>
-            <option value='to-read' checked={book.status == 'to-read' ? 'checked' : ''}>To Read</option>
-            <option value='reading' checked={book.status == 'reading' ? 'checked' : ''}>Currently Reading</option>
-            <option value='read' checked={book.status == 'read' ? 'checked' : ''}>Read</option>
+            <option value='to-read' checked={book && book.status == 'to-read' ? 'checked' : ''}>To Read</option>
+            <option value='reading' checked={book && book.status == 'reading' ? 'checked' : ''}>Currently Reading</option>
+            <option value='read' checked={book && book.status == 'read' ? 'checked' : ''}>Read</option>
         </Input>
 
         <Input
@@ -110,7 +110,7 @@ export default class EditBook extends Component {
           placeholder='mm-dd-yyyy'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
-          defaultValue={book.meta.beganReadingDate ? new Date(book.meta.beganReadingDate).toLocaleDateString() : ''}
+          defaultValue={book && book.meta.beganReadingDate ? new Date(book.meta.beganReadingDate).toLocaleDateString() : ''}
           ref='beganReadingDate' />
 
         <Input
@@ -119,7 +119,7 @@ export default class EditBook extends Component {
           placeholder='mm-dd-yyyy'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'
-          defaultValue={book.meta.finishedReadingDate ? new Date(book.meta.finishedReadingDate).toLocaleDateString() : ''}
+          defaultValue={book && book.meta.finishedReadingDate ? new Date(book.meta.finishedReadingDate).toLocaleDateString() : ''}
           ref='finishedReadingDate' />
 
         <Input
@@ -129,8 +129,8 @@ export default class EditBook extends Component {
           ref='visibility'
           labelClassName='col-xs-2'
           wrapperClassName='col-xs-10'>
-            <option value='public' checked={book.visibility == 'public' ? 'checked' : ''}>Public</option>
-            <option value='private' checked={book.visibility == 'private' ? 'checked' : ''}>Private</option>
+            <option value='public' checked={book && book.visibility == 'public' ? 'checked' : ''}>Public</option>
+            <option value='private' checked={book && book.visibility == 'private' ? 'checked' : ''}>Private</option>
         </Input>
 
         <div className='form-group'>
