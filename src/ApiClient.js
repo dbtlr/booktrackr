@@ -64,7 +64,10 @@ class ApiClient_ {
 
               let requestData = {
                 url: url,
-                method: method
+                method: method,
+                data: {
+                  ...params, ...data
+                }
               };
 
               const oauth = this.buildOAuth(consumer);

@@ -7,6 +7,7 @@ import * as bookListActions from '../ducks/book-list';
 import BookItem from '../components/BookItem';
 import Loading from './Loading';
 import {Grid, Row, Col, Button} from 'react-bootstrap';
+import {Link} from 'react-router';
 
 @connect(
   state => ({
@@ -53,6 +54,10 @@ export default class Books extends Component {
       );
     }
 
+    if (list.length === 0) {
+      return this.noBooksFound();
+    }
+
     return (
         <div className={styles.bookList + ' container'}>
           <Row>
@@ -66,6 +71,16 @@ export default class Books extends Component {
             }
           </footer>
         </div>
+    );
+  }
+
+  noBooksFound() {
+    const styles = require('./scss/Books.scss');
+    return (
+      <Grid className={styles.noBooks}>
+        <h1>No Books Loaded</h1>
+        <p>Maybe you should <Link to='/add-book'>add one</Link>.</p>
+      </Grid>
     );
   }
 
