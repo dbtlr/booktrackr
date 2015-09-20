@@ -35,14 +35,14 @@ const meta = {
 };
 
 @connect(
-  state => ({user: state.auth.user}),
+  state => ({loggedIn: state.auth.loggedIn}),
   dispatch => bindActionCreators({logout}, dispatch)
 )
 
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
-    user: PropTypes.object,
+    loggedIn: PropTypes.bool,
     logout: PropTypes.func.isRequired,
   }
 
@@ -62,13 +62,23 @@ export default class App extends Component {
     router.removeTransitionHook(this.transitionHook);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.loggedIn && nextProps.loggedIn) {
+      // login
+      this.context.router.transitionTo('/login/authorize');
+    } else if (this.props.loggedIn && !nextProps.loggedIn) {
+      // logout
+      this.context.router.transitionTo('/');
+    }
+  }
+
   render() {
-    const {user} = this.props;
+    const {loggedIn} = this.props;
     const styles = require('./scss/App.scss');
     return (
       <div className={styles.app}>
         <DocumentMeta {...meta}/>
-        <Header user={user} logout={this.props.logout} />
+        <Header loggedIn={loggedIn} logout={this.props.logout} />
         <div className={styles.appContent}>
           {this.props.children}
         </div>

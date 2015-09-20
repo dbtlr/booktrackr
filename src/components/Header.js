@@ -5,11 +5,11 @@ import {Navbar, Nav, NavItem} from 'react-bootstrap';
 export default class Header extends Component {
   static propTypes = {
     logout: PropTypes.func.isRequired,
-    user: PropTypes.object,
+    loggedIn: PropTypes.bool,
   };
 
   render() {
-    let user = this.props.user;
+    const loggedIn = this.props.loggedIn;
 
     return (
       <header className='navbar navbar-static-top bs-docs-nav' id='top' role='banner'>
@@ -30,7 +30,7 @@ export default class Header extends Component {
               </li>
             </ul>
             {
-              user ?
+              loggedIn ?
                 <ul className='nav navbar-nav navbar-right'>
                   <li><Link to='/add-book'>Add Book</Link></li>
                   <li><a onClick={::this.handleLogout} href='javascript:;'>Logout</a></li>

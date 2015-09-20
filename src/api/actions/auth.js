@@ -1,9 +1,29 @@
 import * as wpApi from '../../utils/wp-api';
 import * as wpConfig from '../../utils/wp-config';
 
+function getUserResponse(session) {
+  const {user, oauth} = session;
+  if (typeof user === 'undefined') {
+    return { loggedIn: false, authorized: false, name: 'anonymous' };
+  }
+
+  return { 
+    loggedIn: true, 
+    authorized: oauth && oauth.access ? true : false,
+    name: user.name || 'Mr. E.',
+  }
+}
+
 export function checkLogin(req, res) {
-  let loggedIn = req.session.user ? true : false;
-  res.status(loggedIn ? 200 : 401).json({ loggedIn: loggedIn, user: req.session.user });
+  res.status(200).json(getUserResponse(req.session));
+}
+
+export function login(req, res) {
+  req.session.user = {
+    name: req.body.username,
+  };
+
+  res.status(200).json(getUserResponse(req.session));
 }
 
 export function verifyAccess(req, res) {
@@ -28,11 +48,10 @@ export function verifyAccess(req, res) {
 
       let data = wpConfig.read();
 
-      //res.redirect(303, '/login/complete');
-      res.status(201).json({ consumer: { public: data.oauth_token, secret: data.oauth_token_secret}, access: req.session.oauth.access });
+      res.status(200).json(getUserResponse(req.session));
 
     } else {
-      res.status(401).json({ msg: result.body || 'No logged in' });
+      res.status(401).json({ msg: result.body || 'Not logged in' });
     }
   });
 }

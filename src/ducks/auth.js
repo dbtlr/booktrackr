@@ -1,55 +1,78 @@
-const LOAD = 'redux-example/auth/LOAD';
-const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
-const LOGIN = 'redux-example/auth/LOGIN';
-const LOGIN_SUCCESS = 'redux-example/auth/LOGIN_SUCCESS';
-const LOGIN_FAIL = 'redux-example/auth/LOGIN_FAIL';
-const LOGOUT = 'redux-example/auth/LOGOUT';
-const LOGOUT_SUCCESS = 'redux-example/auth/LOGOUT_SUCCESS';
-const LOGOUT_FAIL = 'redux-example/auth/LOGOUT_FAIL';
+const CHECK = 'booktrackr/auth/CHECK';
+const CHECK_FAIL = 'booktrackr/auth/CHECK_FAIL';
+const AUTHORIZE = 'booktrackr/auth/AUTHORIZE';
+const AUTHORIZE_FAIL = 'booktrackr/auth/AUTHORIZE_FAIL';
+const LOGIN = 'booktrackr/auth/LOGIN';
+const LOGIN_SUCCESS = 'booktrackr/auth/LOGIN_SUCCESS';
+const LOGIN_FAIL = 'booktrackr/auth/LOGIN_FAIL';
+const LOGOUT = 'booktrackr/auth/LOGOUT';
+const LOGOUT_SUCCESS = 'booktrackr/auth/LOGOUT_SUCCESS';
+const LOGOUT_FAIL = 'booktrackr/auth/LOGOUT_FAIL';
 
 const initialState = {
-  loaded: false,
+  loggingOut: false,
+  loading: false,
+  loggedIn: false,
+  authorized: false,
+  authorizedFail: false,
+  name: null,
+  error: null,
+  postLoginRedirect: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case CHECK:
       return {
         ...state,
         loading: true,
       };
-    case LOAD_SUCCESS:
+    case CHECK_FAIL:
       return {
         ...state,
         loading: false,
-        loaded: true,
-        user: action.result,
+        loggedIn: false,
+        authorized: false,
+        name: null,
+        error: { msg: action.error.message, stack: action.error.stack },
       };
-    case LOAD_FAIL:
+    case AUTHORIZE:
+      return {
+        ...state,
+        loading: true,
+        authorizedFail: false,
+      };
+    case AUTHORIZE_FAIL:
       return {
         ...state,
         loading: false,
-        loaded: false,
-        error: action.error,
+        authorized: false,
+        authorizedFail: true,
+        name: null,
+        error: { msg: action.error.message, stack: action.error.stack },
       };
     case LOGIN:
       return {
         ...state,
-        loggingIn: true,
+        loading: true,
       };
     case LOGIN_SUCCESS:
       return {
         ...state,
-        loggingIn: false,
-        user: action.result,
+        loading: false,
+        authorizedFail: false,
+        loggedIn: action.result.loggedIn,
+        authorized: action.result.authorized,
+        name: action.result.name,
       };
     case LOGIN_FAIL:
       return {
         ...state,
-        loggingIn: false,
-        user: null,
-        loginError: action.error,
+        loading: false,
+        loggedIn: false,
+        authorized: false,
+        name: null,
+        error: { msg: action.error.message, stack: action.error.stack },
       };
     case LOGOUT:
       return {
@@ -60,30 +83,72 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
+        loggedIn: false,
+        authorized: false,
+        name: null,
         user: null,
       };
     case LOGOUT_FAIL:
       return {
         ...state,
         loggingOut: false,
-        logoutError: action.error,
+        authorized: false,
+        name: null,
+        error: { msg: action.error.message, stack: action.error.stack },
       };
     default:
       return state;
   }
 }
 
-export function isLoaded(globalState) {
-  return globalState.auth && globalState.auth.loaded;
+export function resetAuthorizedFail() {
+  return {
+    types: [AUTHORIZE, LOGIN_SUCCESS, AUTHORIZE_FAIL],
+    promise: (client) => client.get('/auth'),
+  };
 }
 
-export function authorize(token, router, books) {
+export function isLoggedIn(next) {
+  next = next || function(res) { return res; };
+
   return {
-    types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
+    types: [CHECK, LOGIN_SUCCESS, CHECK_FAIL],
+    promise: (client) => client.get('/auth').then(next),
+  };
+}
+
+export function authorize(token, router, next) {
+  next = next || function(res) { return res; };
+
+  return {
+    types: [AUTHORIZE, LOGIN_SUCCESS, AUTHORIZE_FAIL],
     promise: (client) => client.post('/auth/access', {
       data: {
         oauth_verifier: token,
       },
-    }).then((result) => { router.transitionTo('/login/complete'); return result; }),
+    }).then(next),
+  };
+}
+
+export function login(username, password, next) {
+  next = next || function(res) { return res; };
+
+  return {
+    types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
+    promise: (client) => client.post('/auth/login', {
+      data: {
+        username: username,
+        password: password,
+      },
+    }).then(next),
+  };
+}
+
+export function logout(username, password, next) {
+  next = next || function(res) { return res; };
+
+  return {
+    types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
+    promise: (client) => client.post('/auth/logout').then(next),
   };
 }
