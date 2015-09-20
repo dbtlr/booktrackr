@@ -43,11 +43,3 @@ you will then be asked to provide the OAuth Client Key, OAuth Client Secret, and
 npm run dev
 ```
 
-## Building and Running Production Server
-
-```
-npm run build
-npm run start
-```
-
-
