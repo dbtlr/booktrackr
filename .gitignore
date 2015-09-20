@@ -1,7 +1,11 @@
-.idea/
-node_modules/
-sessions/
-dist/
+/.idea
+/node_modules
+
+/sessions/*
+!sessions/.gitkeep
+
+/static/dist
+
 *.iml
 webpack-stats.json
 npm-debug.log
