@@ -28,7 +28,9 @@ app.use(compression());
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
 app.use(session({
-  store: new FileStore({}),
+  store: new FileStore({
+    path: './data/sessions'
+  }),
   secret: '[This should never be committed to a public repository]',
 }));
 

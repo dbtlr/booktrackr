@@ -1,7 +1,7 @@
 
 import fs from 'fs';
 
-const configFile = 'wp-config.json';
+const configFile = 'data/wp-config.json';
 
 let config = null;
 

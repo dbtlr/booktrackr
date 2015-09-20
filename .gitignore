@@ -1,8 +1,9 @@
 /.idea
 /node_modules
 
-/sessions/*
-!sessions/.gitkeep
+/data/*
+/data/sessions/*
+!data/sessions/.gitkeep
 
 /static/dist
 
@@ -10,4 +11,3 @@
 webpack-stats.json
 npm-debug.log
 
-/wp-config.json
