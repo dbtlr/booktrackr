@@ -27,9 +27,6 @@ app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
 app.use(session({
   secret: '[This should never be committed to a public repository]',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60000 }
 }));
 
 // Set up the api
