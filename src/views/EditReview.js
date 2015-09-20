@@ -29,7 +29,6 @@ export default class EditReview extends Component {
   }
 
   render() {
-    const styles = require('./scss/Books.scss');
     const {book} = this.props;
     const reviewId = this.props.routeParams.reviewId;
 
@@ -71,7 +70,7 @@ export default class EditReview extends Component {
     }
 
     return (
-      <Grid className={styles.addReview}>
+      <Grid className='edit-item'>
         <h1>{review ? 'Edit' : 'Add'} a Review</h1>
         <p>For {book.title}</p>
 
@@ -81,6 +80,7 @@ export default class EditReview extends Component {
             label='From'
             defaultValue={review ? review.from : ''}
             ref='from' />
+
           <Input
             type='textarea'
             rows='6'
@@ -90,10 +90,12 @@ export default class EditReview extends Component {
 
           <div className='form-group'>
             <Col xs={1} componentClass='label' className='control-label'><span>Rating</span></Col>
-            <Col xs={11} className={styles.ratings}>{ratings}</Col>
+            <Col xs={11} className='ratings'>{ratings}</Col>
           </div>
 
-          <Button bsStyle='primary' type='submit'>{review ? 'Edit' : 'Add'} Review</Button>
+          <div className='button-group'>
+            <Button bsStyle='primary' type='submit'>{review ? 'Edit' : 'Add'} Review</Button>
+          </div>
         </form>
       </Grid>
     );

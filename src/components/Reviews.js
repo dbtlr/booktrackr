@@ -7,7 +7,7 @@ import * as reviewActions from '../ducks/reviews';
 
 @connect(
   state => ({
-    user: state.auth.user
+    isAuthorized: state.auth.isAuthorized
   }),
   dispatch => ({
     ...bindActionCreators(reviewActions, dispatch)
@@ -24,7 +24,7 @@ export default class Reviews extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    user: PropTypes.object,
+    isAuthorized: PropTypes.boolean,
     deleteReview: PropTypes.func,
     likeReview: PropTypes.func,
     unLikeReview: PropTypes.func,
@@ -33,11 +33,10 @@ export default class Reviews extends Component {
   render() {
     const {book} = this.props;
     const reviews = book.meta && book.meta.reviews ? book.meta.reviews : [];
-    const styles = require('./scss/Items.scss');
 
     return (
-      <div className={styles.items}>
-        <h3>Reviews {this.props.user ? <Link className='small' to={'/book/' + book.id + '/review'}>Add</Link> : ''}</h3>
+      <div className='items-list'>
+        <h3>Reviews {this.props.isAuthorized ? <Link className='small' to={'/book/' + book.id + '/review'}>Add</Link> : ''}</h3>
         { reviews.length > 0 ?
           <ul>
             {reviews.map((item) => item.deleted ? '' : this.getReview(item))}
@@ -51,21 +50,20 @@ export default class Reviews extends Component {
 
   getReview(item) {
     const {book} = this.props;
-    const styles = require('./scss/Items.scss');
 
     return (
       <Row componentClass='li' key={item.id || ''}>
-        <Col xs={12} md={6}>{item.from} <span className={styles.rating}>{this.printRating(item.rating)}</span></Col>
-        { this.props.user ?
-          <Col xs={12} md={6} className={styles.actions}>
+        <Col xs={12} md={6}>{item.from} <span className='rating'>{this.printRating(item.rating)}</span></Col>
+        { this.props.isAuthorized ?
+          <Col xs={12} md={6} className='actions'>
             <Link to={'/book/' + book.id + '/review/' + item.id }>(edit)</Link>
             <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>
           </Col>
         :
           ''
         }
-        <Col xs={12} className={styles.body} dangerouslySetInnerHTML={{__html: item.text}} />
-        <Col xs={12}  className={styles.likeButton} onClick={::this.toggleLike(item.id)}>
+        <Col xs={12} className='body' dangerouslySetInnerHTML={{__html: item.text}} />
+        <Col xs={12}  className='like-button' onClick={::this.toggleLike(item.id)}>
           <i className={'fa ' + (this.state.likes[item.id] ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
           <span>{::this.getLikeStatement(item.likes)}</span>
         </Col>

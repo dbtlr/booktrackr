@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {initializeWithKey} from 'redux-form';
 import * as bookListActions from '../ducks/book-list';
 import BookItem from '../components/BookItem';
-import Loading from './Loading';
+import Loading from '../components/Loading';
 import {Grid, Row, Col, Button} from 'react-bootstrap';
 import {Link} from 'react-router';
 
@@ -32,7 +32,6 @@ export default class Books extends Component {
   }
 
   render() {
-    const styles = require('./scss/Books.scss');
     const {books, loading, auth, hasMorePages} = this.props;
 
     if (loading) {
@@ -43,7 +42,7 @@ export default class Books extends Component {
 
     for (let id in books) {
       let book = books[id];
-      if (book.meta.visibility == 'private' && !auth.user) {
+      if (book.meta.visibility == 'private' && !auth.isAuthorized) {
         continue;
       }
 
@@ -59,7 +58,7 @@ export default class Books extends Component {
     }
 
     return (
-        <div className={styles.bookList + ' container'}>
+        <div className='book-list container'>
           <Row>
             {list}
           </Row>
@@ -75,9 +74,8 @@ export default class Books extends Component {
   }
 
   noBooksFound() {
-    const styles = require('./scss/Books.scss');
     return (
-      <Grid className={styles.noBooks}>
+      <Grid className='non-found'>
         <h1>No Books Loaded</h1>
         <p>Maybe you should <Link to='/add-book'>add one</Link>.</p>
       </Grid>

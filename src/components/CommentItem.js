@@ -11,17 +11,16 @@ export default class CommentItem extends Component {
 
   render() {
     const date = new Date(this.props.date);
-    const styles = require('./scss/CommentItem.scss');
 
     return (
-      <Row className={styles.comment}>
-        <Col xs={12} md={8} className={styles.author}>
+      <Row className='item'>
+        <Col xs={12} md={8} className='author'>
           {this.props.name}
         </Col>
-        <Col xs={12} md={4} className={styles.date}>
+        <Col xs={12} md={4} className='date'>
           {date.toDateString()}
         </Col>
-        <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment}} className={styles.body} />
+        <Col xs={12} dangerouslySetInnerHTML={{__html: this.props.comment}} className='body' />
       </Row>
     );
   }

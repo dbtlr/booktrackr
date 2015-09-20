@@ -30,7 +30,6 @@ export default class EditHighlight extends Component {
   }
 
   render() {
-    const styles = require('./scss/Books.scss');
     const {book} = this.props;
     const highlightId = this.props.routeParams.highlightId;
 
@@ -57,7 +56,7 @@ export default class EditHighlight extends Component {
     }
 
     return (
-      <Grid className={styles.addHighlight}>
+      <Grid className='eddit-item'>
         <h1>{highlight ? 'Edit' : 'Add'} a Highlight</h1>
         <p>For {book.title}</p>
 
@@ -68,7 +67,9 @@ export default class EditHighlight extends Component {
             defaultValue={highlight ? highlight.text : ''}
             ref='highlight' />
 
-          <Button bsStyle='primary' type='submit'>{highlight ? 'Edit' : 'Add'} Highlight</Button>
+          <div className='button-group'>
+            <Button bsStyle='primary' type='submit'>{highlight ? 'Edit' : 'Add'} Highlight</Button>
+          </div>
         </form>
       </Grid>
     );

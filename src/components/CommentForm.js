@@ -18,11 +18,8 @@ export default class CommentForm extends Component {
   };
 
   render() {
-
-    const styles = require('./scss/CommentForm.scss');
-
     return (
-      <form ref='form' className={styles.commentForm + ' form-vertical'} onSubmit={::this.submitForm}>
+      <form ref='form' className='comment-form form-vertical' onSubmit={::this.submitForm}>
         <Input
           type='text'
           label='Name'

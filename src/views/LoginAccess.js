@@ -7,8 +7,6 @@ import {Link} from 'react-router';
 
 export default class Login extends Component {
   render() {
-    const styles = require('./scss/Login.scss');
-
     return (
       <Grid>
         <Row>

@@ -48,34 +48,6 @@ class ApiClient_ {
               }
             }
 
-            // if (wp) {
-            //   let consumer = { public: this.store.getState().api.key };
-            //   let token = null;
-
-            //   if (this.store.getState().auth && this.store.getState().auth.user) {
-            //     if (this.store.getState().auth.user.consumer) {
-            //       consumer = this.store.getState().auth.user.consumer;
-            //     }
-
-            //     if (this.store.getState().auth.user.access) {
-            //       token = this.store.getState().auth.user.access;
-            //     }
-            //   }
-
-            //   let requestData = {
-            //     url: url,
-            //     method: method,
-            //     data: {
-            //       ...params, ...data
-            //     }
-            //   };
-
-            //   const oauth = this.buildOAuth(consumer);
-            //   const oAuthHeaders = oauth.toHeader(oauth.authorize(requestData, token));
-
-            //   headers = {...headers, ...oAuthHeaders};
-            // }
-
             if (data) {
               request.send(data);
             }

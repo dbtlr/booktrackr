@@ -8,7 +8,7 @@ import CommentList from '../components/CommentList';
 import Reviews from '../components/Reviews';
 import Highlights from '../components/Highlights';
 import NotFound from './NotFound';
-import Loading from './Loading';
+import Loading from '../components/Loading';
 import * as bookActions from '../ducks/book';
 import * as commentActions from '../ducks/comments';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -19,7 +19,7 @@ import {Link} from 'react-router';
     book: state.book.book,
     loading: state.book.loading,
     comments: state.comments,
-    user: state.auth.user
+    isAuthorized: state.auth.isAuthorized
   }),
   dispatch => ({
     ...bindActionCreators({...bookActions, ...commentActions}, dispatch)
@@ -36,7 +36,7 @@ export default class BookPage extends Component {
 
   static propTypes = {
     book: PropTypes.object,
-    user: PropTypes.object,
+    isAuthorized: PropTypes.boolean,
     routeParams: PropTypes.object,
     loading: PropTypes.boolean,
     addLike: PropTypes.func,
@@ -44,8 +44,7 @@ export default class BookPage extends Component {
   }
 
   render() {
-    const styles = require('./scss/Books.scss');
-    const {book, user, loading} = this.props;
+    const {book, isAuthorized, loading} = this.props;
     const bookId = this.props.routeParams.bookId;
 
     if (loading) {
@@ -64,14 +63,14 @@ export default class BookPage extends Component {
     const finishedDate = meta.finishedReadingDate ? (new Date(meta.finishedReadingDate)) : '';
 
     return (
-      <Grid className={styles.bookPage}>
+      <Grid className='book-page'>
         <Row>
           <Col xs={12} md={6} lg={3}>
-            <img className={styles.bookPageCover} src={book.cover} />
+            <img className='cover' src={book.cover} />
           </Col>
           <Col xs={12} md={6} lg={9}>
-            <h1>{book.title} {user ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
-            <div className={styles.likeButton} onClick={::this.toggleLikeBook}>
+            <h1>{book.title} {isAuthorized ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
+            <div className='like-button' onClick={::this.toggleLikeBook}>
               <i className={'fa ' + (this.state.liked ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
               <span>{::this.getLikeStatement(book.meta.likes)}</span>
             </div>

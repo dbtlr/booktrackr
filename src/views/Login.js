@@ -22,8 +22,6 @@ export default class Login extends Component {
   }
 
   render() {
-    const styles = require('./scss/Login.scss');
-
     return (
       <Grid>
         <Row>
@@ -43,7 +41,7 @@ export default class Login extends Component {
               label='Password'
               ref='password' />
 
-            <div className={styles.buttonGroup}>
+            <div className='button-group'>
               <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>Login</Button>
             </div>
           </Col>

@@ -4,14 +4,12 @@ import App from 'views/App';
 import Books from 'views/Books';
 import Login from 'views/Login';
 import LoginAuthorize from 'views/LoginAuthorize';
-import LoginComplete from 'views/LoginComplete';
 import RequireLogin from 'views/RequireLogin';
 import RequireAuthorized from 'views/RequireAuthorized';
 import EditBook from 'views/EditBook';
 import EditReview from 'views/EditReview';
 import EditHighlight from 'views/EditHighlight';
 import NotFound from 'views/NotFound';
-import Loading from 'views/Loading';
 import BookPage from 'views/BookPage';
 
 export default function(store) {
@@ -30,10 +28,6 @@ export default function(store) {
           <Route name='highlight-add' path='/book/:bookId/highlight(/:highlightId)' component={EditHighlight} />
         </Route>
       </Route>
-
-      // Purely test oriented paths ...
-      <Route name='test-form' path='/test-form' component={EditBook} />
-      <Route name='loading' path='/loading' component={Loading} />
 
       <Route name='not-found' path='*' component={NotFound}/>
     </Route>

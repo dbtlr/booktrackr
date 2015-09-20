@@ -74,12 +74,11 @@ export default class App extends Component {
 
   render() {
     const {loggedIn} = this.props;
-    const styles = require('./scss/App.scss');
     return (
-      <div className={styles.app}>
+      <div className='application'>
         <DocumentMeta {...meta}/>
         <Header loggedIn={loggedIn} logout={this.props.logout} />
-        <div className={styles.appContent}>
+        <div className='content'>
           {this.props.children}
         </div>
       </div>

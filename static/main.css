@@ -9,3 +9,234 @@
     width: 750px;
   }
 }
+
+
+html, body {
+  height: 100%
+}
+
+body {
+  font-family: "Roboto", Helvetica, sans-serif;
+}
+
+header h1 {
+  text-align: center;
+  font-weight: 300;
+}
+
+.application {
+  min-height: 100%;
+  position: relative;
+}
+
+.application .content {
+  margin: 50px 0; // for fixed navbar
+}
+
+#footer{
+  bottom: -50px;
+  height: 50px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.loading {
+  text-align: center;
+}
+
+.loading img {
+  margin-top: 150px;
+}
+
+
+.book-page h1 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.book-page h3 {
+  margin-bottom: 25px;
+}
+
+.book-page .cover {
+  width: 100%;
+}
+
+.like-button {
+  margin: 0 0 10px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.like-button i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.like-button span {
+  font-size: 14px;
+}
+
+.book-list footer {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.book-list .item {
+  display: block;
+  padding: 0;
+  margin: 0 0 10px;
+  text-decoration: none;
+  position: relative;
+}
+
+.book-list .item header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 20px;
+  color: white;
+  margin: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+.book-list .item h3 {
+  font-size: 1.2em;
+  margin: 0 0 10px;
+}
+
+.book-list .item img {
+  width: 100%;
+}
+
+
+
+.none-found {
+  text-align: center;
+}
+
+.button-group {
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+.button-group button {
+  float: right;
+}
+
+
+.edit-item form {
+  overflow: hidden;
+}
+
+.edit-item .ratings span {
+  margin-right: 10px;
+}
+
+
+.login-page {
+  text-align: center;
+}
+
+.login-page h2 {
+  margin-top: 50px;
+}
+
+.login-page button {
+  margin-top: 20px;
+}
+
+.form-centered {
+  text-align: center;
+}
+
+.comment-form {
+  overflow: hidden;
+}
+
+.comment-form input {
+  margin: 0 0 20px;
+}
+
+.comment-form button { 
+  margin: 30px 20px 0 0;
+  float: right;
+}
+
+.comment-list ul {
+  margin-top: 20px;
+  list-style: none;
+}
+
+.comment-list ul li {
+  margin: 10px 0;
+}
+
+.comment-list h4 {
+  text-align: center;
+}
+
+.comment-list .alert {
+  margin-top: 30px;
+}
+
+.comment-list .reviews  ul {
+  list-style: none;
+}
+
+.comment-list .item {
+  border-top: 1px solid #eee;
+  padding: 20px 10px;
+}
+
+.comment-list .item .date {
+  font-weight: 300;
+}
+
+.comment-list .item .body {
+  margin-top: 15px;
+}
+
+.item-list .body {
+  margin-top: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.item-list {
+  margin-bottom: 30px;
+}
+.item-list h3 {
+  margin-bottom: 10px;
+}
+
+.item-lis ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item-list li {
+  padding: 10px 0;
+}
+
+.item-list .author {
+
+}
+
+.item-list .rating {
+  color: rgb(255,189,0);
+}
+
+.item-list .actions {
+  text-align: right;
+
+.item-list .action button {
+  padding: 0;
+  margin-left: 10px;
+}
+
+

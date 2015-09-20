@@ -30,7 +30,6 @@ export default class LoginAuthorize extends Component {
   }
 
   render() {
-    const styles = require('./scss/Login.scss');
     const step = this.state.step;
 
     // if (step == 1) {
@@ -38,7 +37,7 @@ export default class LoginAuthorize extends Component {
     // }
 
     return (
-      <Grid className={styles.loginPage}>
+      <Grid className='login-page'>
         <Row>
           <Col xs={6} xsOffset={3}>
             <DocumentMeta title='Login | BookTrackr'/>
@@ -114,7 +113,6 @@ export default class LoginAuthorize extends Component {
   }
 
   postVerify(res) {
-    console.log(res);
     this.setState({step: 3});
 
     return res;

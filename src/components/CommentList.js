@@ -15,7 +15,6 @@ export default class CommentList extends Component {
   };
 
   render() {
-    const styles = require('./scss/CommentList.scss');
     const {comments, book} = this.props;
 
     let commentList = [];
@@ -24,7 +23,7 @@ export default class CommentList extends Component {
     }
 
     return (
-      <div className={styles.commentList}>
+      <div className='comment-list'>
         {commentList.length > 0 ?
           <ul>
             {commentList.map(comment =>
@@ -33,7 +32,7 @@ export default class CommentList extends Component {
             </li>)}
           </ul>
           :
-          <Alert bsStyle='warning' className={styles.commentListAlert}>No comments yet.</Alert>
+          <Alert bsStyle='warning'>No comments yet.</Alert>
         }
       </div>
     );

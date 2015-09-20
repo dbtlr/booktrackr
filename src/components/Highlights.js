@@ -7,7 +7,7 @@ import * as highlightActions from '../ducks/highlights';
 
 @connect(
   state => ({
-    user: state.auth.user
+    isAuthorized: state.auth.isAuthorized
   }),
   dispatch => ({
     ...bindActionCreators(highlightActions, dispatch)
@@ -24,7 +24,7 @@ export default class Highlights extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    user: PropTypes.object,
+    isAuthorized: PropTypes.boolean,
     deleteHighlight: PropTypes.func,
     unLikeHighlight: PropTypes.func,
     likeHighlight: PropTypes.func,
@@ -33,11 +33,10 @@ export default class Highlights extends Component {
   render() {
     const {book} = this.props;
     const highlights = book.meta && book.meta.highlights ? book.meta.highlights : [];
-    const styles = require('./scss/Items.scss');
 
     return (
-      <div className={styles.items}>
-        <h3>Highlights {this.props.user ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
+      <div className='items-list'>
+        <h3>Highlights {this.props.isAuthorized ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
         {highlights.length > 0 ?
           <ul>
             {highlights.map((item) => item.deleted ? '' : this.getHighlight(item))}
@@ -51,12 +50,10 @@ export default class Highlights extends Component {
 
   getHighlight(item) {
     const {book} = this.props;
-    const styles = require('./scss/Items.scss');
-
     return (
       <Row componentClass='li'  key={item.id || ''}>
-          { this.props.user ?
-            <Col xs={12} className={styles.actions}>
+          { this.props.isAuthorized ?
+            <Col xs={12} className='actions'>
               <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link>
               <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>
             </Col>
@@ -64,7 +61,7 @@ export default class Highlights extends Component {
             ''
           }
         <Col xs={12} className='body'>{item.text}</Col>
-        <Col xs={12}  className={styles.likeButton} onClick={::this.toggleLike(item.id)}>
+        <Col xs={12}  className='like-button' onClick={::this.toggleLike(item.id)}>
           <i className={'fa ' + (this.state.likes[item.id] ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
           <span>{::this.getLikeStatement(item.likes)}</span>
         </Col>

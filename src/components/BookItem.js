@@ -9,15 +9,14 @@ export default class BookItem extends Component {
   };
 
   render() {
-    const styles = require('./scss/BookItem.scss');
     const {book} = this.props;
     return (
-      <Link to={'/book/' + book.id} className={styles.item} key={'book-' + book.id}>
+      <Link to={'/book/' + book.id} className='item' key={'book-' + book.id}>
         <header>
           <h3>{book.title}</h3>
 
-          <div className={styles.status}>{bookActions.readableStatus(book.meta.status)}</div>
-          <div className={styles.author}>by {book.meta.author}</div>
+          <div className='status'>{bookActions.readableStatus(book.meta.status)}</div>
+          <div className='author'>by {book.meta.author}</div>
         </header>
         <img src={book.cover} />
       </Link>

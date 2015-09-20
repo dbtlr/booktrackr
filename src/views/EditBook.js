@@ -39,7 +39,6 @@ export default class EditBook extends Component {
   }
 
   render() {
-    const styles = require('./scss/Books.scss');
     const bookId = this.props.routeParams.bookId;
     const {book} = this.props;
 
@@ -150,7 +149,7 @@ export default class EditBook extends Component {
           </Col>
         </div>
 
-        <div className={styles.buttonGroup}>
+        <div className='button-group'>
           <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>{book ? 'Edit' : 'Add'} Book</Button>
         </div>
       </Grid>
