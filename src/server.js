@@ -18,6 +18,8 @@ import * as wpApi from './utils/wp-api';
 const pretty = new PrettyError();
 const app = new Express();
 
+var FileStore = require('session-file-store')(session);
+
 app.use(compression());
 
 // Add this back in if I ever add a favicon... maybe.
@@ -26,6 +28,7 @@ app.use(compression());
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
 app.use(session({
+  store: new FileStore({}),
   secret: '[This should never be committed to a public repository]',
 }));
 
