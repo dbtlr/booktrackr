@@ -11,11 +11,14 @@ export function uploadCover(req, res) {
 
   req.busboy.on('file', function (fieldname, file, filename) {
     try {
-      fstream = fs.createWriteStream('/tmp/file-' + filename);
+      const localFile = 'data/uploads/file-' + filename;
+      fstream = fs.createWriteStream(localFile);
       file.pipe(fstream);
       fstream.on('close', function () {
-        let rstream = fs.createReadStream('/tmp/file-' + filename)
+        let rstream = fs.createReadStream(localFile)
         wpApi.uploadMedia(rstream, filename, fieldname, token, (body, err, result) => {
+          // Clean up after ourself.
+          fs.unlink(localFile);
           res.status(result.statusCode).json(body);
         });
       });

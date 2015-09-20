@@ -1,9 +1,11 @@
 /.idea
 /node_modules
 
-/data/*
+/data/*.json
 /data/sessions/*
+/data/uploads/*
 !data/sessions/.gitkeep
+!data/uploads/.gitkeep
 
 /static/dist
 
