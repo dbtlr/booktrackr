@@ -174,14 +174,16 @@ export function isBookLoaded(state, bookId) {
 export function loadBook(bookId) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books/' + bookId, { params: { '_embed': 1 }, wp: true }).then(formatBook),
+    promise: (client) => client.get('/wp/books/' + bookId, { params: { '_embed': 1 } }).then(formatBook),
   };
 }
 
-function getMetaForBook(book, meta) {
-  meta.author = book.author;
-  meta.status = book.status;
-  meta.visibility = book.visibility;
+function getMetaForBook(data, meta) {
+  meta = meta || [];
+
+  meta.author = data.author;
+  meta.status = data.status;
+  meta.visibility = data.visibility;
 
   meta.beganReadingDate = (new Date(data.beganReadingDate)).toUTCString();
   meta.finishedReadingDate = (new Date(data.finishedReadingDate)).toUTCString();
@@ -205,10 +207,10 @@ export function updateBook(data, originalBook, next) {
 
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    promise: (client) => client.put('books/' + originalBook.id, { data: newBook, wp: true })
-        .then((res) => { client.post('books/' + originalBook.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true}); return res; })
-        .then((res) => { originalBook.terms[0] && originalBook.terms[0].map(term => client.del('books/' + originalBook.id + '/terms/genre/' + term.id, {data: {}, wp: true})); return res; })
-        .then((res) => { data.tags.map(tagId => client.post('books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
+    promise: (client) => client.put('/wp/books/' + originalBook.id, { data: newBook })
+        .then((res) => { client.post('/wp/books/' + originalBook.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)} }); return res; })
+        .then((res) => { originalBook.terms[0] && originalBook.terms[0].map(term => client.del('/wp/books/' + originalBook.id + '/terms/genre/' + term.id, {data: {} })); return res; })
+        .then((res) => { data.tags.map(tagId => client.post('/wp/books/' + originalBook.id + '/terms/genre/' + tagId, {data: {}})); return res; })
         .then(next)
   };
 }
@@ -220,15 +222,15 @@ export function addBook(book, next) {
     featured_image: book.cover ? book.cover.id : null,
   }
 
-  let meta = getMetaForBook(data, originalBook.meta);
+  let meta = getMetaForBook(data, book.meta);
   next = next || ((res) => { return res; });
 
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
     promise: (client) => {
-      return client.post('books', { data: data, wp: true })
-        .then((res) => { client.post('books/' + res.id + '/meta', { data: { key: 'data', value: JSON.stringify(book)}, wp: true}); return res; })
-        .then((res) => { book.tags.map(tagId => client.post('books/' + res.id + '/terms/genre/' + tagId, {data: {}, wp: true})); return res; })
+      return client.post('/wp/books', { data: data })
+        .then((res) => { client.post('/wp/books/' + res.id + '/meta', { data: { key: 'data', value: JSON.stringify(book)}}); return res; })
+        .then((res) => { book.tags.map(tagId => client.post('/wp/books/' + res.id + '/terms/genre/' + tagId, {data: {}})); return res; })
         .then(next)
     }
   };

@@ -1,0 +1,22 @@
+{
+  "cookie": {
+    "originalMaxAge": 60000,
+    "expires": "2015-09-20T06:12:31.414Z",
+    "httpOnly": true,
+    "path": "/"
+  },
+  "user": {
+    "name": "drew"
+  },
+  "__lastAccess": 1442729491414,
+  "oauth": {
+    "request": {
+      "public": "Q9SOIYaWfMUuLxyPtLWDMLzv",
+      "secret": "MaFMSZw9mpOmTsm554yavW5gnkHAQc1C2j1fqorHsSZzIs5z"
+    },
+    "access": {
+      "public": "zX5DINFbuZTjGf7z4wKJwJfk",
+      "secret": "xlILNg0H0lbkgbzIqx1xTNGXLFtILVuc51ya8skwqSCIjJEI"
+    }
+  }
+}

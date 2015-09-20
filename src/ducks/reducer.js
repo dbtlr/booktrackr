@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 
-import api from './api';
 import auth from './auth';
 import book from './book';
 import bookList from './book-list';
@@ -11,7 +10,6 @@ import reviews from './reviews';
 import highlights from './highlights';
 
 export default combineReducers({
-  api,
   auth,
   book,
   bookList,

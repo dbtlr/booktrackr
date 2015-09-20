@@ -24,18 +24,16 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD_SUCCESS:
       let books = state.bookList || [];
 
-      if (typeof action.result.length == 'undefined') {
-        books = [action.result];
+      if (typeof action.result.map === 'function') {
+        action.result.map(item => books.push(bookActions.formatBook(item)));
       }
-
-      action.result.map(item => books.push(bookActions.formatBook(item)));
 
       return {
         ...state,
         loading: false,
         bookList: books,
-        nextPage: state.nextPage + 1,
-        hasMorePages: action.result.length > 0,
+        nextPage: books.length > 0 ? state.nextPage + 1 : state.nextPage,
+        hasMorePages: action.result && action.result.length > 0 ? true : false,
         error: null,
       };
     case LOAD_FAIL:
@@ -56,6 +54,6 @@ export function isListLoaded(state) {
 export function loadList(page = 1) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('books', { params: { '_embed': 1, per_page: 20, page: page }, wp: true }),
+    promise: (client) => client.get('/wp/books', { params: { '_embed': 1, per_page: 20, page: page } }),
   };
 }

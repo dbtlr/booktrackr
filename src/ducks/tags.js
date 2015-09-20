@@ -53,6 +53,6 @@ export function areTagsLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/terms/genre', { params: {per_page: 100}, wp: true }),
+    promise: (client) => client.get('/wp/terms/genre', { params: {per_page: 100} }),
   };
 }

@@ -48,33 +48,33 @@ class ApiClient_ {
               }
             }
 
-            if (wp) {
-              let consumer = { public: this.store.getState().api.key };
-              let token = null;
+            // if (wp) {
+            //   let consumer = { public: this.store.getState().api.key };
+            //   let token = null;
 
-              if (this.store.getState().auth && this.store.getState().auth.user) {
-                if (this.store.getState().auth.user.consumer) {
-                  consumer = this.store.getState().auth.user.consumer;
-                }
+            //   if (this.store.getState().auth && this.store.getState().auth.user) {
+            //     if (this.store.getState().auth.user.consumer) {
+            //       consumer = this.store.getState().auth.user.consumer;
+            //     }
 
-                if (this.store.getState().auth.user.access) {
-                  token = this.store.getState().auth.user.access;
-                }
-              }
+            //     if (this.store.getState().auth.user.access) {
+            //       token = this.store.getState().auth.user.access;
+            //     }
+            //   }
 
-              let requestData = {
-                url: url,
-                method: method,
-                data: {
-                  ...params, ...data
-                }
-              };
+            //   let requestData = {
+            //     url: url,
+            //     method: method,
+            //     data: {
+            //       ...params, ...data
+            //     }
+            //   };
 
-              const oauth = this.buildOAuth(consumer);
-              const oAuthHeaders = oauth.toHeader(oauth.authorize(requestData, token));
+            //   const oauth = this.buildOAuth(consumer);
+            //   const oAuthHeaders = oauth.toHeader(oauth.authorize(requestData, token));
 
-              headers = {...headers, ...oAuthHeaders};
-            }
+            //   headers = {...headers, ...oAuthHeaders};
+            // }
 
             if (data) {
               request.send(data);
@@ -102,10 +102,6 @@ class ApiClient_ {
       });
   }
 
-  addStore(store) {
-    this.store = store;
-  }
-
   buildOAuth(consumerToken) {
     return OAuth({
       consumer: consumerToken,
@@ -114,12 +110,8 @@ class ApiClient_ {
   }
 
   /* This was originally a standalone function outside of this class, but babel kept breaking, and this fixes it  */
-  formatUrl(path, wp=false) {
+  formatUrl(path) {
     const adjustedPath = path[0] !== '/' ? '/' + path : path;
-
-    if (wp) {
-      return this.store.getState().api.url + '/wp-json/wp/v2' + adjustedPath;
-    }
 
     if (__SERVER__) {
       // Prepend host and port of the API server to the path.

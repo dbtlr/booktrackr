@@ -3,19 +3,25 @@ import * as wpConfig from '../../utils/wp-config';
 import fs from 'fs';
 
 export function uploadCover(req, res) {
+
+  const token = req.session.oauth && req.session.oauth.access ? req.session.oauth.access : null;
+
   let fstream;
   req.pipe(req.busboy);
-  req.busboy.on('file', function (fieldname, file, filename) {
-    console.log("Uploading: " + filename); 
 
+  req.busboy.on('file', function (fieldname, file, filename) {
     try {
       fstream = fs.createWriteStream('/tmp/file-' + filename);
       file.pipe(fstream);
       fstream.on('close', function () {
-        res.status(201).json({ msg: 'uploaded', file: filename, field: fieldname });
+        let rstream = fs.createReadStream('/tmp/file-' + filename)
+        wpApi.uploadMedia(rstream, filename, fieldname, token, (body, err, result) => {
+          res.status(result.statusCode).json(body);
+        });
       });
     } catch (err) {
       console.error(err);
+      res.status(500).json({msg: 'There was an issue uploading the file'});
     }
   });
 }

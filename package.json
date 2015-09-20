@@ -93,6 +93,7 @@
     "serialize-javascript": "^1.0.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.0",
+    "session-file-store": "0.0.20",
     "superagent": "^1.2.0",
     "url-loader": "^0.5.6",
     "webpack-isomorphic-tools": "^0.8.1"

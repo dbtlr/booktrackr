@@ -75,7 +75,7 @@ export default function reducer(state = initialState, action = {}) {
 export function load(bookId) {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/comments', { params: { post: bookId }, wp: true }),
+    promise: (client) => client.get('/wp/comments', { params: { post: bookId } }),
   };
 }
 
@@ -86,6 +86,6 @@ export function areLoaded(state, bookId) {
 export function addComment(comment, next) {
   return {
     types: [ADD, ADD_SUCCESS, ADD_FAIL],
-    promise: (client) => client.post('/comments', { data: comment, wp: true }).then(next),
+    promise: (client) => client.post('/wp/comments', { data: comment }).then(next),
   };
 }

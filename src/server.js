@@ -46,8 +46,8 @@ app.use((req, res) => {
   const store = createStore(client);
 
   // Attach the oauth token to the page as a default variable state.
-  store.getState().api.key = wpConfig.read().oauth_token;
-  store.getState().api.url = wpApi.buildApiUrl('');
+  // store.getState().api.key = wpConfig.read().oauth_token;
+  // store.getState().api.url = wpApi.buildApiUrl('');
 
   const location = new Location(req.path, req.query);
   if (__DISABLE_SSR__) {

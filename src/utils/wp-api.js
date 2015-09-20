@@ -21,11 +21,42 @@ function buildOAuth() {
   });
 }
 
+function getOAuthToken(token) {
+  const data = wpConfig.read();
+  token = token || {};
+
+  if (!token.public || !token.secret) {
+    return null;
+  }
+
+  return {
+    consumer_key: data.oauth_token,
+    consumer_secret: data.oauth_token_secret,
+    token: token.public || null,
+    token_secret: token.secret || null
+  };
+}
+
+function buildUrl(url, parameters) {
+  var qs = '';
+
+  for (var key in parameters) {
+    var value = parameters[key];
+    qs += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+  }
+
+  if (qs.length > 0) {
+    qs = qs.substring(0, qs.length-1); //chop off last "&"
+    url = url + '?' + qs;
+  }
+
+  return url;
+}
+
 export function getAuthorizeUrl(oauthToken) {
   return buildApiUrl('/oauth1/authorize?oauth_token=' + oauthToken);
 }
 
-// Todo: Maybe remove this. Want to try moving these requests to the frontend.
 export function makeRequest(path, method, data, token, callback) {
   let requestData = {
     url: buildApiUrl('/wp-json/wp/v2/' + path),
@@ -34,14 +65,68 @@ export function makeRequest(path, method, data, token, callback) {
   };
 
   let oauth = buildOAuth();
+  let headers = {};
+  if (token) {
+    headers = oauth.toHeader(oauth.authorize(requestData, token));
+  }
+
+  let url = requestData.url;
+  let body = {};
+  let query = '';
+  switch (method) {
+    case 'GET':
+      url = buildUrl(url, data);
+      break;
+
+    case 'POST':
+    case 'PUT':
+      body = data;
+      break;
+  }
+
+  request({
+    url: url,
+    json: true,
+    method: requestData.method,
+    body: data,
+    oauth: getOAuthToken(token)
+
+  }, function(err, res, body) {
+    if (typeof body === 'string') {
+      body = oauth.deParam(body);
+    }
+
+    callback(body, err, res);
+  });
+}
+
+export function uploadMedia(stream, filename, fieldname, token, callback) {
+  let requestData = {
+    url: buildApiUrl('/wp-json/wp/v2/media'),
+    method: 'POST'
+  };
+
+  let oauth = buildOAuth();
+
+  const formData = {};
+
+  formData[fieldname] = {
+    value: stream,
+    options: {
+      filename: filename
+    }
+  };
 
   request({
     url: requestData.url,
     method: requestData.method,
-    form: requestData.data,
-    headers: oauth.toHeader(oauth.authorize(requestData, token))
+    formData: formData,
+    oauth: getOAuthToken(token)
   }, function(err, res, body) {
-    body = oauth.deParam(body);
+    if (typeof body === 'string') {
+      body = JSON.parse(body);
+    }
+
     callback(body, err, res);
   });
 }
@@ -62,7 +147,10 @@ export function getToken(callback) {
     method: requestData.method,
     form: oauth.authorize(requestData)
   }, function(err, res, body) {
-    body = oauth.deParam(body);
+    if (typeof body === 'string') {
+      body = oauth.deParam(body);
+    }
+
     callback(body, err, res);
   });
 }
@@ -83,7 +171,10 @@ export function getAccessToken(requestToken, verifier, callback) {
     method: requestData.method,
     form: oauth.authorize(requestData, { public: requestToken })
   }, function(err, res, body) {
-    body = oauth.deParam(body);
+    if (typeof body === 'string') {
+      body = oauth.deParam(body);
+    }
+
     callback(body, err, res);
   });
 }
