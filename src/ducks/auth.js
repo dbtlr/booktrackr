@@ -1,5 +1,7 @@
 const CHECK = 'booktrackr/auth/CHECK';
 const CHECK_FAIL = 'booktrackr/auth/CHECK_FAIL';
+const REGISTER = 'booktrackr/auth/REGISTER';
+const REGISTER_FAIL = 'booktrackr/auth/REGISTER_FAIL';
 const AUTHORIZE = 'booktrackr/auth/AUTHORIZE';
 const AUTHORIZE_FAIL = 'booktrackr/auth/AUTHORIZE_FAIL';
 const LOGIN = 'booktrackr/auth/LOGIN';
@@ -15,7 +17,8 @@ const initialState = {
   loggedIn: false,
   authorized: false,
   authorizedFail: false,
-  name: null,
+  registerFail: false,
+  user: null,
   error: null,
   postLoginRedirect: null,
 };
@@ -33,7 +36,7 @@ export default function reducer(state = initialState, action = {}) {
         loading: false,
         loggedIn: false,
         authorized: false,
-        name: null,
+        user: null,
         error: { msg: action.error.message, stack: action.error.stack },
       };
     case AUTHORIZE:
@@ -48,7 +51,23 @@ export default function reducer(state = initialState, action = {}) {
         loading: false,
         authorized: false,
         authorizedFail: true,
-        name: null,
+        user: null,
+        error: { msg: action.error.message, stack: action.error.stack },
+      };
+    case REGISTER:
+      return {
+        ...state,
+        loading: true,
+        registerFail: false,
+      };
+    case REGISTER_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false,
+        authorized: false,
+        registerFail: true,
+        user: null,
         error: { msg: action.error.message, stack: action.error.stack },
       };
     case LOGIN:
@@ -63,7 +82,7 @@ export default function reducer(state = initialState, action = {}) {
         authorizedFail: false,
         loggedIn: action.result.loggedIn,
         authorized: action.result.authorized,
-        name: action.result.name,
+        user: action.result.user,
       };
     case LOGIN_FAIL:
       return {
@@ -71,7 +90,7 @@ export default function reducer(state = initialState, action = {}) {
         loading: false,
         loggedIn: false,
         authorized: false,
-        name: null,
+        user: null,
         error: { msg: action.error.message, stack: action.error.stack },
       };
     case LOGOUT:
@@ -85,7 +104,7 @@ export default function reducer(state = initialState, action = {}) {
         loggingOut: false,
         loggedIn: false,
         authorized: false,
-        name: null,
+        user: null,
         user: null,
       };
     case LOGOUT_FAIL:
@@ -93,7 +112,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loggingOut: false,
         authorized: false,
-        name: null,
+        user: null,
         error: { msg: action.error.message, stack: action.error.stack },
       };
     default:
@@ -130,21 +149,36 @@ export function authorize(token, router, next) {
   };
 }
 
-export function login(username, password, next) {
+export function register(email, name, password, next) {
   next = next || function(res) { return res; };
 
   return {
-    types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-    promise: (client) => client.post('/auth/login', {
+    types: [REGISTER, LOGIN_SUCCESS, REGISTER_FAIL],
+    promise: (client) => client.post('/auth/register', {
       data: {
-        username: username,
+        email: email,
+        name: name,
         password: password,
       },
     }).then(next),
   };
 }
 
-export function logout(username, password, next) {
+export function login(email, password, next) {
+  next = next || function(res) { return res; };
+
+  return {
+    types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
+    promise: (client) => client.post('/auth/login', {
+      data: {
+        email: email,
+        password: password,
+      },
+    }).then(next),
+  };
+}
+
+export function logout(next) {
   next = next || function(res) { return res; };
 
   return {

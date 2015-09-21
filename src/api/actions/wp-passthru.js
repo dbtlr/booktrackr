@@ -1,5 +1,4 @@
 import * as wpApi from '../../utils/wp-api';
-import * as wpConfig from '../../utils/wp-config';
 
 export function passthru(req, res) {
   const {method, query, body, params, session} = req;

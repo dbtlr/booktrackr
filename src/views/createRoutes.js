@@ -3,6 +3,7 @@ import {Route} from 'react-router';
 import App from 'views/App';
 import Books from 'views/Books';
 import Login from 'views/Login';
+import Register from 'views/Register';
 import LoginAuthorize from 'views/LoginAuthorize';
 import RequireLogin from 'views/RequireLogin';
 import RequireAuthorized from 'views/RequireAuthorized';
@@ -18,6 +19,7 @@ export default function(store) {
       <Route name='books' path='/' component={Books} />
       <Route name='single-book' path='/book/:bookId' component={BookPage} />
       <Route name='login' path='/login' component={Login} />
+      <Route name='register' path='/register' component={Register} />
       <Route component={RequireLogin} onEnter={RequireLogin.onEnter(store)}>
         <Route name='login-auth' path='/login/authorize' component={LoginAuthorize} />
 

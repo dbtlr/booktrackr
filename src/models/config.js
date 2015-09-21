@@ -1,7 +1,7 @@
 
-import fs from 'fs';
+import fs from 'fs-extra';
 
-const configFile = 'data/wp-config.json';
+const configFile = 'data/config.json';
 
 let config = null;
 
@@ -11,7 +11,7 @@ export function read() {
   }
 
   try {
-    config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    config = fs.readJsonSync(configFile);
 
   } catch (e) {}
 
@@ -19,7 +19,7 @@ export function read() {
 }
 
 export function write() {
-  fs.writeFile(configFile, JSON.stringify(config), function (err) {
+  fs.writeJson(configFile, config, function (err) {
     if (err) {
       console.log(err);
       return false;

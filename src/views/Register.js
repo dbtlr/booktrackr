@@ -11,9 +11,9 @@ import * as auth from '../ducks/auth';
   dispatch => bindActionCreators(auth, dispatch)
 )
 
-export default class Login extends Component {
+export default class Register extends Component {
   static propTypes = {
-    login: PropTypes.func,
+    register: PropTypes.func,
     auth: PropTypes.object,
   }
 
@@ -26,10 +26,10 @@ export default class Login extends Component {
       <Grid>
         <Row>
           <Col xs={6} xsOffset={3}>
-            <DocumentMeta title='Login | BookTrackr'/>
+            <DocumentMeta title='Register | BookTrackr'/>
             <header>
-              <h1>Login</h1>
-              <p>Not yet a member? <Link to='/register'>Create your free account now</Link>.</p>
+              <h1>Create an account</h1>
+              <p>Already have one? <Link to='/login'>Log in now</Link>.</p>
             </header>
 
             <Input
@@ -38,12 +38,17 @@ export default class Login extends Component {
               ref='email' />
 
             <Input
+              type='text'
+              label='Name'
+              ref='name' />
+
+            <Input
               type='password'
               label='Password'
               ref='password' />
 
             <div className='button-group'>
-              <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>Login</Button>
+              <Button bsStyle='primary' type='submit' onClick={::this.handleSubmit}>Get Started</Button>
             </div>
           </Col>
         </Row>
@@ -54,6 +59,6 @@ export default class Login extends Component {
   handleSubmit(e) {
     const router = this.context.router;
 
-    this.props.login(this.refs.email.getValue(), this.refs.password.getValue());
+    this.props.register(this.refs.email.getValue(), this.refs.name.getValue(), this.refs.password.getValue());
   }
 }

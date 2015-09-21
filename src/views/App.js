@@ -35,7 +35,7 @@ const meta = {
 };
 
 @connect(
-  state => ({loggedIn: state.auth.loggedIn}),
+  state => ({loggedIn: state.auth.loggedIn, authorized: state.auth.authorized}),
   dispatch => bindActionCreators({logout}, dispatch)
 )
 
@@ -43,6 +43,7 @@ export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool,
+    authorized: PropTypes.bool,
     logout: PropTypes.func.isRequired,
   }
 
@@ -65,7 +66,7 @@ export default class App extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.loggedIn && nextProps.loggedIn) {
       // login
-      this.context.router.transitionTo('/login/authorize');
+      this.context.router.transitionTo(this.props.authorized ? '/' : '/login/authorize');
     } else if (this.props.loggedIn && !nextProps.loggedIn) {
       // logout
       this.context.router.transitionTo('/');

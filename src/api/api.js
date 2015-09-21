@@ -11,6 +11,7 @@ export function routeHandler() {
 
   router.get('/auth', jsonBodyParser, auth.checkLogin);
   router.post('/auth/login', jsonBodyParser, auth.login);
+  router.post('/auth/register', jsonBodyParser, auth.register);
   router.get('/auth/authorize', jsonBodyParser, auth.authorize);
   router.post('/auth/access', jsonBodyParser, auth.verifyAccess);
   router.post('/upload-cover', busboy(), upload.uploadCover);

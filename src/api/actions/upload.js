@@ -1,5 +1,4 @@
 import * as wpApi from '../../utils/wp-api';
-import * as wpConfig from '../../utils/wp-config';
 import fs from 'fs';
 
 export function uploadCover(req, res) {

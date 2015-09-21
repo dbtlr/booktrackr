@@ -12,7 +12,7 @@ import ApiClient from './ApiClient';
 import universalRouter from './universalRouter';
 import Html from './Html';
 import PrettyError from 'pretty-error';
-import * as wpConfig from './utils/wp-config';
+import expressValidator from 'express-validator';
 import * as wpApi from './utils/wp-api';
 
 const pretty = new PrettyError();
@@ -21,6 +21,7 @@ const app = new Express();
 var FileStore = require('session-file-store')(session);
 
 app.use(compression());
+app.use(expressValidator());
 
 // Add this back in if I ever add a favicon... maybe.
 // app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
@@ -46,10 +47,6 @@ app.use((req, res) => {
 
   const client = new ApiClient(req);
   const store = createStore(client);
-
-  // Attach the oauth token to the page as a default variable state.
-  // store.getState().api.key = wpConfig.read().oauth_token;
-  // store.getState().api.url = wpApi.buildApiUrl('');
 
   const location = new Location(req.path, req.query);
   if (__DISABLE_SSR__) {

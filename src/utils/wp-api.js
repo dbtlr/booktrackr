@@ -1,15 +1,15 @@
-import * as wpConfig from './wp-config';
+import * as config from '../models/config';
 import request from 'request';
 import OAuth from 'oauth-1.0a';
 
 export function buildApiUrl(path) {
-  const data = wpConfig.read();
+  const data = config.read();
 
   return data.wp_api + path
 }
 
 function buildOAuth() {
-  const data = wpConfig.read();
+  const data = config.read();
 
   return OAuth({
     consumer: {
@@ -22,7 +22,7 @@ function buildOAuth() {
 }
 
 function getOAuthToken(token) {
-  const data = wpConfig.read();
+  const data = config.read();
   token = token || {};
 
   if (!token.public || !token.secret) {
