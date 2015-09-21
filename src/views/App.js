@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import DocumentMeta from 'react-document-meta';
-import {isLoaded as isAuthLoaded, logout} from '../ducks/auth';
+import {isLoggedIn, logout} from '../ducks/auth';
 import {createTransitionHook} from '../universalRouter';
 import Header from '../components/Header';
 
@@ -36,7 +36,7 @@ const meta = {
 
 @connect(
   state => ({loggedIn: state.auth.loggedIn, authorized: state.auth.authorized, user: state.auth.user}),
-  dispatch => bindActionCreators({logout}, dispatch)
+  dispatch => bindActionCreators({logout, isLoggedIn}, dispatch)
 )
 
 export default class App extends Component {
@@ -44,6 +44,7 @@ export default class App extends Component {
     children: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool,
     authorized: PropTypes.bool,
+    isLoggedIn: PropTypes.func,
     user: PropTypes.object,
     logout: PropTypes.func.isRequired,
   }
@@ -57,6 +58,8 @@ export default class App extends Component {
     const {router, store} = this.context;
     this.transitionHook = createTransitionHook(store);
     router.addTransitionHook(this.transitionHook);
+
+    this.props.isLoggedIn();
   }
 
   componentWillUnmount() {
@@ -66,8 +69,10 @@ export default class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.loggedIn && nextProps.loggedIn) {
+      console.log(this.props);
+      console.log(nextProps);
       // login
-      this.context.router.transitionTo(this.props.authorized ? '/' : '/login/authorize');
+      this.context.router.transitionTo(nextProps.authorized ? '/' : '/login/authorize');
     } else if (this.props.loggedIn && !nextProps.loggedIn) {
       // logout
       this.context.router.transitionTo('/');

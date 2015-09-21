@@ -30,8 +30,11 @@ app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
 app.use(session({
   store: new FileStore({
-    path: './data/sessions'
+    path: './data/sessions',
+    retries: 100,
   }),
+  resave: false,
+  saveUninitialized: true,
   secret: '[This should never be committed to a public repository]',
 }));
 
