@@ -13,13 +13,9 @@ class ApiClient_ {
     ['get', 'post', 'put', 'patch', 'del'].
       forEach((method) => {
         this[method] = (path, options) => {
-          let wp = false, data = null, files = {}, params = {}, headers = {};
+          let data = null, files = {}, params = {}, headers = {};
 
           if (options) {
-            if (options.wp) {
-              wp = true;
-            }
-
             if (options.data) {
               data = options.data;
             }
@@ -35,7 +31,7 @@ class ApiClient_ {
 
 
           return new Promise((resolve, reject) => {
-            const url = this.formatUrl(path, wp);
+            const url = this.formatUrl(path);
             const request = superagent[method](url);
 
             if (params) {
@@ -72,13 +68,6 @@ class ApiClient_ {
           });
         };
       });
-  }
-
-  buildOAuth(consumerToken) {
-    return OAuth({
-      consumer: consumerToken,
-      signature_method: 'HMAC-SHA1'
-    });
   }
 
   /* This was originally a standalone function outside of this class, but babel kept breaking, and this fixes it  */

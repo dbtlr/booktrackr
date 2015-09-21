@@ -24,7 +24,7 @@ export default class Reviews extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    isAuthorized: PropTypes.boolean,
+    isAuthorized: PropTypes.bool,
     deleteReview: PropTypes.func,
     likeReview: PropTypes.func,
     unLikeReview: PropTypes.func,

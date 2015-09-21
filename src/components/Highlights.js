@@ -24,7 +24,7 @@ export default class Highlights extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    isAuthorized: PropTypes.boolean,
+    isAuthorized: PropTypes.bool,
     deleteHighlight: PropTypes.func,
     unLikeHighlight: PropTypes.func,
     likeHighlight: PropTypes.func,

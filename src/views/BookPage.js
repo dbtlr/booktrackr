@@ -36,9 +36,9 @@ export default class BookPage extends Component {
 
   static propTypes = {
     book: PropTypes.object,
-    isAuthorized: PropTypes.boolean,
+    isAuthorized: PropTypes.bool,
     routeParams: PropTypes.object,
-    loading: PropTypes.boolean,
+    loading: PropTypes.bool,
     addLike: PropTypes.func,
     unLike: PropTypes.func,
   }

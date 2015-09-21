@@ -6,7 +6,7 @@ export default class Header extends Component {
   static propTypes = {
     logout: PropTypes.func.isRequired,
     user: PropTypes.object,
-    loggedIn: PropTypes.boolean,
+    loggedIn: PropTypes.bool,
   };
 
   render() {
