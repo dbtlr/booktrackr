@@ -32,6 +32,10 @@ header p {
   text-align: center;
 }
 
+.avatar {
+  padding: 10px 5px;
+}
+
 .application {
   min-height: 100%;
   position: relative;

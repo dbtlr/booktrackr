@@ -35,7 +35,7 @@ const meta = {
 };
 
 @connect(
-  state => ({loggedIn: state.auth.loggedIn, authorized: state.auth.authorized}),
+  state => ({loggedIn: state.auth.loggedIn, authorized: state.auth.authorized, user: state.auth.user}),
   dispatch => bindActionCreators({logout}, dispatch)
 )
 
@@ -44,6 +44,7 @@ export default class App extends Component {
     children: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool,
     authorized: PropTypes.bool,
+    user: PropTypes.object,
     logout: PropTypes.func.isRequired,
   }
 
@@ -74,11 +75,11 @@ export default class App extends Component {
   }
 
   render() {
-    const {loggedIn} = this.props;
+    const {loggedIn, user} = this.props;
     return (
       <div className='application'>
         <DocumentMeta {...meta}/>
-        <Header loggedIn={loggedIn} logout={this.props.logout} />
+        <Header loggedIn={loggedIn} user={user} logout={this.props.logout} />
         <div className='content'>
           {this.props.children}
         </div>

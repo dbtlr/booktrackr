@@ -29,7 +29,7 @@ export default class Html extends Component {
 
           <link href={cdn + 'twitter-bootstrap/3.3.5/css/bootstrap.css'} 
                 media="screen, projection" rel="stylesheet" type="text/css" />
-          <link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
+          <link href={cdn + 'font-awesome/4.4.0/css/font-awesome.min.css'}
                 media="screen, projection" rel="stylesheet" type="text/css" />
           <link href="/main.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
