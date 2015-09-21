@@ -69,8 +69,6 @@ export default class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.loggedIn && nextProps.loggedIn) {
-      console.log(this.props);
-      console.log(nextProps);
       // login
       this.context.router.transitionTo(nextProps.authorized ? '/' : '/login/authorize');
     } else if (this.props.loggedIn && !nextProps.loggedIn) {

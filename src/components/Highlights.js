@@ -7,7 +7,7 @@ import * as highlightActions from '../ducks/highlights';
 
 @connect(
   state => ({
-    isAuthorized: state.auth.isAuthorized
+    authorized: state.auth.authorized
   }),
   dispatch => ({
     ...bindActionCreators(highlightActions, dispatch)
@@ -24,7 +24,7 @@ export default class Highlights extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    isAuthorized: PropTypes.bool,
+    authorized: PropTypes.bool,
     deleteHighlight: PropTypes.func,
     unLikeHighlight: PropTypes.func,
     likeHighlight: PropTypes.func,
@@ -36,7 +36,7 @@ export default class Highlights extends Component {
 
     return (
       <div className='items-list'>
-        <h3>Highlights {this.props.isAuthorized ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
+        <h3>Highlights {this.props.authorized ? <Link className='small' to={'/book/' + book.id + '/highlight'}>Add</Link> : ''}</h3>
         {highlights.length > 0 ?
           <ul>
             {highlights.map((item) => item.deleted ? '' : this.getHighlight(item))}
@@ -52,7 +52,7 @@ export default class Highlights extends Component {
     const {book} = this.props;
     return (
       <Row componentClass='li'  key={item.id || ''}>
-          { this.props.isAuthorized ?
+          { this.props.authorized ?
             <Col xs={12} className='actions'>
               <Link to={'/book/' + book.id + '/highlight/' + item.id }>(edit)</Link>
               <Button bsStyle='link' onClick={::this.deleteItem(item.id)}>(delete)</Button>

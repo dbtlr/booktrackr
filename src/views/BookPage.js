@@ -19,7 +19,7 @@ import {Link} from 'react-router';
     book: state.book.book,
     loading: state.book.loading,
     comments: state.comments,
-    isAuthorized: state.auth.isAuthorized
+    authorized: state.auth.authorized
   }),
   dispatch => ({
     ...bindActionCreators({...bookActions, ...commentActions}, dispatch)
@@ -36,7 +36,7 @@ export default class BookPage extends Component {
 
   static propTypes = {
     book: PropTypes.object,
-    isAuthorized: PropTypes.bool,
+    authorized: PropTypes.bool,
     routeParams: PropTypes.object,
     loading: PropTypes.bool,
     addLike: PropTypes.func,
@@ -44,7 +44,7 @@ export default class BookPage extends Component {
   }
 
   render() {
-    const {book, isAuthorized, loading} = this.props;
+    const {book, authorized, loading} = this.props;
     const bookId = this.props.routeParams.bookId;
 
     if (loading) {
@@ -69,7 +69,7 @@ export default class BookPage extends Component {
             <img className='cover' src={book.cover} />
           </Col>
           <Col xs={12} md={6} lg={9}>
-            <h1>{book.title} {isAuthorized ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
+            <h1>{book.title} {authorized ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
             <div className='like-button' onClick={::this.toggleLikeBook}>
               <i className={'fa ' + (this.state.liked ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
               <span>{::this.getLikeStatement(book.meta.likes)}</span>

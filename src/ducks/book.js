@@ -82,7 +82,7 @@ export function formatBook(item) {
 }
 
 export function saveMetaPromise(book, meta) {
-  return (client) => client.post('books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true});
+  return (client) => client.post('/wp/books/' + book.id + '/meta', { data: { key: 'data', value: JSON.stringify(meta)}, wp: true});
 }
 
 export default function reducer(state = initialState, action = {}) {

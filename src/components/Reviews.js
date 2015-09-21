@@ -7,7 +7,7 @@ import * as reviewActions from '../ducks/reviews';
 
 @connect(
   state => ({
-    isAuthorized: state.auth.isAuthorized
+    authorized: state.auth.authorized
   }),
   dispatch => ({
     ...bindActionCreators(reviewActions, dispatch)
@@ -24,7 +24,7 @@ export default class Reviews extends Component {
 
   static propTypes = {
     book: PropTypes.object.isRequired,
-    isAuthorized: PropTypes.bool,
+    authorized: PropTypes.bool,
     deleteReview: PropTypes.func,
     likeReview: PropTypes.func,
     unLikeReview: PropTypes.func,
@@ -36,7 +36,7 @@ export default class Reviews extends Component {
 
     return (
       <div className='items-list'>
-        <h3>Reviews {this.props.isAuthorized ? <Link className='small' to={'/book/' + book.id + '/review'}>Add</Link> : ''}</h3>
+        <h3>Reviews {this.props.authorized ? <Link className='small' to={'/book/' + book.id + '/review'}>Add</Link> : ''}</h3>
         { reviews.length > 0 ?
           <ul>
             {reviews.map((item) => item.deleted ? '' : this.getReview(item))}

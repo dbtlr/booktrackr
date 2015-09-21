@@ -73,3 +73,11 @@ export function checkPassword(password, user) {
 
   return bcrypt.compareSync(password, user.hashedPassword);
 }
+
+export function getCurrentUser(session) {
+  if (!session.user || !session.user.email) {
+    return;
+  }
+
+  return getUser(session.user.email);
+}

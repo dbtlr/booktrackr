@@ -1,9 +1,11 @@
 import * as wpApi from '../../utils/wp-api';
+import * as userModel from '../../models/user';
 import fs from 'fs';
 
 export function uploadCover(req, res) {
 
-  const token = req.session.oauth && req.session.oauth.access ? req.session.oauth.access : null;
+  const user = userModel.getCurrentUser(req.session);
+  const token = user ? user.access_token : null;
 
   let fstream;
   req.pipe(req.busboy);
