@@ -1,6 +1,6 @@
 import cli from 'cli';
 import prompt from 'prompt';
-import * as wpConfig from './utils/wp-config';
+import * as wpConfig from './models/config';
 
 let data = wpConfig.read() || {};
 
