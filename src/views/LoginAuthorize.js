@@ -63,7 +63,7 @@ export default class LoginAuthorize extends Component {
         return (
           <div>
             <h2>Step 2</h2>
-            <p>Next, paste the verification link from the wordpress authorization page here.</p>
+            <p>Next, paste the verification link from the WordPress authorization page here.</p>
             {authorizedFail ? 
               <Alert bsStyle='danger'>There was an issue validating your token, maybe it is old?</Alert>
               : ''

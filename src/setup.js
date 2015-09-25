@@ -19,7 +19,7 @@ const schema = {
       default: data.oauth_token_secret || ''
     },
     wp_api: {
-      message: 'Wordpress API',
+      message: 'Wordpress API Host (ie: https://myblog.com/)',
       required: true,
       default: data.wp_api || ''
     }
