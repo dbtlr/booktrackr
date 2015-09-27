@@ -49,7 +49,7 @@ export default class Highlights extends Component {
   }
 
   getHighlight(item) {
-    const {book} = this.props;
+    const {book, authorized} = this.props;
     return (
       <Row componentClass='li'  key={item.id || ''}>
           { this.props.authorized ?
@@ -61,8 +61,8 @@ export default class Highlights extends Component {
             ''
           }
         <Col xs={12} className='body'>{item.text}</Col>
-        <Col xs={12}  className='like-button' onClick={::this.toggleLike(item.id)}>
-          <i className={'fa ' + (this.state.likes[item.id] ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
+        <Col xs={12} className='like-button' onClick={::this.toggleLike(item.id)}>
+          {authorized ? <i className={'fa ' + (this.state.likes[item.id] ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i> : ''}
           <span>{::this.getLikeStatement(item.likes)}</span>
         </Col>
       </Row>
@@ -70,6 +70,10 @@ export default class Highlights extends Component {
   }
 
   getLikeStatement(likes) {
+    if (!this.props.authorized) {
+      return;
+    }
+
     likes = likes ? likes.length : 0;
 
     if (likes == 1) {

@@ -71,7 +71,7 @@ export default class BookPage extends Component {
           <Col xs={12} md={6} lg={9}>
             <h1>{book.title} {authorized ? <Link className='small' to={'/book/' + bookId + '/edit'}>Edit</Link> : ''}</h1>
             <div className='like-button' onClick={::this.toggleLikeBook}>
-              <i className={'fa ' + (this.state.liked ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i>
+              {authorized ? <i className={'fa ' + (this.state.liked ? 'fa-thumbs-up' : 'fa-thumbs-o-up')}></i> : ''}
               <span>{::this.getLikeStatement(book.meta.likes)}</span>
             </div>
 
@@ -111,6 +111,10 @@ export default class BookPage extends Component {
   }
 
   toggleLikeBook() {
+    if (!this.props.authorized) {
+      return;
+    }
+
     if (this.state.liked) {
       this.setState({liked: false});
       this.props.unLike(this.props.book);
