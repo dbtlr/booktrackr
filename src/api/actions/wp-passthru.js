@@ -10,8 +10,19 @@ export function passthru(req, res) {
 
   const data = {...body, ...query};
 
+  console.info('Request: [%s] %s', method, params[0], data);
   wpApi.makeRequest(params[0], method, data, token, (body, err, result) => {
-    res.status(result.statusCode).json(body);
+    console.info('Response: [%d]', result.statusCode, body || null);
+
+    switch (result.statusCode) {
+      case 500:
+        res.status(result.statusCode).json({msg: 'Upstream Error'});
+        break;
+
+      default:
+        res.status(result.statusCode).json(body);
+        break;
+    }
   });
 
 }
