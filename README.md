@@ -11,7 +11,7 @@ First, ensure the following plugins are loaded.
 
 1. [WP-API v2](https://wordpress.org/plugins/rest-api/)
 2. [OAuth](https://github.com/WP-API/OAuth1)
-3. [Booktrackr Plugin](https://github.com/db-t/booktrackr-plugin)
+3. [Booktrackr Plugin](https://github.com/dbtlr/booktrackr-plugin)
 
 You also need to follow the instructions to install the wp-cli on your wordpress host. This is needed in order to add an OAuth client key, which will be needed in order to connect.
 
